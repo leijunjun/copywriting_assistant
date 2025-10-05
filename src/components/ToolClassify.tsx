@@ -71,8 +71,8 @@ export function ToolClassify() {
   return (
     <Dialog open={open} onOpenChange={(open) => !load && setOpen(open)}>
       <DialogTrigger asChild>
-        <Button size='sm' className={` group border text-black bg-[#fff] hover:bg-[#f5f5f5]`} >
-          <IoMdAdd className="text-lg mr-2" />
+        <Button size='sm' className={`w-full h-10 bg-bg-100 hover:bg-bg-200 text-text-100 border border-bg-300 text-sm font-medium`} >
+          <IoMdAdd className="w-4 h-4 mr-2" />
           {LANGUAGE_LIBRARY[global.language]['自定义分类']}
         </Button>
       </DialogTrigger>

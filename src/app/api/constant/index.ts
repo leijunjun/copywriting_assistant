@@ -297,7 +297,9 @@ ${params.content}
         return [
             {
                 role: 'user',
-                content: `Generate a 小红书 platform style post in your own words based on the requirements.
+                content: `BGēnjù yǔqì hé tíshì cí, yòng nín zìjǐ dehuà shēngchéng xiǎo hóng shū píngtái fēnggé de tiězǐ, chuānchā pǐpèi de fúhào zēngjiā fēnwéi gǎn, jiéwěi tíliàn 3-5 gè biāoqiān.
+54 / 5,000
+Based on the tone and prompt words, use your own words to generate a post in the style of the 小红书 platform, interspersed with matching symbols to add a sense of atmosphere, and finally refined 3-5 tags.
 Language: ${params.language}
 Format: Plain text without explanations and notes
 Tone: ${params.tone}

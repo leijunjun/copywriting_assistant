@@ -192,8 +192,8 @@ export function CustomToolForm() {
   return (
     <Dialog open={open} onOpenChange={(open) => !load && setOpen(open)}>
       <DialogTrigger asChild>
-        <Button size='sm' className={`bg-[#8e47f0] hover:bg-[#7f39ea]`}>
-          <IoMdAdd className="mr-2 text-lg text-white" />
+        <Button size='sm' className={`w-full h-10 bg-primary-100 hover:bg-primary-200 text-white text-sm font-medium`}>
+          <IoMdAdd className="mr-2 w-4 h-4" />
           {LANGUAGE_LIBRARY[global.language]['自定义模板']}
         </Button>
       </DialogTrigger>

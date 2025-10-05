@@ -29,7 +29,7 @@ export async function generateMetadata(
 
   const info = {
     zh: {
-      title: "AI 文案助手(家政版）",
+      title: "AI 文案助手",
       description: "文案创作的得力助手，让创意和效率并驾齐驱",
       image: "/writing_zh.jpg",
     },

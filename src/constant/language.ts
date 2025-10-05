@@ -21,6 +21,31 @@ export const PLEASE_SELECT: Language = { chinese: '请选择', english: 'Please 
 export const GENERATE_BUTTON: Language = { chinese: '生成', english: 'generate', japanese: '生成する' }
 export const CLEAR_CONTENT_BUTTON: Language = { chinese: '清除内容', english: 'Clear Content', japanese: '内容をクリア' }
 
+// 首页相关词汇 Home page vocabulary
+export const HOME_TITLE: Language = { chinese: '为家政服务提效', english: 'Efficiency for Home Services', japanese: '家政サービスを効率化' }
+export const HOME_SEARCH_PLACEHOLDER: Language = { chinese: '查找你需要的 AI 智能体', english: 'Find the AI Agent You Need', japanese: '必要なAIエージェントを見つける' }
+export const HOME_CATEGORY_NAVIGATION: Language = { chinese: '分类导航', english: 'Category Navigation', japanese: 'カテゴリナビゲーション' }
+export const HOME_ALL_CATEGORIES: Language = { chinese: '全部', english: 'All', japanese: 'すべて' }
+export const HOME_SIDEBAR_HIDE: Language = { chinese: '隐藏侧边栏', english: 'Hide Sidebar', japanese: 'サイドバーを隠す' }
+export const HOME_SIDEBAR_SHOW: Language = { chinese: '显示侧边栏', english: 'Show Sidebar', japanese: 'サイドバーを表示' }
+export const USER_NAME: Language = { chinese: '用户', english: 'User', japanese: 'ユーザー' }
+
+// 导航菜单词汇 Navigation menu vocabulary
+export const NAVIGATION: { [key: string]: Language } = {
+  'home': { chinese: '首页', english: 'Home', japanese: 'ホーム' },
+  'services': { chinese: '服务', english: 'Services', japanese: 'サービス' },
+  'about': { chinese: '关于', english: 'About', japanese: 'について' },
+  'profile': { chinese: '个人中心', english: 'Profile', japanese: 'プロフィール' },
+  'points': { chinese: '积分', english: 'Points', japanese: 'ポイント' }
+}
+
+// 面包屑导航词汇 Breadcrumb navigation vocabulary
+export const BREADCRUMB: { [key: string]: Language } = {
+  'home': { chinese: '首页', english: 'Home', japanese: 'ホーム' },
+  'category': { chinese: '分类', english: 'Category', japanese: 'カテゴリ' },
+  'tool': { chinese: '工具', english: 'Tool', japanese: 'ツール' }
+}
+
 /**
  * 工具语言配置 Tool language configuration
  */
@@ -35,10 +60,10 @@ export const LANGUAGE_LIST: Array<Language> = [
 
 // 工具分类词汇 Tool classification vocabulary
 export const classify: Array<Language> = [
-  { chinese: '内容创作', english: 'Writing', japanese: 'コンテンツ作成' },
   { chinese: '社交媒体', english: 'Social Media', japanese: 'ソーシャルメディア' },
+  { chinese: '内容创作', english: 'Writing', japanese: 'コンテンツ作成' },
   { chinese: '市场营销', english: 'Marketing', japanese: 'マーケティング' },
-  { chinese: '教育', english: 'Education', japanese: '教育' },
+  { chinese: '教育培训', english: 'Education', japanese: '教育' },
   { chinese: '项目管理', english: 'Project Management', japanese: 'プロジェクト管理' },
   { chinese: '生活方式', english: 'Lifestyle', japanese: 'ライフスタイル' },
   { chinese: '工作效率', english: 'Work Efficiency', japanese: '生産性' },
@@ -98,6 +123,7 @@ export const FROM_LABEL: { [key: string]: Language } = {
   'postContent': { chinese: '帖子内容', english: 'Post Content', japanese: '投稿内容' },
   'yourThoughts': { chinese: '你的想法', english: 'Your thoughts', japanese: 'あなたの考え' },
   'commentWhichYouWillReply': { chinese: '你想回复的评论', english: 'Comment which you will reply', japanese: 'あなたが返信したいコメント' },
+  'preset': { chinese: '预设内容', english: 'Preset Content', japanese: 'プリセット内容' },
 }
 
 // 料理能力表词汇 Vocabulary of cooking ability table
@@ -276,21 +302,53 @@ export const SEO_DESCRIPTION_GENERATION: Array<Language> = [
 
 // 社交媒体风格词汇  Social media style vocabulary
 export const SOCIAL_MEDIA_STYLE: Array<Language> = [
-  { chinese: '鼓励性', english: 'Encouraging', japanese: 'はげしい' },
-  { chinese: '幽默风趣', english: 'Humorous', japanese: 'ユーモラス' },
-  { chinese: '教育性', english: 'Educational', japanese: '教育的' },
-  { chinese: '启发式', english: 'Inspirational', japanese: 'ヒューリスティック' },
-  { chinese: '激励性', english: 'Motivational', japanese: 'れいしんせい' },
-  { chinese: '亲切友好', english: 'Friendly', japanese: '親切で友好的' },
-  { chinese: '专业严谨', english: 'Professional and rigorous', japanese: 'プロ意識が高い' },
-  { chinese: '疑问探讨', english: 'Questioning', japanese: '疑問の検討' },
-  { chinese: '热情洋溢', english: 'Enthusiastic', japanese: '熱情があふれる' },
-  { chinese: '挑战性', english: 'Challenging', japanese: '課題' },
-  { chinese: '感性诉求', english: 'Emotional', japanese: '感性的な訴え' },
-  { chinese: '讽刺挖苦', english: 'Sarcastic', japanese: '皮肉皮肉皮肉' },
-  { chinese: '轻松随意', english: 'Casual', japanese: '気軽に' },
-  { chinese: '悲伤感伤', english: 'Sad and sentimental', japanese: '悲しくて悲しくて' },
-  { chinese: '神秘兮兮', english: 'Mysterious', japanese: '神秘的だ' },
+  { chinese: '好奇震惊型', english: 'Curiosity and Shock', japanese: '好奇心と驚き' },
+  { chinese: '干货价值型', english: 'Value-packed', japanese: '価値重視' },
+  { chinese: '情感共鸣型', english: 'Emotional Resonance', japanese: '感情共鳴' },
+  { chinese: '热点结合型', english: 'Trending Integration', japanese: 'トレンド連携' },
+  { chinese: '爆款心法', english: 'Viral Formula', japanese: 'バズる秘訣' },
+]
+
+// 小红书帖子生成预设内容词汇 Xiaohongshu post generation preset content vocabulary
+export const XIAOHONGSHU_PRESET_CONTENT: Array<Language> = [
+  { chinese: '面试了100个阿姨后，我发现好阿姨都有这个共同点!', english: 'After interviewing 100 nannies, I found that good nannies all have this in common!', japanese: '100人の家政婦さんに面接した結果、良い家政婦さんには共通点がありました！' },
+  { chinese: '婆婆偷偷帮我找的阿姨….用完后我直接哭了!', english: 'The nanny my mother-in-law secretly found for me... I cried after using her!', japanese: '義母がこっそり探してくれた家政婦さん…使った後、思わず泣きました！' },
+  { chinese: '年薪30W的阿姨都在用的家务秘诀，第3个绝了!', english: 'Household secrets used by nannies with a 300K annual salary, the third one is amazing!', japanese: '年収30万元の家政婦さんが使っている家事の秘訣、3つ目がすごい！' },
+  { chinese: '好阿姨真的能救命!二胎妈妈的真心话', english: 'A good nanny can really save your life! Honest words from a second-time mom', japanese: '良い家政婦さんは本当に命の恩人！二人目ママの本音' },
+  { chinese: '面试阿姨必问的5个问题，最后一个太关键了!', english: '5 must-ask questions when interviewing a nanny, the last one is crucial!', japanese: '家政婦さん面接で必ず聞くべき5つの質問、最後が超重要！' },
+  { chinese: '没想到这个阿姨让我实现了带娃自由!', english: 'I never thought this nanny would give me parenting freedom!', japanese: 'この家政婦さんのおかげで子育ての自由を手に入れました！' },
+  { chinese: '好阿姨根本不用做家务?真相是…', english: 'Do good nannies not need to do housework? The truth is...', japanese: '良い家政婦さんは家事をしない？その真相は…' },
+  { chinese: '连续换7个阿姨的血泪教训!这些坑别踩了', english: 'Painful lessons from changing 7 nannies in a row! Don’t fall into these traps', japanese: '7人連続で家政婦さんを替えた涙の教訓！この落とし穴に注意' },
+  { chinese: '阿姨要休国庆怎么办?替补方案来了', english: 'What to do if your nanny takes National Day off? Here are backup plans', japanese: '家政婦さんが国慶節に休む時は？代替案をご紹介' },
+  { chinese: '找阿姨避坑指南!这些雷我帮你踩过了', english: 'Nanny hiring pitfalls guide! I’ve stepped on these mines for you', japanese: '家政婦さん探しの落とし穴ガイド！私が経験した失敗をシェア' },
+  { chinese: '保姆面试题库+参考答案', english: 'Nanny interview question bank + sample answers', japanese: '家政婦面接の質問集＋参考回答' },
+  { chinese: '不同预算能找到什么样的阿姨?', english: 'What kind of nanny can you find with different budgets?', japanese: '予算別でどんな家政婦さんが雇える？' },
+  { chinese: '阿姨工作时间表这样安排，效率翻倍!', english: 'Arrange the nanny’s schedule like this for double efficiency!', japanese: '家政婦さんのスケジュールはこう組むと効率倍増！' },
+  { chinese: '新手妈妈必看：月嫂和育儿嫂到底选哪个?', english: 'Must-read for new moms: Should you choose a maternity nanny or a childcare nanny?', japanese: '新米ママ必見：産後ヘルパーと育児ヘルパー、どちらを選ぶ？' },
+  { chinese: '请育儿嫂花了2万还糟心?我用这招找到神仙阿姨，附避坑指南', english: 'Spent 20,000 on a childcare nanny and still upset? I found a super nanny with this trick, plus a pitfall guide', japanese: '育児ヘルパーに2万元かけても不満？この方法で神レベルの家政婦さんを見つけました、落とし穴ガイド付き' },
+  { chinese: '找月嫂到底要问哪些问题?10个必问点，我帮你整理好了', english: 'What questions should you ask a maternity nanny? 10 must-ask points, I’ve organized them for you', japanese: '産後ヘルパーに必ず聞くべき10の質問、まとめました' },
+  { chinese: '阿姨带宝宝出门，我一点不慌!多了这份双重保障', english: 'I’m not worried at all when the nanny takes the baby out! Double protection in place', japanese: '家政婦さんが赤ちゃんを連れて外出しても安心！ダブルの安心保障' },
+  { chinese: '阿姨突然要求涨工资?这样应对不伤和', english: 'Nanny suddenly asks for a raise? Here’s how to handle it without hurting the relationship', japanese: '家政婦さんが突然給料アップを要求？円満に対応する方法' },
+  { chinese: '气好阿姨的20条黄金标准，你家中了几条?', english: '20 golden standards for a great nanny, how many does yours meet?', japanese: '良い家政婦さんの20のゴールデンルール、あなたの家は何個当てはまる？' },
+  { chinese: '10万+自有阿姨库，随时面试不等待', english: '100,000+ in-house nanny database, interview anytime without waiting', japanese: '10万件以上の自社家政婦データベース、いつでも面接可能' },
+  { chinese: '遇到神仙阿姨是什么体验?我来说说真心话', english: 'What’s it like to meet a super nanny? Let me tell you the truth', japanese: '神レベルの家政婦さんに出会った体験、本音で語ります' },
+  { chinese: '感谢阿姨让我实现了带娃自由!', english: 'Thank you nanny for giving me parenting freedom!', japanese: '家政婦さんのおかげで子育ての自由を実現できました！' },
+  { chinese: '阿姨要下户了，全家人都舍不得…', english: 'The nanny is leaving, the whole family can’t bear to part...', japanese: '家政婦さんが退職、家族みんなが寂しい…' },
+  { chinese: '连续换了3个阿姨后，我终于悟了!', english: 'After changing 3 nannies in a row, I finally understood!', japanese: '3人連続で家政婦さんを替えて、やっと悟りました！' },
+  { chinese: '好阿姨真的能提升家庭幸福感!', english: 'A good nanny can really improve family happiness!', japanese: '良い家政婦さんは本当に家族の幸福度を上げてくれます！' },
+  { chinese: '月嫂阿姨离开前，偷偷给我留了这份清单，太暖心了', english: 'Before leaving, the maternity nanny secretly left me this checklist, so heartwarming', japanese: '産後ヘルパーさんが退職前にこっそり残してくれたリスト、心温まる' },
+  { chinese: '双职工家庭的救命恩人!', english: 'The savior of dual-income families!', japanese: '共働き家庭の救世主！' },
+  { chinese: '三胎政策开放后，好阿姨越来越难找了!', english: 'After the three-child policy, it’s getting harder to find good nannies!', japanese: '三人目政策解禁後、良い家政婦さんがますます見つかりにくい！' },
+  { chinese: '年后找阿姨必看!市场最新行情揭秘', english: 'Must-read for hiring nannies after the New Year! Latest market trends revealed', japanese: '年明けの家政婦探し必見！最新市場動向を公開' },
+  { chinese: '暑假带娃救星!大学生保姆靠谱吗?', english: 'Summer vacation parenting savior! Are college student nannies reliable?', japanese: '夏休みの子育て救世主！大学生ベビーシッターは信頼できる？' },
+  { chinese: '热点结合型产假结束要上班?别慌!我用1招解决宝宝谁带难题', english: 'Hot topic: Maternity leave ending and need to return to work? Don’t panic! Here’s my trick to solve the childcare dilemma', japanese: '話題：産休明けで仕事復帰？慌てないで！私の解決法を紹介' },
+  { chinese: '蛇宝宝扎堆出生，月嫂价格涨疯了吗?', english: 'A baby boom in the Year of the Snake, have maternity nanny prices skyrocketed?', japanese: '巳年ベビーラッシュ、産後ヘルパーの価格は高騰？' },
+  { chinese: '年后阿姨市场调查：价格+availability', english: 'Post-New Year nanny market survey: price + availability', japanese: '年明け家政婦市場調査：価格＋空き状況' },
+  { chinese: '冬季流感高发期，阿姨健康管理指南', english: 'Winter flu season: Nanny health management guide', japanese: '冬のインフルエンザ流行期、家政婦さんの健康管理ガイド' },
+  { chinese: '真实痛点：抓住宝妈最头疼的问题', english: 'Real pain points: Addressing the most troublesome issues for moms', japanese: '本当の悩み：ママたちの一番の困りごとにフォーカス' },
+  { chinese: '解决方案：给出具体可操作的建议', english: 'Solution: Provide specific actionable advice', japanese: '解決策：具体的で実践的なアドバイスを提供' },
+  { chinese: '情感共鸣：用真实故事打动人心', english: 'Emotional resonance: Move people with real stories', japanese: '感情共鳴：リアルなストーリーで心を動かす' },
+  { chinese: '信任建立：展示专业度和保障体系', english: 'Building trust: Show professionalism and security system', japanese: '信頼構築：専門性と保証体制をアピール' },
 ]
 
 // QA风格词汇 QA style vocabulary

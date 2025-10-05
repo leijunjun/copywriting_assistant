@@ -2,7 +2,6 @@
 import React from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "../ui/use-toast";
-import Header from "@/components/Header";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import PoweredBy from "@/components/PoweredBy";
@@ -13,13 +12,12 @@ import { CustomToolForm } from "../CustomToolForm";
 import { deleteDatasTool } from "@/app/api/indexedDB";
 import { ITool, toolList } from "@/constant/tool_list";
 import { IoMdCloseCircleOutline } from "react-icons/io";
-import { LanguagePopover } from "@/components/LanguagePopover";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { selectGlobal, setGlobalState } from "@/app/store/globalSlice";
 import { debounce, getLanguage, getLocalStorage, setLocalStorage } from "@/lib/utils";
 import { deleteCustomToolDataKey, getAllCustomToolData } from "@/app/api/customTool/indexedDB";
 import { deleteClassifyData, getAllClassifyData, IClassify } from "@/app/api/classify/indexedDB";
-import { CARD_RECENTLY_USED, classify, INPUT_PLACEHOLDER, LANGUAGE_LIBRARY } from "@/constant/language";
+import { CARD_RECENTLY_USED, classify, INPUT_PLACEHOLDER, LANGUAGE_LIBRARY, HOME_TITLE, HOME_SEARCH_PLACEHOLDER, HOME_CATEGORY_NAVIGATION, HOME_ALL_CATEGORIES, HOME_SIDEBAR_HIDE, HOME_SIDEBAR_SHOW } from "@/constant/language";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 
 export default function Home() {
@@ -34,6 +32,7 @@ export default function Home() {
   const [search, setSearch] = useState({ query: '', querying: false });
   const [recentlyUsedData, setRecentlyUsedData] = useState<Array<ITool>>([]);
   const [toolData, setToolData] = useState({ list: toolList, searchList: {} as any });
+  const [sidebarVisible, setSidebarVisible] = useState(true);
 
   const showBrand = process.env.NEXT_PUBLIC_SHOW_BRAND === "true";
 
@@ -127,21 +126,35 @@ export default function Home() {
   const onRenderingToolCard = (data: Array<Pick<ITool, 'id' | 'title' | 'url' | 'name' | 'describe'>>) => {
     return (
       <div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3 trans" >
+        <div className={`grid gap-3 sm:gap-4 transition-all ${
+          sidebarVisible 
+            ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' 
+            : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+        }`}>
           {
             data.map(item => (
               <div
                 key={item.id}
                 onClick={() => router.push(`/${item.title}`)}
-                className="flex items-center bg-white cursor-pointer md:p-3 md:h-28 h-24 p-2 hover:shadow-md transition-all relative"
-                style={{ border: '1px solid #e2e8f0', borderRadius: 10 }}
+                className="group flex items-center bg-bg-100 cursor-pointer p-3 sm:p-4 h-24 sm:h-28 md:h-32 hover:shadow-xl hover:shadow-primary-300/20 transition-all duration-300 relative rounded-xl border border-bg-300 hover:border-primary-200 hover:-translate-y-1 w-full"
+                style={{ 
+                  background: 'linear-gradient(135deg, var(--bg-100) 0%, var(--bg-200) 100%)',
+                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)'
+                }}
               >
-                <div className="md:min-w-20 md:max-w-20 md:h-20 min-w-16 max-w-16 h-16" style={{ padding: 5 }} >
-                  <img className="w-full object-cover rounded-md" src={item.url} />
+                <div className="md:min-w-20 md:max-w-20 md:h-20 min-w-16 max-w-16 h-16 p-2 bg-gradient-to-br from-primary-300/20 to-primary-200/20 rounded-lg group-hover:from-primary-300/40 group-hover:to-primary-200/40 transition-all duration-300">
+                  <img className="w-full h-full object-cover rounded-md" src={item.url} />
                 </div>
-                <div className="pl-3">
-                  <div className="font-bold md:text-lg text-base pb-2 ">{item.name[global.language]}</div>
-                  <div className="ellipsis-multi-line text-xs text-gray-500">{item.describe[global.language]}</div>
+                <div className="pl-4 flex-1 min-w-0">
+                  <div className="font-bold md:text-lg text-base pb-2 text-text-100 group-hover:text-primary-100 transition-colors duration-300 truncate">
+                    {item.name[global.language]}
+                  </div>
+                  <div className="text-sm text-text-200 group-hover:text-text-100 transition-colors duration-300 line-clamp-2">
+                    {item.describe[global.language]}
+                  </div>
+                </div>
+                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="w-2 h-2 bg-primary-200 rounded-full"></div>
                 </div>
               </div>
             ))
@@ -222,90 +235,307 @@ export default function Home() {
   }
 
   return (
-    <div className="md:py-10 lg:py-14 py-3 min-h-screen relative" style={{ backgroundColor: '#fafafa' }}>
-      <div className='absolute right-5 top-2'><LanguagePopover /></div>
-      <div className="main-container h-full flex flex-col mx-auto my-0 mb-9" >
-        <Header language={global.language} />
-        <div className="md:w-[80%] w-[90%] mx-auto my-0 flex transition-all">
-          <Input placeholder={INPUT_PLACEHOLDER[global.language]} onChange={onInputChange} />
+    <div className="min-h-screen relative housekeeping-theme pt-16 w-full overflow-x-hidden">
+      {/* 装饰性背景元素 */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary-300 to-primary-200 rounded-full opacity-20 blur-3xl"></div>
+        <div className="absolute top-1/3 -left-32 w-64 h-64 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full opacity-15 blur-3xl"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-to-br from-primary-300 to-primary-200 rounded-full opacity-10 blur-3xl"></div>
+        
+        {/* 家政服务相关的装饰图标 */}
+        <div className="absolute top-20 left-10 text-primary-300 opacity-20">
+          <svg className="w-16 h-16" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
         </div>
-        <div className="flex flex-wrap gap-3 mt-5 mb-2">
-          {/* Default Category  */}
-          {
-            [{ chinese: '全部', english: 'All', japanese: 'すべて' }, ...classify].map((item) => {
-              return (
-                <Button
-                  size='sm'
-                  key={item.english}
-                  style={{ border: '1px solid #e2e8f0' }}
-                  onClick={() => { setType(item.english) }}
-                  className={`bg-white text-black hover:bg-[#7f39ea] hover:text-white ${type === item.english && 'bg-[#7f39ea] text-white'} `}
-                >
-                  {item[global.language]}
-                </Button>
-              )
-            })
-          }
-          {/* Custom classification */}
-          {
-            global.classify.map((item) => {
-              return (
-                <Button
-                  size='sm'
-                  key={item.english}
-                  style={{ border: '1px solid #e2e8f0' }}
-                  onClick={() => { setType(item.english) }}
-                  className={`bg-white text-black hover:bg-[#7f39ea] hover:text-white ${type === item.english && 'bg-[#7f39ea] text-white'} `}
-                >
-                  {item[global.language]}
-                  {
-                    toolData.list[item.classify_key] ?
-                      onDelCustomTool(item) :
-                      <IoMdCloseCircleOutline className="text-lg ml-1 hover:text-red-600" onClick={(event) => {
-                        event.stopPropagation();
-                        onDelClassify(item)
-                      }} />
-                  }
-                </Button>
-              )
-            })
-          }
+        <div className="absolute top-1/2 right-20 text-primary-300 opacity-15">
+          <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
         </div>
-        <div className="flex gap-3 my-2">
-          <CustomToolForm />
-          <ToolClassify />
+        <div className="absolute bottom-20 left-1/4 text-primary-300 opacity-20">
+          <svg className="w-14 h-14" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
         </div>
-        {/* Recently used tools */}
-        <div>
-          {
-            recentlyUsedData.length && !search.query && type === 'All' ?
-              <>
-                <div className="font-bold my-3 text-sm md:text-base">{CARD_RECENTLY_USED[global.language]}</div>
-                {onRenderingToolCard(recentlyUsedData)}
-                <div className="md:mt-8 mt-5 md:mb-4 mb-2" style={{ borderBottom: '1px solid #dadada' }}></div>
-              </> : <></>
-          }
-        </div>
-        {/* Tool List */}
-        {
-          [...global.classify, ...classify].filter(f => type === 'All' ? f : f.english === type).map(item => (
-            <React.Fragment key={item.english}>
-              {
-                !search.query && toolData.list[item.english]?.length && <>
-                  <div className="font-bold my-3 text-sm md:text-base">{item[global.language]}</div>
-                  {onRenderingToolCard(toolData.list[item.english])}
-                </>
-              }
-              {
-                search.query && toolData.searchList[item.english]?.length && <>
-                  <div className="font-bold my-3 text-sm md:text-base">{item[global.language]}</div>
-                  {onRenderingToolCard(toolData.searchList[item.english])}
-                </>
-              }
-            </React.Fragment>
-          ))
-        }
       </div>
+      
+      {/* 主要内容区域 */}
+      <div className="relative z-10 min-h-screen">
+        {/* 左侧导航栏 */}
+        <div className={`hidden lg:flex w-80 bg-bg-100/80 backdrop-blur-sm border-r border-bg-300 flex-col transition-all duration-300 fixed left-0 top-16 h-[calc(100vh-4rem)] z-20 ${
+          sidebarVisible ? 'translate-x-0' : '-translate-x-full'
+        }`}>
+          {/* 分类导航标题 */}
+          <div className="p-6 border-b border-bg-300">
+            <h2 className="text-xl font-bold bg-gradient-to-r from-primary-100 to-primary-200 bg-clip-text text-transparent">
+              {HOME_CATEGORY_NAVIGATION[global.language]}
+            </h2>
+          </div>
+          
+          {/* 预设分类列表 */}
+          <div className="flex-1 overflow-y-auto p-3">
+            <div className="space-y-2">
+              {/* 全部分类 */}
+              <Button
+                variant={type === 'All' ? "default" : "ghost"}
+                onClick={() => { setType('All') }}
+                className={`w-full justify-start h-12 px-4 text-left transition-all duration-200 ${
+                  type === 'All' 
+                    ? 'bg-gradient-to-r from-primary-100 to-primary-200 hover:from-primary-200 hover:to-primary-100 text-white shadow-lg' 
+                    : 'hover:bg-primary-300/20 hover:text-primary-100 text-text-200'
+                }`}
+              >
+                <div className="flex items-center">
+                  <svg className="w-4 h-4 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  </svg>
+                  <span className="text-sm font-medium truncate">{HOME_ALL_CATEGORIES[global.language]}</span>
+                </div>
+              </Button>
+              
+              {/* 预设分类 */}
+              {classify.map((item) => {
+                // 为每个分类定义图标
+                const getCategoryIcon = (category: string) => {
+                  const iconMap: { [key: string]: string } = {
+                    'Writing': 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z',
+                    'Social Media': 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z',
+                    'Marketing': 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z',
+                    'Education': 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z',
+                    'Project Management': 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z',
+                    'Lifestyle': 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z',
+                    'Work Efficiency': 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'
+                  };
+                  return iconMap[category] || 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z';
+                };
+
+                return (
+                  <Button
+                    key={item.english}
+                    variant={type === item.english ? "default" : "ghost"}
+                    onClick={() => { setType(item.english) }}
+                    className={`w-full justify-start h-12 px-4 text-left transition-all duration-200 ${
+                      type === item.english 
+                        ? 'bg-gradient-to-r from-primary-100 to-primary-200 hover:from-primary-200 hover:to-primary-100 text-white shadow-lg' 
+                        : 'hover:bg-primary-300/20 hover:text-primary-100 text-text-200'
+                    }`}
+                  >
+                    <div className="flex items-center">
+                      <svg className="w-4 h-4 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                        <path d={getCategoryIcon(item.english)}/>
+                      </svg>
+                      <span className="text-sm font-medium truncate">{item[global.language]}</span>
+                    </div>
+                  </Button>
+                );
+              })}
+              
+              {/* 自定义分类 */}
+              {global.classify.map((item) => (
+                <Button
+                  key={item.english}
+                  variant={type === item.english ? "default" : "ghost"}
+                  onClick={() => { setType(item.english) }}
+                  className={`w-full justify-start h-12 px-4 text-left transition-all duration-200 group ${
+                    type === item.english 
+                      ? 'bg-gradient-to-r from-primary-100 to-primary-200 hover:from-primary-200 hover:to-primary-100 text-white shadow-lg' 
+                      : 'hover:bg-primary-300/20 hover:text-primary-100 text-text-200'
+                  }`}
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center">
+                      <svg className="w-4 h-4 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                      </svg>
+                      <span className="text-sm font-medium truncate">{item[global.language]}</span>
+                    </div>
+                    {toolData.list[item.classify_key] ? (
+                      onDelCustomTool(item)
+                    ) : (
+                      <IoMdCloseCircleOutline 
+                        className="text-lg hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100" 
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          onDelClassify(item)
+                        }} 
+                      />
+                    )}
+                  </div>
+                </Button>
+              ))}
+            </div>
+          </div>
+          
+          {/* 底部按钮区域 */}
+          <div className="p-3 border-t border-bg-300 space-y-2">
+            <CustomToolForm />
+            <ToolClassify />
+          </div>
+        </div>
+        
+        {/* 右侧内容区域 */}
+        <div className={`flex flex-col transition-all duration-300 ${
+          sidebarVisible ? 'lg:ml-80 ml-0' : 'ml-0'
+        } mobile-content`}>
+          {/* 顶部搜索区域 */}
+          <div className="p-4 sm:p-6 lg:p-8 border-b border-bg-300 bg-bg-100/60 backdrop-blur-sm w-full">
+            {/* 侧边栏切换按钮 */}
+            <div className={`absolute top-4 lg:block hidden transition-all duration-300 ${
+              sidebarVisible ? 'left-4' : 'left-4'
+            }`}>
+              <button
+                onClick={() => setSidebarVisible(!sidebarVisible)}
+                className="p-2 rounded-lg bg-bg-100/80 backdrop-blur-sm border border-bg-300 hover:bg-bg-200 transition-all duration-200 shadow-sm hover:shadow-md"
+                title={sidebarVisible ? HOME_SIDEBAR_HIDE[global.language] : HOME_SIDEBAR_SHOW[global.language]}
+              >
+                {sidebarVisible ? (
+                  <svg className="w-5 h-5 text-accent-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5 text-accent-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                )}
+              </button>
+            </div>
+            <div className={`mx-auto text-center transition-all duration-300 ${
+              sidebarVisible ? 'max-w-3xl' : 'max-w-7xl'
+            }`}>
+              {/* 主标题 */}
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-primary-100 to-primary-200 bg-clip-text text-transparent">
+                {HOME_TITLE[global.language]}
+              </h1>
+              
+              {/* 搜索框 */}
+              <div className="relative">
+                <Input 
+                  placeholder={HOME_SEARCH_PLACEHOLDER[global.language]} 
+                  onChange={onInputChange}
+                  className="w-full h-12 sm:h-14 lg:h-16 px-4 sm:px-6 pr-12 sm:pr-16 text-base sm:text-lg lg:text-xl border-2 sm:border-3 border-bg-300 rounded-xl sm:rounded-2xl focus:border-primary-100 focus:ring-4 sm:focus:ring-6 focus:ring-primary-300/20 transition-all duration-300 shadow-lg sm:shadow-xl hover:shadow-xl sm:hover:shadow-2xl bg-bg-100/95 backdrop-blur-sm focus:scale-105"
+                />
+                <div className="absolute right-6 top-1/2 transform -translate-y-1/2">
+                  <svg className="w-6 h-6 text-accent-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* 移动端分类选择器 */}
+          <div className="lg:hidden p-3 sm:p-4 border-b border-bg-300 bg-bg-100/60 backdrop-blur-sm w-full">
+            <div className="flex flex-wrap gap-2">
+              {/* Default Category  */}
+              {
+                [{ chinese: HOME_ALL_CATEGORIES.chinese, english: HOME_ALL_CATEGORIES.english, japanese: HOME_ALL_CATEGORIES.japanese }, ...classify].map((item) => {
+                  return (
+                    <Button
+                      size='sm'
+                      key={item.english}
+                      variant={type === item.english ? "default" : "outline"}
+                      onClick={() => { setType(item.english) }}
+                      className={`transition-all duration-200 ${
+                        type === item.english 
+                          ? 'bg-gradient-to-r from-primary-100 to-primary-200 hover:from-primary-200 hover:to-primary-100 text-white shadow-lg' 
+                          : 'bg-bg-100 hover:bg-primary-300/20 hover:border-primary-200 hover:text-primary-100 border-bg-300'
+                      }`}
+                    >
+                      {item[global.language]}
+                    </Button>
+                  )
+                })
+              }
+              {/* Custom classification */}
+              {
+                global.classify.map((item) => {
+                  return (
+                    <Button
+                      size='sm'
+                      key={item.english}
+                      variant={type === item.english ? "default" : "outline"}
+                      onClick={() => { setType(item.english) }}
+                      className={`transition-all duration-200 ${
+                        type === item.english 
+                          ? 'bg-gradient-to-r from-primary-100 to-primary-200 hover:from-primary-200 hover:to-primary-100 text-white shadow-lg' 
+                          : 'bg-bg-100 hover:bg-primary-300/20 hover:border-primary-200 hover:text-primary-100 border-bg-300'
+                      }`}
+                    >
+                      {item[global.language]}
+                      {
+                        toolData.list[item.classify_key] ?
+                          onDelCustomTool(item) :
+                          <IoMdCloseCircleOutline className="text-lg ml-1 hover:text-red-600 transition-colors" onClick={(event) => {
+                            event.stopPropagation();
+                            onDelClassify(item)
+                          }} />
+                      }
+                    </Button>
+                  )
+                })
+              }
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-3">
+              <CustomToolForm />
+              <ToolClassify />
+            </div>
+          </div>
+          
+          {/* 内容滚动区域 */}
+          <div className={`transition-all duration-300 pb-8 ${
+            sidebarVisible ? 'p-4 sm:p-6' : 'px-4 sm:px-6 lg:px-12 py-4 sm:py-6 lg:py-8'
+          }`}>
+            {/* Recently used tools */}
+            <div>
+              {
+                recentlyUsedData.length && !search.query && type === 'All' ?
+                  <>
+                    <div className="flex items-center my-6">
+                      <div className="h-8 w-1 bg-gradient-to-b from-primary-100 to-primary-200 rounded-full mr-3"></div>
+                      <h2 className="font-bold text-lg md:text-xl bg-gradient-to-r from-primary-100 to-primary-200 bg-clip-text text-transparent">
+                        {CARD_RECENTLY_USED[global.language]}
+                      </h2>
+                    </div>
+                    {onRenderingToolCard(recentlyUsedData)}
+                    <div className="md:mt-8 mt-6 md:mb-6 mb-4 h-px bg-gradient-to-r from-transparent via-bg-300 to-transparent"></div>
+                  </> : <></>
+              }
+            </div>
+            
+            {/* Tool List */}
+            {
+              [...global.classify, ...classify].filter(f => type === 'All' ? f : f.english === type).map(item => (
+                <React.Fragment key={item.english}>
+                  {
+                    !search.query && toolData.list[item.english]?.length && <>
+                      <div className="flex items-center my-6">
+                        <div className="h-8 w-1 bg-gradient-to-b from-primary-100 to-primary-200 rounded-full mr-3"></div>
+                        <h2 className="font-bold text-lg md:text-xl bg-gradient-to-r from-primary-100 to-primary-200 bg-clip-text text-transparent">
+                          {item[global.language]}
+                        </h2>
+                      </div>
+                      {onRenderingToolCard(toolData.list[item.english])}
+                    </>
+                  }
+                  {
+                    search.query && toolData.searchList[item.english]?.length && <>
+                      <div className="flex items-center my-6">
+                        <div className="h-8 w-1 bg-gradient-to-b from-primary-100 to-primary-200 rounded-full mr-3"></div>
+                        <h2 className="font-bold text-lg md:text-xl bg-gradient-to-r from-primary-100 to-primary-200 bg-clip-text text-transparent">
+                          {item[global.language]}
+                        </h2>
+                      </div>
+                      {onRenderingToolCard(toolData.searchList[item.english])}
+                    </>
+                  }
+                </React.Fragment>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+      
       {showBrand && <PoweredBy language={global.language} />}
     </div>
   );

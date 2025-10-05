@@ -4,9 +4,10 @@ import Papa from 'papaparse';
 import Image from 'next/image';
 import { Loader2 } from 'lucide-react';
 import image from '@/app/public/404.png';
-import Header from "@/components/Header";
 import ReactMarkdown from 'react-markdown';
 import { useEffect, useState } from "react";
+import { Document, Packer, Paragraph, TextRun, HeadingLevel } from 'docx';
+import { saveAs } from 'file-saver';
 import ToolFrom from '@/components/ToolFrom';
 import PoweredBy from '@/components/PoweredBy';
 import { Button } from "@/components/ui/button";
@@ -16,14 +17,13 @@ import { toast } from "@/components/ui/use-toast";
 import { ErrMessage } from '@/components/ErrMessage';
 import { ITool, toolList } from "@/constant/tool_list";
 import { EditCustomToolForm } from '../EditCustomToolForm';
-import { LanguagePopover } from '@/components/LanguagePopover';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { selectGlobal, setGlobalState } from '@/app/store/globalSlice';
 import { getLanguage, getLocalStorage, setLocalStorage } from '@/lib/utils';
 import { addData, deleteData, deleteDatas, getDataById } from '@/app/api/indexedDB';
 import { deleteCustomToolData, getAllCustomToolData } from '@/app/api/customTool/indexedDB';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
-import { COPY_ERROR, COPY_SUCCESSFUL, DELETE_RECORD_CANCEL, DELETE_RECORD_CONTINUE, DELETE_RECORD_MESSAGE, HEADER_TITLE, LANGUAGE_LIBRARY, SUBMIT_BUTTON, SUCCESSFULLY_GENERATED } from "@/constant/language";
+import { COPY_ERROR, COPY_SUCCESSFUL, DELETE_RECORD_CANCEL, DELETE_RECORD_CONTINUE, DELETE_RECORD_MESSAGE, HEADER_TITLE, LANGUAGE_LIBRARY, SUBMIT_BUTTON, SUCCESSFULLY_GENERATED, BREADCRUMB } from "@/constant/language";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 interface IGenerateRecords { id: number; toolId: string | number; output: string; createdAt: string; }
@@ -193,7 +193,16 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
       }
     }
     if (dataSource) {
-      return (<ToolFrom language={global.language} dataSource={dataSource} onOk={onOk} />)
+      return (
+        <ToolFrom 
+          language={global.language} 
+          dataSource={dataSource} 
+          onOk={onOk}
+          generateRecords={generateRecords}
+          onExportToWord={onExportToWord}
+          load={load}
+        />
+      )
     } else {
       <></>
     }
@@ -290,6 +299,129 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
     }
   }
 
+  const onClearAllRecords = async () => {
+    try {
+      if (generateRecords.length > 0) {
+        await deleteDatas(generateRecords.map(item => item.id));
+        setGenerateRecords([]);
+        onToast(LANGUAGE_LIBRARY[global.language]['删除成功'])
+      }
+    } catch (error) {
+      console.log('Failed to clear all records', error);
+      onToast('清空记录失败，请重试');
+    }
+  }
+
+  const onExportToWord = async (records: IGenerateRecords[]) => {
+    try {
+      const doc = new Document({
+        sections: [{
+          properties: {},
+          children: [
+            new Paragraph({
+              text: "AI 文案助手 - 生成记录",
+              heading: HeadingLevel.TITLE,
+            }),
+            new Paragraph({
+              text: `导出时间: ${dayjs().format('YYYY-MM-DD HH:mm:ss')}`,
+              heading: HeadingLevel.HEADING_2,
+            }),
+            new Paragraph({
+              text: `共 ${records.length} 条记录`,
+              heading: HeadingLevel.HEADING_3,
+            }),
+            new Paragraph({ text: "" }), // 空行
+            
+            ...records.map((record, index) => [
+              new Paragraph({
+                text: `记录 ${index + 1}`,
+                heading: HeadingLevel.HEADING_3,
+              }),
+              new Paragraph({
+                text: `生成时间: ${dayjs(record.createdAt).format('YYYY-MM-DD HH:mm:ss')}`,
+              }),
+              new Paragraph({
+                text: "内容:",
+                heading: HeadingLevel.HEADING_4,
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: record.output,
+                    size: 24, // 12pt
+                  }),
+                ],
+              }),
+              new Paragraph({ text: "" }), // 空行
+              new Paragraph({
+                text: "────────────────────────────────────",
+              }),
+              new Paragraph({ text: "" }), // 空行
+            ]).flat(),
+          ],
+        }],
+      });
+
+      const blob = await Packer.toBlob(doc);
+      const fileName = `AI文案助手生成记录_${dayjs().format('YYYY-MM-DD_HH-mm-ss')}.docx`;
+      saveAs(blob, fileName);
+      
+      onToast(`成功导出 ${records.length} 条记录到 ${fileName}`);
+    } catch (error) {
+      console.error('导出失败:', error);
+      onToast('导出失败，请重试');
+    }
+  }
+
+  // 面包屑导航组件
+  const renderBreadcrumb = () => {
+    if (!dataSource) return null;
+
+    const breadcrumbItems = [
+      {
+        label: BREADCRUMB.home[global.language],
+        href: '/',
+        clickable: true
+      },
+      {
+        label: dataSource.classify?.[global.language] || BREADCRUMB.category[global.language],
+        href: `/?category=${dataSource.classify?.english}`,
+        clickable: true
+      },
+      {
+        label: dataSource.name[global.language],
+        href: '#',
+        clickable: false
+      }
+    ];
+
+    return (
+      <nav className="flex items-center space-x-1 text-sm mb-4">
+        {breadcrumbItems.map((item, index) => (
+          <div key={index} className="flex items-center">
+            {index > 0 && (
+              <svg className="w-4 h-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            )}
+            {item.clickable ? (
+              <button
+                onClick={() => router.push(item.href)}
+                className="text-text-200 hover:text-primary-100 hover:bg-primary-300/20 px-2 py-1 rounded-md transition-all duration-200 font-medium"
+              >
+                {item.label}
+              </button>
+            ) : (
+              <span className="text-text-100 font-semibold px-2 py-1 bg-primary-300/20 rounded-md">
+                {item.label}
+              </span>
+            )}
+          </div>
+        ))}
+      </nav>
+    );
+  };
+
   const onRenderingResult = (item: any, key: number) => {
     const onRenderingTable = (csvData: string) => {
       const rows: any = Papa.parse(csvData, {
@@ -347,21 +479,27 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className='md:py-5 py-3 min-h-screen relative' style={{ backgroundColor: '#fafafa' }}>
-      <div className='absolute right-5 top-2'><LanguagePopover /></div>
+    <div className='md:py-5 py-3 min-h-screen relative pt-16' style={{ backgroundColor: 'var(--bg-100)' }}>
       <>
         {
           dataSource?.id ?
             <div className="main-container flex-col mx-auto mb-9" >
-              <Header language={global.language} />
-              <div className='bg-white relative' style={{ border: '1px solid #e2e8f0', borderRadius: 10, }}>
-                <div className="flex p-3 mb-3" style={{ borderBottom: '1px solid #e2e8f0' }}>
+              <div className='bg-bg-100 relative' style={{ border: '1px solid var(--bg-300)', borderRadius: 10, }}>
+                {/* 面包屑导航 - 移到工具介绍板块内部 */}
+                <div className="px-4 pt-4 pb-2">
+                  {renderBreadcrumb()}
+                </div>
+                
+                {/* 分隔线 */}
+                <div className="mx-4 border-t border-bg-300"></div>
+                
+                <div className="flex p-3 mb-3" style={{ borderBottom: '1px solid var(--bg-300)' }}>
                   <div style={{ minWidth: 55, maxWidth: 55, height: 55, padding: 5 }} >
                     <img className="w-full object-cover rounded-md" src={dataSource?.url} />
                   </div>
                   <div className="pl-3 text-left">
-                    <div className="font-bold pb-2 text-black">{dataSource?.name[global.language]}</div>
-                    <div className="text-xs text-gray-500">{dataSource?.describe[global.language]}</div>
+                    <div className="font-bold pb-2 text-text-100">{dataSource?.name[global.language]}</div>
+                    <div className="text-xs text-text-200">{dataSource?.describe[global.language]}</div>
                   </div>
                 </div>
                 {/* Form Tools */}
@@ -381,43 +519,107 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
               {/* Historical records */}
               <div className="mt-3">
                 {
-                  generateRecords?.length ? generateRecords.map((item) => (
-                    <div key={item?.id} className="p-3 mb-3 bg-white" style={{ border: '1px solid #e2e8f0', borderRadius: 10, color: '#000' }}>
-                      <div className="text-left">
-                        {onRenderingResult(item, item?.id)}
-                      </div>
-                      <div className="flex items-end justify-between mt-2">
-                        <div style={{ color: '#696969' }}>{dayjs(item.createdAt).format('MM-DD HH:mm')}</div>
-                        <div>
-                          <Button variant="outline" size="icon" className="mr-3" disabled={load} onClick={() => onHandleCopyResult(item?.output)}>
-                            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M1 9.50006C1 10.3285 1.67157 11.0001 2.5 11.0001H4L4 10.0001H2.5C2.22386 10.0001 2 9.7762 2 9.50006L2 2.50006C2 2.22392 2.22386 2.00006 2.5 2.00006L9.5 2.00006C9.77614 2.00006 10 2.22392 10 2.50006V4.00002H5.5C4.67158 4.00002 4 4.67159 4 5.50002V12.5C4 13.3284 4.67158 14 5.5 14H12.5C13.3284 14 14 13.3284 14 12.5V5.50002C14 4.67159 13.3284 4.00002 12.5 4.00002H11V2.50006C11 1.67163 10.3284 1.00006 9.5 1.00006H2.5C1.67157 1.00006 1 1.67163 1 2.50006V9.50006ZM5 5.50002C5 5.22388 5.22386 5.00002 5.5 5.00002H12.5C12.7761 5.00002 13 5.22388 13 5.50002V12.5C13 12.7762 12.7761 13 12.5 13H5.5C5.22386 13 5 12.7762 5 12.5V5.50002Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path>
+                  generateRecords?.length ? (
+                    <>
+                      {/* 生成记录标题 */}
+                      <div className="mb-4 flex items-center justify-between">
+                        <h3 className="text-lg font-semibold text-text-100">生成记录</h3>
+                        <div className="flex items-center gap-3">
+                          <Button 
+                            disabled={load} 
+                            type="button" 
+                            variant="outline" 
+                            onClick={() => onExportToWord(generateRecords)}
+                            className="bg-primary-300/20 hover:bg-primary-300/40 border-primary-200 text-primary-100 hover:text-primary-100 font-medium shadow-sm"
+                          >
+                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
+                            导出 {generateRecords.length} 条
                           </Button>
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
-                              <Button variant="outline" size="icon" disabled={load}>
-                                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M5.5 1C5.22386 1 5 1.22386 5 1.5C5 1.77614 5.22386 2 5.5 2H9.5C9.77614 2 10 1.77614 10 1.5C10 1.22386 9.77614 1 9.5 1H5.5ZM3 3.5C3 3.22386 3.22386 3 3.5 3H5H10H11.5C11.7761 3 12 3.22386 12 3.5C12 3.77614 11.7761 4 11.5 4H11V12C11 12.5523 10.5523 13 10 13H5C4.44772 13 4 12.5523 4 12V4L3.5 4C3.22386 4 3 3.77614 3 3.5ZM5 4H10V12H5V4Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path>
-                                </svg>
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className="bg-red-50 hover:bg-red-100 border-red-200 text-red-600 hover:text-red-700"
+                                disabled={load}
+                              >
+                                清空
                               </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                               <AlertDialogHeader>
-                                <AlertDialogTitle>{DELETE_RECORD_MESSAGE[global.language]}</AlertDialogTitle>
+                                <AlertDialogTitle>确认清空</AlertDialogTitle>
                                 <AlertDialogDescription>
+                                  确定要清空所有生成记录吗？此操作不可撤销。
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
-                                <AlertDialogCancel>{DELETE_RECORD_CANCEL[global.language]}</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => { ondeleteGenerateRecords(item.id) }}>{DELETE_RECORD_CONTINUE[global.language]}</AlertDialogAction>
+                                <AlertDialogCancel>取消</AlertDialogCancel>
+                                <AlertDialogAction 
+                                  onClick={onClearAllRecords}
+                                  className="bg-red-600 hover:bg-red-700"
+                                >
+                                  确认清空
+                                </AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>
                           </AlertDialog>
                         </div>
                       </div>
-                    </div>
-                  )) : <></>
+                      
+                      {/* 生成内容卡片列表 */}
+                      {generateRecords.map((item) => (
+                        <div key={item?.id} className="p-4 mb-4 bg-gradient-to-br from-accent-100 to-accent-200 text-white rounded-xl shadow-lg border border-bg-300 hover:shadow-xl transition-all duration-300">
+                          <div className="text-left">
+                            {onRenderingResult(item, item?.id)}
+                          </div>
+                          <div className="flex items-end justify-between mt-4 pt-3 border-t border-bg-300">
+                            <div className="text-accent-200 text-sm">{dayjs(item.createdAt).format('MM-DD HH:mm')}</div>
+                            <div className="flex gap-2">
+                              <Button 
+                                variant="outline" 
+                                size="icon" 
+                                className="bg-accent-100 hover:bg-accent-200 border-accent-200 text-white" 
+                                disabled={load} 
+                                onClick={() => onHandleCopyResult(item?.output)}
+                              >
+                                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M1 9.50006C1 10.3285 1.67157 11.0001 2.5 11.0001H4L4 10.0001H2.5C2.22386 10.0001 2 9.7762 2 9.50006L2 2.50006C2 2.22392 2.22386 2.00006 2.5 2.00006L9.5 2.00006C9.77614 2.00006 10 2.22392 10 2.50006V4.00002H5.5C4.67158 4.00002 4 4.67159 4 5.50002V12.5C4 13.3284 4.67158 14 5.5 14H12.5C13.3284 14 14 13.3284 14 12.5V5.50002C14 4.67159 13.3284 4.00002 12.5 4.00002H11V2.50006C11 1.67163 10.3284 1.00006 9.5 1.00006H2.5C1.67157 1.00006 1 1.67163 1 2.50006V9.50006ZM5 5.50002C5 5.22388 5.22386 5.00002 5.5 5.00002H12.5C12.7761 5.00002 13 5.22388 13 5.50002V12.5C13 12.7762 12.7761 13 12.5 13H5.5C5.22386 13 5 12.7762 5 12.5V5.50002Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path>
+                                </svg>
+                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button 
+                                    variant="outline" 
+                                    size="icon" 
+                                    className="bg-red-600 hover:bg-red-700 border-red-600 text-white" 
+                                    disabled={load}
+                                  >
+                                    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                      <path d="M5.5 1C5.22386 1 5 1.22386 5 1.5C5 1.77614 5.22386 2 5.5 2H9.5C9.77614 2 10 1.77614 10 1.5C10 1.22386 9.77614 1 9.5 1H5.5ZM3 3.5C3 3.22386 3.22386 3 3.5 3H5H10H11.5C11.7761 3 12 3.22386 12 3.5C12 3.77614 11.7761 4 11.5 4H11V12C11 12.5523 10.5523 13 10 13H5C4.44772 13 4 12.5523 4 12V4L3.5 4C3.22386 4 3 3.77614 3 3.5ZM5 4H10V12H5V4Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path>
+                                    </svg>
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>{DELETE_RECORD_MESSAGE[global.language]}</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>{DELETE_RECORD_CANCEL[global.language]}</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => { ondeleteGenerateRecords(item.id) }}>{DELETE_RECORD_CONTINUE[global.language]}</AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </>
+                  ) : <></>
                 }
               </div>
             </div>
