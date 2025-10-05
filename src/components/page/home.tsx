@@ -379,7 +379,40 @@ export default function Home() {
           sidebarVisible ? 'lg:ml-80 ml-0' : 'ml-0'
         } mobile-content`}>
           {/* 顶部搜索区域 */}
-          <div className="p-4 sm:p-6 lg:p-8 border-b border-bg-300 bg-bg-100/60 backdrop-blur-sm w-full">
+          <div className="relative p-4 sm:p-6 lg:p-8 border-b border-bg-300 bg-bg-100/60 backdrop-blur-sm w-full overflow-hidden">
+            {/* 创作者主题背景装饰 */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              {/* 创意画笔装饰 */}
+              <div className="absolute top-4 right-8 text-primary-300/20 creator-float">
+                <svg className="w-16 h-16 sm:w-20 sm:h-20" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                </svg>
+              </div>
+              
+              {/* 创意灯泡装饰 */}
+              <div className="absolute top-8 left-8 text-primary-200/15 creator-pulse">
+                <svg className="w-12 h-12 sm:w-16 sm:h-16" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/>
+                </svg>
+              </div>
+              
+              {/* 创意星星装饰 */}
+              <div className="absolute bottom-4 right-16 text-primary-300/10 creator-sparkle">
+                <svg className="w-8 h-8 sm:w-10 sm:h-10" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              </div>
+              
+              {/* 创意音符装饰 */}
+              <div className="absolute bottom-8 left-16 text-primary-200/20 creator-float">
+                <svg className="w-6 h-6 sm:w-8 sm:h-8" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                </svg>
+              </div>
+              
+              {/* 渐变背景层 */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary-300/5 via-transparent to-primary-200/10"></div>
+            </div>
             {/* 侧边栏切换按钮 */}
             <div className={`absolute top-4 lg:block hidden transition-all duration-300 ${
               sidebarVisible ? 'left-4' : 'left-4'
@@ -410,14 +443,32 @@ export default function Home() {
               
               {/* 搜索框 */}
               <div className="relative">
+                {/* 搜索框装饰背景 */}
+                <div className="absolute inset-0 bg-gradient-to-r from-primary-300/10 via-primary-200/5 to-primary-300/10 rounded-xl sm:rounded-2xl blur-sm"></div>
+                
                 <Input 
                   placeholder={HOME_SEARCH_PLACEHOLDER[global.language]} 
                   onChange={onInputChange}
-                  className="w-full h-12 sm:h-14 lg:h-16 px-4 sm:px-6 pr-12 sm:pr-16 text-base sm:text-lg lg:text-xl border-2 sm:border-3 border-bg-300 rounded-xl sm:rounded-2xl focus:border-primary-100 focus:ring-4 sm:focus:ring-6 focus:ring-primary-300/20 transition-all duration-300 shadow-lg sm:shadow-xl hover:shadow-xl sm:hover:shadow-2xl bg-bg-100/95 backdrop-blur-sm focus:scale-105"
+                  className="relative w-full h-12 sm:h-14 lg:h-16 px-4 sm:px-6 pr-12 sm:pr-16 text-base sm:text-lg lg:text-xl border-2 sm:border-3 border-bg-300 rounded-xl sm:rounded-2xl focus:border-primary-100 focus:ring-4 sm:focus:ring-6 focus:ring-primary-300/20 transition-all duration-300 shadow-lg sm:shadow-xl hover:shadow-xl sm:hover:shadow-2xl bg-bg-100/95 backdrop-blur-sm focus:scale-105"
                 />
+                
+                {/* 搜索图标 */}
                 <div className="absolute right-6 top-1/2 transform -translate-y-1/2">
                   <svg className="w-6 h-6 text-accent-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                
+                {/* 创作者主题装饰元素 */}
+                <div className="absolute -top-2 -left-2 text-primary-300/30 creator-sparkle">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  </svg>
+                </div>
+                
+                <div className="absolute -bottom-1 -right-1 text-primary-200/40 creator-pulse">
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                   </svg>
                 </div>
               </div>
