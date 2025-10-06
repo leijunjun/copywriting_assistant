@@ -138,7 +138,7 @@ export async function GET(request: NextRequest) {
       openid: result.user?.wechat_openid,
     });
 
-    // Redirect to success page or return JSON
+    // Return success HTML page or JSON
     const acceptHeader = request.headers.get('accept');
     if (acceptHeader?.includes('application/json')) {
       return NextResponse.json({
@@ -147,8 +147,113 @@ export async function GET(request: NextRequest) {
         session: result.session,
       });
     } else {
-      // Redirect to success page
-      return NextResponse.redirect(new URL('/auth/success', request.url));
+      // Return success HTML page
+      const html = `
+        <!DOCTYPE html>
+        <html lang="zh-CN">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>登录成功</title>
+          <style>
+            body {
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+              margin: 0;
+              padding: 0;
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              min-height: 100vh;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+            .container {
+              background: white;
+              border-radius: 12px;
+              padding: 2rem;
+              box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+              text-align: center;
+              max-width: 400px;
+              width: 90%;
+            }
+            .success-icon {
+              width: 64px;
+              height: 64px;
+              background: #10b981;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin: 0 auto 1rem;
+              color: white;
+              font-size: 24px;
+            }
+            h1 {
+              color: #1f2937;
+              margin: 0 0 0.5rem 0;
+              font-size: 1.5rem;
+            }
+            p {
+              color: #6b7280;
+              margin: 0 0 1.5rem 0;
+            }
+            .loading {
+              display: inline-block;
+              width: 20px;
+              height: 20px;
+              border: 2px solid #e5e7eb;
+              border-radius: 50%;
+              border-top-color: #3b82f6;
+              animation: spin 1s ease-in-out infinite;
+            }
+            @keyframes spin {
+              to { transform: rotate(360deg); }
+            }
+            .countdown {
+              color: #6b7280;
+              font-size: 0.875rem;
+              margin-top: 1rem;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="success-icon">✓</div>
+            <h1>登录成功！</h1>
+            <p>欢迎使用我们的服务</p>
+            <div class="loading"></div>
+            <div class="countdown">正在为您跳转...</div>
+          </div>
+          <script>
+            // Close the popup window if opened in popup
+            if (window.opener) {
+              // Send success message to parent window
+              window.opener.postMessage({
+                type: 'WECHAT_LOGIN_SUCCESS',
+                success: true,
+                user: ${JSON.stringify(result.user)},
+                session: ${JSON.stringify(result.session)}
+              }, '*');
+              
+              // Close the popup
+              setTimeout(() => {
+                window.close();
+              }, 2000);
+            } else {
+              // Redirect to home page if not in popup
+              setTimeout(() => {
+                window.location.href = '/';
+              }, 3000);
+            }
+          </script>
+        </body>
+        </html>
+      `;
+      
+      return new NextResponse(html, {
+        headers: {
+          'Content-Type': 'text/html; charset=utf-8',
+        },
+      });
     }
 
   } catch (error) {

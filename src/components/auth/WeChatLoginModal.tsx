@@ -49,6 +49,22 @@ export function WeChatLoginModal({ isOpen, onClose, onSuccess, className }: WeCh
     }
   }, [qrCodeData, isOpen]);
 
+  // Listen for messages from WeChat callback
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data.type === 'WECHAT_LOGIN_SUCCESS') {
+        console.log('WeChat login success message received:', event.data);
+        if (event.data.success && event.data.user && event.data.session) {
+          onSuccess(event.data.user, event.data.session);
+          onClose();
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [onSuccess, onClose]);
+
   const generateQRCode = async () => {
     try {
       setLoading(true);
