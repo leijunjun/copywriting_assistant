@@ -1,10 +1,19 @@
 "use client";
 
 import { Provider } from "react-redux";
+import { NextIntlClientProvider } from 'next-intl';
 import store from "../store";
 import { useEffect } from "react";
 
-const ClientProvider = ({ children }: { children: React.ReactNode }) => {
+const ClientProvider = ({ 
+  children, 
+  locale, 
+  messages 
+}: { 
+  children: React.ReactNode;
+  locale: string;
+  messages: any;
+}) => {
 
   useEffect(() => {
     const showBrand = process.env.NEXT_PUBLIC_SHOW_BRAND === "true";
@@ -17,7 +26,11 @@ const ClientProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
-  return <Provider store={store}>{children}</Provider>;
+  return (
+    <NextIntlClientProvider locale={locale} messages={messages}>
+      <Provider store={store}>{children}</Provider>
+    </NextIntlClientProvider>
+  );
 };
 
 export default ClientProvider;

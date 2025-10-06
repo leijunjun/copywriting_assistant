@@ -132,32 +132,47 @@ export default function Home() {
             : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
         }`}>
           {
-            data.map(item => (
-              <div
-                key={item.id}
-                onClick={() => router.push(`/${item.title}`)}
-                className="group flex items-center bg-bg-100 cursor-pointer p-3 sm:p-4 h-24 sm:h-28 md:h-32 hover:shadow-xl hover:shadow-primary-300/20 transition-all duration-300 relative rounded-xl border border-bg-300 hover:border-primary-200 hover:-translate-y-1 w-full"
-                style={{ 
-                  background: 'linear-gradient(135deg, var(--bg-100) 0%, var(--bg-200) 100%)',
-                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)'
-                }}
-              >
-                <div className="md:min-w-20 md:max-w-20 md:h-20 min-w-16 max-w-16 h-16 p-2 bg-gradient-to-br from-primary-300/20 to-primary-200/20 rounded-lg group-hover:from-primary-300/40 group-hover:to-primary-200/40 transition-all duration-300">
-                  <img className="w-full h-full object-cover rounded-md" src={item.url} />
-                </div>
-                <div className="pl-4 flex-1 min-w-0">
-                  <div className="font-bold md:text-lg text-base pb-2 text-text-100 group-hover:text-primary-100 transition-colors duration-300 truncate">
-                    {item.name[global.language]}
+            data.map(item => {
+              // 为抖音工具添加特殊样式
+              const isTikTok = item.title === 'tiktok-post-generation';
+              
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => router.push(`/${item.title}`)}
+                  className={`group flex items-center cursor-pointer p-3 sm:p-4 h-24 sm:h-28 md:h-32 hover:shadow-xl transition-all duration-300 relative rounded-xl border hover:-translate-y-1 w-full ${
+                    isTikTok 
+                      ? 'bg-bg-100 border-pink-300/30 hover:border-pink-400/50 hover:shadow-pink-300/20' 
+                      : 'bg-bg-100 border-bg-300 hover:border-primary-200 hover:shadow-primary-300/20'
+                  }`}
+                  style={{ 
+                    background: 'linear-gradient(135deg, var(--bg-100) 0%, var(--bg-200) 100%)',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)'
+                  }}
+                >
+                  <div className={`md:min-w-20 md:max-w-20 md:h-20 min-w-16 max-w-16 h-16 p-2 rounded-lg transition-all duration-300 ${
+                    isTikTok 
+                      ? 'bg-gradient-to-br from-pink-500/20 to-cyan-500/20 group-hover:from-pink-500/40 group-hover:to-cyan-500/40' 
+                      : 'bg-gradient-to-br from-primary-300/20 to-primary-200/20 group-hover:from-primary-300/40 group-hover:to-primary-200/40'
+                  }`}>
+                    <img className="w-full h-full object-cover rounded-md" src={item.url} />
                   </div>
-                  <div className="text-sm text-text-200 group-hover:text-text-100 transition-colors duration-300 line-clamp-2">
-                    {item.describe[global.language]}
+                  <div className="pl-4 flex-1 min-w-0">
+                    <div className="font-bold md:text-lg text-base pb-2 text-text-100 group-hover:text-primary-100 transition-colors duration-300 truncate">
+                      {item.name[global.language]}
+                    </div>
+                    <div className="text-sm text-text-200 group-hover:text-text-100 transition-colors duration-300 line-clamp-2">
+                      {item.describe[global.language]}
+                    </div>
+                  </div>
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className={`w-2 h-2 rounded-full ${
+                      isTikTok ? 'bg-pink-400' : 'bg-primary-200'
+                    }`}></div>
                   </div>
                 </div>
-                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="w-2 h-2 bg-primary-200 rounded-full"></div>
-                </div>
-              </div>
-            ))
+              );
+            })
           }
         </div>
       </div>

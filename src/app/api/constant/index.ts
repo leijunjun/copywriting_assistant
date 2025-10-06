@@ -329,6 +329,23 @@ ${params.content}
         ]
     },
 
+    'TikTok post generation': (params: Pick<IToolParameter, 'content' | 'language' | 'tone'>) => {
+        return [
+            {
+                role: 'user',
+                content: `Generate a 抖音图文 platform style post in your own words based on the requirements.
+Language: ${params.language}
+Format: Plain text without explanations and notes
+Tone: ${params.tone}
+
+Input draft:
+
+${params.content}
+`
+            }
+        ]
+    },
+
     'Threads post generation': (params: Pick<IToolParameter, 'content' | 'language' | 'tone'>) => {
         return [
             {

@@ -2,19 +2,21 @@ import { Inter } from "next/font/google";
 import "../globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import dynamic from 'next/dynamic';
+import { getMessages } from 'next-intl/server';
 
 const inter = Inter({ subsets: ["latin"] });
 
 const ClientProvider = dynamic(() => import('./ClientProvider'), { ssr: false });
 const Header = dynamic(() => import('@/components/Header'), { ssr: false });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
   params: { locale },
 }: Readonly<{
   children: React.ReactNode;
   params: { locale: string };
 }>) {
+  const messages = await getMessages();
   
   return (
     <html lang={locale}>
@@ -26,7 +28,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
       <body className={inter.className}>
-        <ClientProvider>
+        <ClientProvider locale={locale} messages={messages}>
           <Header />
           <main className="min-h-screen">
             {children}

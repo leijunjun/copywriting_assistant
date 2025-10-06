@@ -1,172 +1,215 @@
-"use client";
-import { useAppSelector } from "@/app/store/hooks";
-import { selectGlobal } from "@/app/store/globalSlice";
-import { NAVIGATION } from "@/constant/language";
-import { User, Coins, Settings, History, HelpCircle } from "lucide-react";
+/**
+ * User Profile Page
+ * 
+ * This page displays the user's profile information and credit balance.
+ */
+
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { UserProfile } from '@/components/auth/UserProfile';
+import { CreditBalance } from '@/components/credits/CreditBalance';
+import { LowCreditWarning } from '@/components/credits/LowCreditWarning';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { ErrorMessage } from '@/components/ui/error-message';
+import { logger } from '@/lib/utils/logger';
+
+interface UserData {
+  id: string;
+  wechat_openid: string;
+  wechat_unionid?: string;
+  nickname: string;
+  avatar_url: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface CreditData {
+  balance: number;
+  updated_at: string;
+}
 
 export default function ProfilePage() {
-  const global = useAppSelector(selectGlobal);
-  
-  // 模拟用户数据
-  const userData = {
-    name: "用户",
-    email: "user@example.com",
-    points: 1250,
-    joinDate: "2024-01-01",
-    totalServices: 15
+  const t = useTranslations('Common');
+  const router = useRouter();
+  const [user, setUser] = useState<UserData | null>(null);
+  const [credits, setCredits] = useState<CreditData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await fetch('/api/user/profile');
+      const data = await response.json();
+
+      if (!data.success) {
+        if (response.status === 401) {
+          // User not authenticated, redirect to login
+          router.push('/auth/login');
+          return;
+        }
+        throw new Error(data.error || 'Failed to fetch user profile');
+      }
+
+      setUser(data.user);
+      setCredits(data.credits);
+
+      logger.api('User profile fetched successfully', {
+        userId: data.user.id,
+        balance: data.credits.balance,
+      });
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch user profile';
+      setError(errorMessage);
+      logger.error('Failed to fetch user profile', err, 'API');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-16 pt-32">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {NAVIGATION.profile[global.language]}
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('/api/auth/logout', {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        // Clear local storage
+        localStorage.removeItem('user');
+        localStorage.removeItem('session');
+        
+        // Redirect to login page
+        router.push('/auth/login');
+        
+        logger.auth('User logged out successfully');
+      }
+    } catch (err) {
+      logger.error('Failed to logout', err, 'API');
+    }
+  };
+
+  const handleRecharge = () => {
+    router.push('/credits');
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingSpinner size="lg" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="max-w-md w-full">
+          <ErrorMessage message={error} />
+          <Button onClick={fetchUserProfile} variant="outline" className="mt-4">
+            {t('retry')}
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user || !credits) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            {t('profileNotFound')}
           </h1>
-          <p className="text-xl text-gray-600">
-            {global.language === 'chinese' 
-              ? '管理您的账户和个人信息' 
-              : global.language === 'english'
-              ? 'Manage your account and personal information'
-              : 'アカウントと個人情報を管理'
-            }
+          <Button onClick={() => router.push('/auth/login')}>
+            {t('login')}
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-4xl mx-auto px-4 space-y-6">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            {t('profile')}
+          </h1>
+          <p className="text-gray-600">
+            {t('profileDescription')}
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* 用户信息卡片 */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <div className="text-center">
-                <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <User className="w-10 h-10 text-purple-600" />
-                </div>
-                <h2 className="text-xl font-bold text-gray-900 mb-2">{userData.name}</h2>
-                <p className="text-gray-600 mb-4">{userData.email}</p>
-                
-                {/* 积分显示 */}
-                <div className="bg-purple-50 rounded-lg p-4 mb-6">
-                  <div className="flex items-center justify-center space-x-2">
-                    <Coins className="w-5 h-5 text-purple-600" />
-                    <span className="text-2xl font-bold text-purple-700">
-                      {userData.points.toLocaleString()}
-                    </span>
-                    <span className="text-purple-600 font-medium">
-                      {NAVIGATION.points[global.language]}
-                    </span>
-                  </div>
-                </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* User Profile Card */}
+          <UserProfile
+            user={user}
+            onLogout={handleLogout}
+          />
 
-                {/* 统计信息 */}
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">
-                      {global.language === 'chinese' ? '加入日期' : global.language === 'english' ? 'Join Date' : '参加日'}
-                    </span>
-                    <span className="font-medium">{userData.joinDate}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">
-                      {global.language === 'chinese' ? '总服务次数' : global.language === 'english' ? 'Total Services' : '総サービス回数'}
-                    </span>
-                    <span className="font-medium">{userData.totalServices}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* 功能菜单 */}
-          <div className="lg:col-span-2">
-            <div className="space-y-6">
-              {/* 账户设置 */}
-              <div className="bg-white rounded-lg shadow-lg p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">
-                  {global.language === 'chinese' ? '账户设置' : global.language === 'english' ? 'Account Settings' : 'アカウント設定'}
-                </h3>
-                <div className="space-y-4">
-                  <button className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
-                    <div className="flex items-center space-x-3">
-                      <Settings className="w-5 h-5 text-gray-600" />
-                      <span className="font-medium text-gray-900">
-                        {global.language === 'chinese' ? '个人信息' : global.language === 'english' ? 'Personal Information' : '個人情報'}
-                      </span>
-                    </div>
-                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </button>
-
-                  <button className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
-                    <div className="flex items-center space-x-3">
-                      <Coins className="w-5 h-5 text-gray-600" />
-                      <span className="font-medium text-gray-900">
-                        {global.language === 'chinese' ? '积分管理' : global.language === 'english' ? 'Points Management' : 'ポイント管理'}
-                      </span>
-                    </div>
-                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </button>
-
-                  <button className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
-                    <div className="flex items-center space-x-3">
-                      <History className="w-5 h-5 text-gray-600" />
-                      <span className="font-medium text-gray-900">
-                        {global.language === 'chinese' ? '服务历史' : global.language === 'english' ? 'Service History' : 'サービス履歴'}
-                      </span>
-                    </div>
-                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </button>
-
-                  <button className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
-                    <div className="flex items-center space-x-3">
-                      <HelpCircle className="w-5 h-5 text-gray-600" />
-                      <span className="font-medium text-gray-900">
-                        {global.language === 'chinese' ? '帮助与支持' : global.language === 'english' ? 'Help & Support' : 'ヘルプとサポート'}
-                      </span>
-                    </div>
-                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              {/* 最近活动 */}
-              <div className="bg-white rounded-lg shadow-lg p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">
-                  {global.language === 'chinese' ? '最近活动' : global.language === 'english' ? 'Recent Activity' : '最近の活動'}
-                </h3>
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span className="text-sm text-gray-700">
-                      {global.language === 'chinese' ? '完成了一次清洁服务' : global.language === 'english' ? 'Completed a cleaning service' : '清掃サービスを完了'}
-                    </span>
-                    <span className="text-xs text-gray-500 ml-auto">2小时前</span>
-                  </div>
-                  <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <span className="text-sm text-gray-700">
-                      {global.language === 'chinese' ? '预约了维修服务' : global.language === 'english' ? 'Scheduled maintenance service' : 'メンテナンスサービスを予約'}
-                    </span>
-                    <span className="text-xs text-gray-500 ml-auto">1天前</span>
-                  </div>
-                  <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                    <span className="text-sm text-gray-700">
-                      {global.language === 'chinese' ? '获得了50积分' : global.language === 'english' ? 'Earned 50 points' : '50ポイントを獲得'}
-                    </span>
-                    <span className="text-xs text-gray-500 ml-auto">3天前</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* Credit Balance Card */}
+          <CreditBalance
+            balance={credits.balance}
+            onRecharge={handleRecharge}
+            showWarning={credits.balance < 20}
+          />
         </div>
+
+        {/* Low Credit Warning */}
+        {credits.balance < 20 && (
+          <LowCreditWarning
+            balance={credits.balance}
+            onRecharge={handleRecharge}
+          />
+        )}
+
+        {/* Quick Actions */}
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('quickActions')}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Button
+                onClick={() => router.push('/credits')}
+                variant="outline"
+                className="h-20 flex flex-col items-center justify-center space-y-2"
+              >
+                <span className="text-2xl">💰</span>
+                <span>{t('manageCredits')}</span>
+              </Button>
+              
+              <Button
+                onClick={() => router.push('/credits/history')}
+                variant="outline"
+                className="h-20 flex flex-col items-center justify-center space-y-2"
+              >
+                <span className="text-2xl">📊</span>
+                <span>{t('transactionHistory')}</span>
+              </Button>
+              
+              <Button
+                onClick={() => router.push('/settings')}
+                variant="outline"
+                className="h-20 flex flex-col items-center justify-center space-y-2"
+              >
+                <span className="text-2xl">⚙️</span>
+                <span>{t('settings')}</span>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

@@ -1,0 +1,510 @@
+openapi: 3.0.3
+info:
+  title: WeChat Login and Credit System API
+  description: API for user authentication and credit management system
+  version: 1.0.0
+  contact:
+    name: AI Copywriting Assistant
+    url: https://github.com/your-org/copywriting-assistant
+
+servers:
+  - url: https://api.copywriting-assistant.com
+    description: Production server
+  - url: https://staging-api.copywriting-assistant.com
+    description: Staging server
+
+security:
+  - BearerAuth: []
+  - CookieAuth: []
+
+paths:
+  /api/auth/wechat/qr:
+    post:
+      summary: Generate WeChat QR code for login
+      description: Creates a QR code for WeChat OAuth login
+      tags:
+        - Authentication
+      security: []
+      responses:
+        '200':
+          description: QR code generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  qr_url:
+                    type: string
+                    format: uri
+                    description: QR code image URL
+                  state:
+                    type: string
+                    description: OAuth state parameter
+                  expires_at:
+                    type: string
+                    format: date-time
+                    description: QR code expiration time
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/auth/wechat/callback:
+    post:
+      summary: Handle WeChat OAuth callback
+      description: Processes WeChat OAuth callback and creates user session
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  description: Authorization code from WeChat
+                state:
+                  type: string
+                  description: OAuth state parameter
+              required:
+                - code
+                - state
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  session:
+                    $ref: '#/components/schemas/Session'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/auth/wechat/status:
+    get:
+      summary: Check WeChat login status
+      description: Polls for WeChat login completion
+      tags:
+        - Authentication
+      security: []
+      parameters:
+        - name: state
+          in: query
+          required: true
+          schema:
+            type: string
+          description: OAuth state parameter
+      responses:
+        '200':
+          description: Login status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [pending, completed, expired, failed]
+                  user:
+                    $ref: '#/components/schemas/User'
+                  session:
+                    $ref: '#/components/schemas/Session'
+        '400':
+          description: Invalid state parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/user/profile:
+    get:
+      summary: Get user profile and credit balance
+      description: Retrieves current user profile and credit information
+      tags:
+        - User
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  credits:
+                    $ref: '#/components/schemas/UserCredits'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/credits/deduct:
+    post:
+      summary: Deduct credits for content generation
+      description: Deducts credits from user account for content generation
+      tags:
+        - Credits
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  minimum: 1
+                  description: Number of credits to deduct
+                description:
+                  type: string
+                  description: Description of the deduction
+              required:
+                - amount
+                - description
+      responses:
+        '200':
+          description: Credits deducted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  transaction_id:
+                    type: string
+                    format: uuid
+                  new_balance:
+                    type: integer
+        '400':
+          description: Invalid request or insufficient credits
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/credits/recharge:
+    post:
+      summary: Create credit recharge order
+      description: Creates a payment order for credit recharge
+      tags:
+        - Credits
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                credits:
+                  type: integer
+                  minimum: 10
+                  maximum: 1000
+                  description: Number of credits to purchase
+                payment_method:
+                  type: string
+                  enum: [wechat_pay]
+                  default: wechat_pay
+              required:
+                - credits
+      responses:
+        '200':
+          description: Recharge order created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order_id:
+                    type: string
+                    format: uuid
+                  payment_data:
+                    type: object
+                    properties:
+                      prepay_id:
+                        type: string
+                      amount:
+                        type: integer
+                      description:
+                        type: string
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/credits/history:
+    get:
+      summary: Get credit transaction history
+      description: Retrieves user's credit transaction history
+      tags:
+        - Credits
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: Page number
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: Number of transactions per page
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [recharge, deduction, bonus, refund]
+          description: Filter by transaction type
+      responses:
+        '200':
+          description: Transaction history retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CreditTransaction'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/payment/wechat/callback:
+    post:
+      summary: WeChat Pay callback
+      description: Handles WeChat Pay payment callback
+      tags:
+        - Payment
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              type: object
+              description: WeChat Pay XML callback data
+      responses:
+        '200':
+          description: Callback processed successfully
+          content:
+            application/xml:
+              schema:
+                type: object
+                properties:
+                  return_code:
+                    type: string
+                    enum: [SUCCESS, FAIL]
+                  return_msg:
+                    type: string
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        wechat_openid:
+          type: string
+        wechat_unionid:
+          type: string
+          nullable: true
+        nickname:
+          type: string
+        avatar_url:
+          type: string
+          format: uri
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Session:
+      type: object
+      properties:
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+        expires_at:
+          type: string
+          format: date-time
+
+    UserCredits:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        balance:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CreditTransaction:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        amount:
+          type: integer
+        transaction_type:
+          type: string
+          enum: [recharge, deduction, bonus, refund]
+        description:
+          type: string
+        reference_id:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+
+    PaymentOrder:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        amount:
+          type: integer
+        credits:
+          type: integer
+        status:
+          type: string
+          enum: [pending, completed, failed, cancelled]
+        payment_method:
+          type: string
+          enum: [wechat_pay]
+        wechat_prepay_id:
+          type: string
+          nullable: true
+        wechat_transaction_id:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        total_pages:
+          type: integer
+        has_next:
+          type: boolean
+        has_prev:
+          type: boolean
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        code:
+          type: string
+        details:
+          type: object
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    CookieAuth:
+      type: apiKey
+      in: cookie
+      name: supabase-auth-token
+
+tags:
+  - name: Authentication
+    description: User authentication endpoints
+  - name: User
+    description: User profile management
+  - name: Credits
+    description: Credit management operations
+  - name: Payment
+    description: Payment processing

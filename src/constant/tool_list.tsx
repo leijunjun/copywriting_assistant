@@ -185,150 +185,6 @@ export const toolList: IToolList = {
     {
       id: 'social_media_2',
       resultType: 'text',
-      title: 'twitter-post-generation',
-      submitButton: 'Generate',
-      name: { chinese: '推特帖子生成', english: 'Twitter post generation', japanese: 'ツイッター投稿の生成' },
-      classify: { chinese: '社交媒体', english: 'Social Media', japanese: 'ソーシャルメディア' },
-      url: '/TwitterPostGeneration.png',
-      describe: {
-        chinese: '生成一个推特平台风格的帖子',
-        english: 'Generate a Twitter-style post.',
-        japanese: 'Twitterプラットフォーム風の投稿を生成する'
-      },
-      from: {
-        content: { type: 'Textarea', isBig: true, },
-        tone: { type: 'Select', list: SOCIAL_MEDIA_STYLE },
-      }
-    },
-    {
-      id: 'social_media_3',
-      resultType: 'text',
-      title: 'facebook-post-generation',
-      submitButton: 'Generate',
-      name: { chinese: 'Facebook帖子生成', english: 'Facebook post generation', japanese: 'Facebook投稿生成' },
-      classify: { chinese: '社交媒体', english: 'Social Media', japanese: 'ソーシャルメディア' },
-      url: '/FacebookPostGeneration.png',
-      describe: {
-        chinese: '生成一个Facebook平台风格的帖子',
-        english: 'Generate a Facebook-style post.',
-        japanese: 'Facebookプラットフォーム風の投稿を生成する'
-      },
-      from: {
-        content: { type: 'Textarea', isBig: true, },
-        tone: { type: 'Select', list: SOCIAL_MEDIA_STYLE },
-      }
-    },
-    {
-      id: 'social_media_4',
-      resultType: 'text',
-      title: 'instagram-post-generation',
-      submitButton: 'Generate',
-      name: { chinese: 'Instagram帖子生成', english: 'Instagram post generation', japanese: 'Instagram投稿生成' },
-      classify: { chinese: '社交媒体', english: 'Social Media', japanese: 'ソーシャルメディア' },
-      url: '/InstagramPostGeneration.png',
-      describe: {
-        chinese: '生成一个Instagram平台风格的帖子',
-        english: 'Generate a Instagram-style post.',
-        japanese: 'インスタ映えする投稿を生成する'
-      },
-      from: {
-        content: { type: 'Textarea', isBig: true, },
-        tone: { type: 'Select', list: SOCIAL_MEDIA_STYLE },
-      }
-    },
-    {
-      id: 'social_media_5',
-      resultType: 'text',
-      title: 'xiaohongshu-post-generation',
-      submitButton: 'Generate',
-      name: { chinese: '小红书帖子生成', english: 'Xiaohongshu post generation', japanese: '小紅書投稿生成' },
-      classify: { chinese: '社交媒体', english: 'Social Media', japanese: 'ソーシャルメディア' },
-      url: '/XiaohongshuPostGeneration.png',
-      describe: {
-        chinese: '生成一个小红书平台风格的笔记',
-        english: 'Generate a Xiaohongshu-style post.',
-        japanese: '小さな赤書プラットフォーム風のノートを生成する'
-      },
-      from: {
-        content: { type: 'Textarea', isBig: true, },
-        tone: { type: 'Select', list: SOCIAL_MEDIA_STYLE },
-      }
-    },
-    {
-      id: 'social_media_6',
-      resultType: 'text',
-      title: 'weibo-post-generation',
-      submitButton: 'Generate',
-      name: { chinese: '微博帖子生成', english: 'Weibo post generation', japanese: 'マイクロブログ投稿生成' },
-      classify: { chinese: '社交媒体', english: 'Social Media', japanese: 'ソーシャルメディア' },
-      url: '/WeiboPostGeneration.png',
-      describe: {
-        chinese: '生成一个微博平台风格的帖子',
-        english: 'Generate a Weibo-style post.',
-        japanese: 'マイクロブログプラットフォーム風の投稿を生成する'
-      },
-      from: {
-        content: { type: 'Textarea', isBig: true, },
-        tone: { type: 'Select', list: SOCIAL_MEDIA_STYLE },
-      }
-    },
-    {
-      id: 'social_media_7',
-      resultType: 'text',
-      title: 'threads-post-generation',
-      submitButton: 'Generate',
-      name: { chinese: 'Threads帖子生成', english: 'Threads post generation', japanese: 'Threads投稿生成' },
-      classify: { chinese: '社交媒体', english: 'Social Media', japanese: 'ソーシャルメディア' },
-      url: '/ThreadsPostGeneration.png',
-      describe: {
-        chinese: '生成一个Threads平台风格的帖子',
-        english: 'Generate a Threads-style post.',
-        japanese: 'Threadsプラットフォーム風の投稿を生成する'
-      },
-      from: {
-        content: { type: 'Textarea', isBig: true, },
-        tone: { type: 'Select', list: SOCIAL_MEDIA_STYLE },
-      }
-    },
-    {
-      id: 'social_media_8',
-      resultType: 'text',
-      title: 'social-media-bio-creation',
-      submitButton: 'Generate',
-      name: { chinese: '社交网络Bio生成', english: 'Social Media Bio Creation', japanese: 'ソーシャルネットワークBio生成' },
-      classify: { chinese: '社交媒体', english: 'Social Media', japanese: 'ソーシャルメディア' },
-      url: '/SocialMediaBioCreation.png',
-      describe: {
-        chinese: '通过一个高质量的Bio吸引更多的粉丝',
-        english: 'Attract more followers with a compelling and high-quality bio.',
-        japanese: '質の高いBioを通じてより多くのファンを魅了する'
-      },
-      from: {
-        keywords: { type: 'Textarea', },
-        style: { type: 'Select', list: BIO_STYLE },
-      }
-    },
-    {
-      id: 'social_media_9',
-      resultType: 'text',
-      title: 'player-name-generator',
-      submitButton: 'Generate',
-      name: { chinese: '游戏人物起名', english: 'Player Name Generator', japanese: 'キャラクター名' },
-      classify: { chinese: '社交媒体', english: 'Social Media', japanese: 'ソーシャルメディア' },
-      url: '/PlayerNameGenerator.png',
-      describe: {
-        chinese: '为你的游戏人物取一个有个性的名字',
-        english: 'Select a distinctive name for your player character.',
-        japanese: 'あなたのゲームキャラクターに個性的な名前をつける'
-      },
-      from: {
-        gameType: { type: 'Select', list: GAME_TYPE },
-        keywords: { type: 'Input' }
-      }
-    },
-    {
-      id: 'social_media_10',
-      resultType: 'text',
       title: 'video-description',
       submitButton: 'Generate',
       name: { chinese: '视频描述', english: 'Video Description', japanese: '動画リスト' },
@@ -347,7 +203,117 @@ export const toolList: IToolList = {
       }
     },
     {
-      id: 'social_media_11',
+      id: 'social_media_3',
+      resultType: 'text',
+      title: 'twitter-post-generation',
+      submitButton: 'Generate',
+      name: { chinese: '推特帖子生成', english: 'Twitter post generation', japanese: 'ツイッター投稿の生成' },
+      classify: { chinese: '社交媒体', english: 'Social Media', japanese: 'ソーシャルメディア' },
+      url: '/TwitterPostGeneration.png',
+      describe: {
+        chinese: '生成一个推特平台风格的帖子',
+        english: 'Generate a Twitter-style post.',
+        japanese: 'Twitterプラットフォーム風の投稿を生成する'
+      },
+      from: {
+        content: { type: 'Textarea', isBig: true, },
+        tone: { type: 'Select', list: SOCIAL_MEDIA_STYLE },
+      }
+    },
+    {
+      id: 'social_media_4',
+      resultType: 'text',
+      title: 'facebook-post-generation',
+      submitButton: 'Generate',
+      name: { chinese: 'Facebook帖子生成', english: 'Facebook post generation', japanese: 'Facebook投稿生成' },
+      classify: { chinese: '社交媒体', english: 'Social Media', japanese: 'ソーシャルメディア' },
+      url: '/FacebookPostGeneration.png',
+      describe: {
+        chinese: '生成一个Facebook平台风格的帖子',
+        english: 'Generate a Facebook-style post.',
+        japanese: 'Facebookプラットフォーム風の投稿を生成する'
+      },
+      from: {
+        content: { type: 'Textarea', isBig: true, },
+        tone: { type: 'Select', list: SOCIAL_MEDIA_STYLE },
+      }
+    },
+    
+    {
+      id: 'social_media_5',
+      resultType: 'text',
+      title: 'weibo-post-generation',
+      submitButton: 'Generate',
+      name: { chinese: '微博帖子生成', english: 'Weibo post generation', japanese: 'マイクロブログ投稿生成' },
+      classify: { chinese: '社交媒体', english: 'Social Media', japanese: 'ソーシャルメディア' },
+      url: '/WeiboPostGeneration.png',
+      describe: {
+        chinese: '生成一个微博平台风格的帖子',
+        english: 'Generate a Weibo-style post.',
+        japanese: 'マイクロブログプラットフォーム風の投稿を生成する'
+      },
+      from: {
+        content: { type: 'Textarea', isBig: true, },
+        tone: { type: 'Select', list: SOCIAL_MEDIA_STYLE },
+      }
+    },
+
+    {
+      id: 'social_media_6',
+      resultType: 'text',
+      title: 'player-name-generator',
+      submitButton: 'Generate',
+      name: { chinese: '游戏人物起名', english: 'Player Name Generator', japanese: 'キャラクター名' },
+      classify: { chinese: '社交媒体', english: 'Social Media', japanese: 'ソーシャルメディア' },
+      url: '/PlayerNameGenerator.png',
+      describe: {
+        chinese: '为你的游戏人物取一个有个性的名字',
+        english: 'Select a distinctive name for your player character.',
+        japanese: 'あなたのゲームキャラクターに個性的な名前をつける'
+      },
+      from: {
+        gameType: { type: 'Select', list: GAME_TYPE },
+        keywords: { type: 'Input' }
+      }
+    },
+    {
+      id: 'social_media_7',
+      resultType: 'text',
+      title: 'social-media-bio-creation',
+      submitButton: 'Generate',
+      name: { chinese: '社交网络Bio生成', english: 'Social Media Bio Creation', japanese: 'ソーシャルネットワークBio生成' },
+      classify: { chinese: '社交媒体', english: 'Social Media', japanese: 'ソーシャルメディア' },
+      url: '/SocialMediaBioCreation.png',
+      describe: {
+        chinese: '通过一个高质量的Bio(头像下简介）吸引更多的粉丝',
+        english: 'Attract more followers with a compelling and high-quality bio.',
+        japanese: '質の高いBioを通じてより多くのファンを魅了する'
+      },
+      from: {
+        keywords: { type: 'Textarea', },
+        style: { type: 'Select', list: BIO_STYLE },
+      }
+    },
+    {
+      id: 'social_media_8',
+      resultType: 'text',
+      title: 'weixin-generation',
+      submitButton: 'Generate',
+      name: { chinese: '微信图文', english: 'WeChat Post', japanese: 'WeChat投稿' },
+      classify: { chinese: '社交媒体', english: 'Social Media', japanese: 'ソーシャルメディア' },
+      url: '/wechat.png',
+      describe: {
+        chinese: '为微信公众号撰写生成吸引人的图文内容',
+        english: 'Create engaging WeChat Moments posts with images and text.',
+        japanese: 'WeChatモーメンツの魅力的な画像付き投稿を生成する'
+      },
+      from: {
+        content: { type: 'Textarea', isBig: true, },
+        tone: { type: 'Select', list: SOCIAL_MEDIA_STYLE },
+      }
+    },
+    {
+      id: 'social_media_9',
       resultType: 'text',
       title: 'comment-generation',
       submitButton: 'Generate',
@@ -366,7 +332,7 @@ export const toolList: IToolList = {
       }
     },
     {
-      id: 'social_media_12',
+      id: 'social_media_10',
       resultType: 'text',
       title: 'comment-reply-generation',
       submitButton: 'Generate',
@@ -384,7 +350,44 @@ export const toolList: IToolList = {
         yourThoughts: { type: 'Textarea' },
         tone: { type: 'Select', list: EMAIL_TONE },
       }
-    }
+    },
+    {
+      id: 'social_media_11',
+      resultType: 'text',
+      title: 'TikTok-post-generation',
+      submitButton: 'Generate',
+      name: { chinese: '抖音图文生成', english: 'TikTok post generation', japanese: 'TikTok投稿生成' },
+      classify: { chinese: '社交媒体', english: 'Social Media', japanese: 'ソーシャルメディア' },
+      url: '/douyin.webp',
+      describe: {
+        chinese: '生成一个抖音平台风格的图文内容',
+        english: 'Generate a TikTok-style post.',
+        japanese: 'TikTokプラットフォーム風の投稿を生成する'
+      },
+      from: {
+        content: { type: 'Textarea', isBig: true, },
+        tone: { type: 'Select', list: SOCIAL_MEDIA_STYLE },
+      }
+    },
+    {
+      id: 'social_media_12',
+      resultType: 'text',
+      title: 'xiaohongshu-post-generation',
+      submitButton: 'Generate',
+      name: { chinese: '小红书帖子生成', english: 'Xiaohongshu post generation', japanese: '小紅書投稿生成' },
+      classify: { chinese: '社交媒体', english: 'Social Media', japanese: 'ソーシャルメディア' },
+      url: '/XiaohongshuPostGeneration.png',
+      describe: {
+        chinese: '生成一个小红书平台风格的笔记',
+        english: 'Generate a Xiaohongshu-style post.',
+        japanese: '小さな赤書プラットフォーム風のノートを生成する'
+      },
+      from: {
+        content: { type: 'Textarea', isBig: true, },
+        tone: { type: 'Select', list: SOCIAL_MEDIA_STYLE },
+      }
+    },
+
   ],
   'Marketing': [//市场营销
     {

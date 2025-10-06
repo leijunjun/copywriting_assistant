@@ -1,4 +1,3 @@
-"use server";
 import { headers } from "next/headers";
 import Home from "@/components/page/home";
 import { detectLocale } from "@/lib/utils";

@@ -1,0 +1,50 @@
+{
+  "auth": {
+    "login": "ログイン",
+    "logout": "ログアウト",
+    "wechatLogin": "WeChatでログイン",
+    "scanQRCode": "WeChatでQRコードをスキャン",
+    "scanInstructions": "WeChatで上記のQRコードをスキャンしてログインを完了してください",
+    "generatingQRCode": "QRコードを生成中...",
+    "refreshQR": "QRコードを更新",
+    "retry": "再試行",
+    "cancel": "キャンセル",
+    "loginSuccess": "ログイン成功",
+    "loginFailed": "ログイン失敗",
+    "sessionExpired": "セッションが期限切れです。再度ログインしてください"
+  },
+  "credits": {
+    "balance": "クレジット残高",
+    "deduct": "クレジットを差し引く",
+    "history": "取引履歴",
+    "lowBalance": "クレジット不足警告",
+    "insufficientCredits": "クレジット不足",
+    "deductionSuccess": "クレジット差し引き成功",
+    "deductionFailed": "クレジット差し引き失敗"
+  },
+  "profile": {
+    "title": "ユーザープロフィール",
+    "nickname": "ニックネーム",
+    "avatar": "アバター",
+    "joinDate": "参加日",
+    "totalCredits": "使用済みクレジット"
+  },
+  "common": {
+    "loading": "読み込み中...",
+    "error": "エラーが発生しました",
+    "success": "成功",
+    "cancel": "キャンセル",
+    "confirm": "確認",
+    "close": "閉じる",
+    "save": "保存",
+    "edit": "編集",
+    "delete": "削除"
+  },
+  "navigation": {
+    "home": "ホーム",
+    "profile": "プロフィール",
+    "credits": "クレジット管理",
+    "history": "取引履歴",
+    "settings": "設定"
+  }
+}

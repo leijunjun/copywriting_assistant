@@ -1,0 +1,64 @@
+{
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "wechatLogin": "Login with WeChat",
+    "scanQRCode": "Scan QR code with WeChat",
+    "scanInstructions": "Please scan the QR code above with WeChat to complete login",
+    "generatingQRCode": "Generating QR code...",
+    "refreshQR": "Refresh QR Code",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "loginSuccess": "Login successful",
+    "loginFailed": "Login failed",
+    "sessionExpired": "Session expired, please login again",
+    "welcome": "Welcome to AI Writing Assistant",
+    "loginDescription": "Login quickly with WeChat and start your creative journey",
+    "loginInstructions": "Click the button above and scan the QR code with WeChat to complete login",
+    "privacyNotice": "We promise to protect your privacy and only use it to provide better service",
+    "needHelp": "Need help?",
+    "contactSupport": "Contact Support"
+  },
+  "credits": {
+    "balance": "Credit Balance",
+    "deduct": "Deduct Credits",
+    "history": "Transaction History",
+    "lowBalance": "Low Credit Warning",
+    "insufficientCredits": "Insufficient credits",
+    "deductionSuccess": "Credits deducted successfully",
+    "deductionFailed": "Credit deduction failed"
+  },
+  "profile": {
+    "title": "User Profile",
+    "nickname": "Nickname",
+    "avatar": "Avatar",
+    "joinDate": "Join Date",
+    "totalCredits": "Total Credits Used"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "close": "Close",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "appName": "AI Writing Assistant",
+    "home": "Home",
+    "profile": "Profile",
+    "credits": "Credits",
+    "manageCredits": "Manage Credits",
+    "settings": "Settings",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "navigation": {
+    "home": "Home",
+    "profile": "Profile",
+    "credits": "Credits",
+    "history": "History",
+    "settings": "Settings"
+  }
+}
