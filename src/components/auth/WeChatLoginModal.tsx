@@ -170,11 +170,7 @@ export function WeChatLoginModal({ isOpen, onClose, onSuccess, className }: WeCh
                   size={200}
                   className="border rounded-lg"
                 />
-                {polling && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-white/80 rounded-lg">
-                    <LoadingSpinner size="md" />
-                  </div>
-                )}
+                {/* 移除遮罩层，让二维码正常显示 */}
               </div>
 
               <div className="text-center space-y-2">
@@ -184,6 +180,12 @@ export function WeChatLoginModal({ isOpen, onClose, onSuccess, className }: WeCh
                 <p className="text-xs text-muted-foreground">
                   {t('scanInstructions')}
                 </p>
+                {polling && (
+                  <div className="flex items-center justify-center space-x-2 text-xs text-blue-600">
+                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
+                    <span>等待扫码登录...</span>
+                  </div>
+                )}
               </div>
 
               <div className="flex space-x-2">

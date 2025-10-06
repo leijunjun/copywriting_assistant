@@ -19,13 +19,21 @@ interface QRCodeProps {
 export function QRCode({ value, size = 200, className }: QRCodeProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const generateQRCode = async () => {
-      if (!canvasRef.current || !value) return;
+      if (!canvasRef.current || !value) {
+        console.log('QR Code: Missing canvas ref or value', { 
+          hasCanvas: !!canvasRef.current, 
+          hasValue: !!value,
+          value: value 
+        });
+        return;
+      }
 
       try {
+        console.log('QR Code: Starting generation with value:', value);
         setLoading(true);
         setError(null);
 
@@ -38,6 +46,7 @@ export function QRCode({ value, size = 200, className }: QRCodeProps) {
           },
         });
 
+        console.log('QR Code: Generation completed successfully');
         setLoading(false);
       } catch (err) {
         console.error('Failed to generate QR code:', err);
