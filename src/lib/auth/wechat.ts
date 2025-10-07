@@ -147,6 +147,9 @@ export async function handleWeChatCallback(
     // Create session
     const session = await createUserSession(user.id);
 
+    // Set Supabase session for authentication
+    await setSupabaseSession(user.id, session);
+
     // Clean up session state
     await clearSessionState(state);
 
@@ -483,6 +486,49 @@ async function clearSessionState(state: string): Promise<void> {
     }
   } catch (error) {
     console.error('Error clearing session state:', error);
+  }
+}
+
+/**
+ * Set Supabase session for WeChat user
+ */
+async function setSupabaseSession(userId: string, session: Session): Promise<void> {
+  try {
+    console.log('🔐 Setting Supabase session for WeChat user...');
+    console.log('👤 User ID:', userId);
+    console.log('🎫 Session expires at:', new Date(session.expires_at).toISOString());
+
+    if (!supabase) {
+      throw new Error('Supabase client not initialized');
+    }
+
+    // Create a custom JWT token for the user
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: `wechat_${userId}@temp.com`, // Temporary email for WeChat users
+      password: session.access_token, // Use access token as password
+    });
+
+    if (error) {
+      console.log('⚠️  Supabase sign-in failed, trying alternative method...');
+      
+      // Alternative: Set session directly
+      const { error: setSessionError } = await supabase.auth.setSession({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+      });
+
+      if (setSessionError) {
+        console.error('❌ Failed to set Supabase session:', setSessionError);
+        // Don't throw error, just log it - the custom session will still work
+      } else {
+        console.log('✅ Supabase session set successfully');
+      }
+    } else {
+      console.log('✅ Supabase session created successfully');
+    }
+  } catch (error) {
+    console.error('❌ Error setting Supabase session:', error);
+    // Don't throw error, just log it - the custom session will still work
   }
 }
 

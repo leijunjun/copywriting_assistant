@@ -9,6 +9,8 @@ import { getCurrentUser, getCurrentUserWithSession } from '@/lib/auth/session';
 import { getCreditBalance } from '@/lib/credits/balance';
 import { logger } from '@/lib/utils/logger';
 import { createErrorResponse } from '@/lib/utils/error';
+import { UserModel } from '@/lib/database/models';
+import { supabaseServer } from '@/lib/supabase/client';
 
 export async function GET(request: NextRequest) {
   try {
@@ -18,6 +20,60 @@ export async function GET(request: NextRequest) {
     const userWithSession = await getCurrentUserWithSession();
     
     if (!userWithSession) {
+      // Try to get user from request headers (for WeChat sessions)
+      const authHeader = request.headers.get('authorization');
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        const token = authHeader.substring(7);
+        const user = await getUserBySessionToken(token);
+        
+        if (user) {
+          logger.api('User authenticated via session token', {
+            userId: user.id,
+          });
+          
+          // Get user's credit balance
+          const creditResult = await getCreditBalance(user.id);
+          
+          if (!creditResult.success) {
+            logger.error('Failed to get credit balance', undefined, 'API', {
+              userId: user.id,
+              error: creditResult.error,
+            });
+            
+            return NextResponse.json(
+              createErrorResponse({
+                code: 'CREDIT_BALANCE_FAILED',
+                message: creditResult.error || 'Failed to get credit balance',
+                type: 'DATABASE',
+                severity: 'HIGH',
+              }),
+              { status: 500 }
+            );
+          }
+
+          return NextResponse.json({
+            success: true,
+            user: {
+              id: user.id,
+              wechat_openid: user.wechat_openid,
+              wechat_unionid: user.wechat_unionid,
+              nickname: user.nickname,
+              avatar_url: user.avatar_url,
+              created_at: user.created_at,
+              updated_at: user.updated_at,
+            },
+            credits: {
+              balance: creditResult.balance,
+              updated_at: creditResult.updated_at,
+            },
+            session: {
+              access_token: token,
+              expires_at: Date.now() + 3600000, // 1 hour from now
+            },
+          });
+        }
+      }
+      
       logger.error('User not authenticated', undefined, 'API');
       
       return NextResponse.json(
@@ -174,5 +230,45 @@ export async function PUT(request: NextRequest) {
       }),
       { status: 500 }
     );
+  }
+}
+
+/**
+ * Get user by session token
+ */
+async function getUserBySessionToken(token: string): Promise<any | null> {
+  try {
+    if (!supabaseServer) {
+      return null;
+    }
+
+    // Query user_sessions table to find user by access_token
+    const { data, error } = await supabaseServer
+      .from('user_sessions')
+      .select(`
+        user_id,
+        expires_at,
+        users (
+          id,
+          wechat_openid,
+          wechat_unionid,
+          nickname,
+          avatar_url,
+          created_at,
+          updated_at
+        )
+      `)
+      .eq('access_token', token)
+      .gt('expires_at', new Date().toISOString())
+      .single();
+
+    if (error || !data) {
+      return null;
+    }
+
+    return data.users;
+  } catch (error) {
+    console.error('Error getting user by session token:', error);
+    return null;
   }
 }

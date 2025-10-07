@@ -72,19 +72,50 @@ export async function getCurrentUser(): Promise<User | null> {
  */
 export async function getCurrentUserWithSession(): Promise<SessionData | null> {
   try {
+    console.log('🔍 Checking authentication status...');
+    
+    // First try Supabase session
     const session = await getCurrentSession();
-    if (!session) {
-      return null;
+    if (session) {
+      console.log('✅ Supabase session found');
+      const user = await getCurrentUser();
+      if (user) {
+        console.log('✅ User found via Supabase session');
+        return { user, session };
+      }
     }
 
-    const user = await getCurrentUser();
-    if (!user) {
-      return null;
+    console.log('⚠️  No Supabase session, checking for WeChat session...');
+    
+    // Try to get user from WeChat session (stored in localStorage or cookies)
+    const wechatSession = await getWeChatSession();
+    if (wechatSession) {
+      console.log('✅ WeChat session found');
+      const user = await UserModel.findById(wechatSession.user_id);
+      if (user) {
+        console.log('✅ User found via WeChat session');
+        return { user, session: wechatSession };
+      }
     }
 
-    return { user, session };
+    console.log('❌ No valid session found');
+    return null;
   } catch (error) {
     console.error('Error getting current user with session:', error);
+    return null;
+  }
+}
+
+/**
+ * Get WeChat session from client storage
+ */
+async function getWeChatSession(): Promise<Session | null> {
+  try {
+    // This would be called from client-side
+    // For now, return null as this is server-side code
+    return null;
+  } catch (error) {
+    console.error('Error getting WeChat session:', error);
     return null;
   }
 }

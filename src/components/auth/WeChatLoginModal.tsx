@@ -57,6 +57,13 @@ export function WeChatLoginModal({ isOpen, onClose, onSuccess, className }: WeCh
       if (event.data.type === 'WECHAT_LOGIN_SUCCESS') {
         console.log('WeChat login success message received:', event.data);
         if (event.data.success && event.data.user && event.data.session) {
+          // Store session token in localStorage for authentication
+          if (event.data.session.access_token) {
+            localStorage.setItem('wechat_session_token', event.data.session.access_token);
+            localStorage.setItem('wechat_user', JSON.stringify(event.data.user));
+            localStorage.setItem('wechat_session_expires', event.data.session.expires_at.toString());
+          }
+          
           onSuccess(event.data.user, event.data.session);
           onClose();
         }

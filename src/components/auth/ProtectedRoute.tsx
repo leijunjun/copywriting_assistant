@@ -56,7 +56,30 @@ export function ProtectedRoute({
     try {
       setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
 
-      const response = await fetch('/api/user/profile');
+      // Check for WeChat session token first
+      const wechatToken = localStorage.getItem('wechat_session_token');
+      const wechatUser = localStorage.getItem('wechat_user');
+      const wechatExpires = localStorage.getItem('wechat_session_expires');
+
+      let headers: HeadersInit = {};
+      
+      if (wechatToken && wechatUser && wechatExpires) {
+        const expiresAt = parseInt(wechatExpires);
+        if (expiresAt > Date.now()) {
+          // WeChat session is still valid
+          headers['Authorization'] = `Bearer ${wechatToken}`;
+          console.log('Using WeChat session token for authentication');
+        } else {
+          // WeChat session expired, clear it
+          localStorage.removeItem('wechat_session_token');
+          localStorage.removeItem('wechat_user');
+          localStorage.removeItem('wechat_session_expires');
+        }
+      }
+
+      const response = await fetch('/api/user/profile', {
+        headers,
+      });
       
       if (response.ok) {
         const data = await response.json();
