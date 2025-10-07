@@ -5,27 +5,27 @@
  */
 
 import { supabase } from '@/lib/supabase/client';
+import { createServerSupabaseClient, getServerSession, getServerUser } from '@/lib/supabase/server';
 import { UserModel } from '@/lib/database/models';
 import type { User, Session, SessionData } from '@/types/auth';
 
 /**
- * Get current user session
+ * Get current user session (server-side)
  */
 export async function getCurrentSession(): Promise<Session | null> {
   try {
-    if (!supabase) {
-      throw new Error('Supabase client not initialized');
-    }
-    const { data: { session }, error } = await supabase.auth.getSession();
+    // Use server-side session helper
+    const session = await getServerSession();
     
-    if (error) {
-      console.error('Error getting session:', error);
+    if (!session) {
+      console.log('⚠️ No server session found');
       return null;
     }
 
-    if (!session) {
-      return null;
-    }
+    console.log('✅ Server session found:', {
+      user_id: session.user?.id,
+      expires_at: session.expires_at
+    });
 
     return {
       access_token: session.access_token,
@@ -40,20 +40,13 @@ export async function getCurrentSession(): Promise<Session | null> {
 }
 
 /**
- * Get current user
+ * Get current user (server-side)
  */
 export async function getCurrentUser(): Promise<User | null> {
   try {
-    if (!supabase) {
-      throw new Error('Supabase client not initialized');
-    }
-    const { data: { user }, error } = await supabase.auth.getUser();
+    // Use server-side user helper
+    const user = await getServerUser();
     
-    if (error) {
-      console.error('Error getting user:', error);
-      return null;
-    }
-
     if (!user) {
       return null;
     }
@@ -74,7 +67,7 @@ export async function getCurrentUserWithSession(): Promise<SessionData | null> {
   try {
     console.log('🔍 Checking authentication status...');
     
-    // First try Supabase session
+    // Get Supabase session
     const session = await getCurrentSession();
     if (session) {
       console.log('✅ Supabase session found');
@@ -85,41 +78,10 @@ export async function getCurrentUserWithSession(): Promise<SessionData | null> {
       }
     }
 
-    console.log('⚠️  No Supabase session, checking for WeChat session...');
-    
-    // Try to get user from WeChat session (stored in localStorage or cookies)
-    const wechatSession = await getWeChatSession();
-    if (wechatSession) {
-      console.log('✅ WeChat session found');
-      const user = await UserModel.findById(wechatSession.user_id);
-      if (user) {
-        console.log('✅ User found via WeChat session');
-        return { user, session: wechatSession };
-      }
-    }
-
     console.log('❌ No valid session found');
     return null;
   } catch (error) {
     console.error('Error getting current user with session:', error);
-    return null;
-  }
-}
-
-/**
- * Get WeChat session from client storage
- */
-async function getWeChatSession(): Promise<Session | null> {
-  try {
-    console.log('🔍 Checking for WeChat session...');
-    
-    // This is server-side code, so we can't access localStorage directly
-    // The WeChat session should be passed via request headers or cookies
-    // For now, return null as this needs to be handled by the API route
-    console.log('⚠️  WeChat session check is server-side, needs client-side implementation');
-    return null;
-  } catch (error) {
-    console.error('Error getting WeChat session:', error);
     return null;
   }
 }

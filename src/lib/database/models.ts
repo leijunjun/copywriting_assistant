@@ -1,7 +1,7 @@
 /**
  * Database Models and Types
  * 
- * This file defines database models and types for the WeChat Login and Credit System.
+ * This file defines database models and types for the Email Authentication and Credit System.
  */
 
 import { supabase } from '@/lib/supabase/client';
@@ -72,20 +72,20 @@ export class UserModel {
   }
 
   /**
-   * Find user by WeChat OpenID
+   * Find user by email
    */
-  static async findByWeChatOpenId(openid: string): Promise<UserRow | null> {
+  static async findByEmail(email: string): Promise<UserRow | null> {
     const { data, error } = await supabase
       .from('users')
       .select('*')
-      .eq('wechat_openid', openid)
+      .eq('email', email)
       .single();
 
     if (error) {
       if (error.code === 'PGRST116') {
         return null; // User not found
       }
-      throw new Error(`Failed to find user by WeChat OpenID: ${error.message}`);
+      throw new Error(`Failed to find user by email: ${error.message}`);
     }
 
     return data;
@@ -130,6 +130,14 @@ export class UserModel {
    */
   static async exists(id: string): Promise<boolean> {
     const user = await this.findById(id);
+    return user !== null;
+  }
+
+  /**
+   * Check if email exists
+   */
+  static async emailExists(email: string): Promise<boolean> {
+    const user = await this.findByEmail(email);
     return user !== null;
   }
 
@@ -448,7 +456,6 @@ export class DatabaseUtils {
     }
   }
 }
-
 
 export type {
   UsersTable,

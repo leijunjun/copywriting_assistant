@@ -1,60 +1,15 @@
 /**
  * Authentication Types and Interfaces
  * 
- * This file defines TypeScript interfaces and types for authentication functionality.
+ * This file defines TypeScript interfaces and types for email authentication functionality.
  */
-
-// WeChat OAuth 2.0 Types
-export interface WeChatUserInfo {
-  openid: string;
-  unionid?: string;
-  nickname: string;
-  headimgurl: string;
-  sex?: number;
-  language?: string;
-  city?: string;
-  province?: string;
-  country?: string;
-}
-
-export interface WeChatAccessToken {
-  access_token: string;
-  expires_in: number;
-  refresh_token: string;
-  openid: string;
-  scope: string;
-  unionid?: string;
-}
-
-export interface WeChatQRCodeResponse {
-  success: boolean;
-  qr_code_url?: string;
-  session_id?: string;
-  expires_at?: number;
-  error?: string;
-}
-
-export interface WeChatCallbackResponse {
-  success: boolean;
-  user?: User;
-  session?: Session;
-  error?: string;
-}
-
-export interface WeChatStatusResponse {
-  success: boolean;
-  status: 'pending' | 'completed' | 'expired' | 'failed';
-  user?: User;
-  error?: string;
-}
 
 // User Types
 export interface User {
   id: string;
-  wechat_openid: string;
-  wechat_unionid?: string;
+  email: string;
   nickname: string;
-  avatar_url: string;
+  avatar_url?: string;
   created_at: string;
   updated_at: string;
 }
@@ -81,8 +36,14 @@ export interface SessionData {
 
 // Authentication Request Types
 export interface LoginRequest {
-  code: string;
-  state: string;
+  email: string;
+  password: string;
+}
+
+export interface RegisterRequest {
+  email: string;
+  password: string;
+  nickname?: string;
 }
 
 export interface RefreshTokenRequest {
@@ -98,6 +59,21 @@ export interface LoginResponse {
   success: boolean;
   user?: User;
   session?: Session;
+  credits?: {
+    balance: number;
+    updated_at: string;
+  };
+  error?: string;
+}
+
+export interface RegisterResponse {
+  success: boolean;
+  user?: User;
+  session?: Session;
+  credits?: {
+    balance: number;
+    updated_at: string;
+  };
   error?: string;
 }
 
@@ -118,6 +94,8 @@ export interface LogoutResponse {
 export interface AuthError {
   code: string;
   message: string;
+  type: 'VALIDATION' | 'AUTHENTICATION' | 'DATABASE' | 'INTERNAL';
+  severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   details?: any;
 }
 
@@ -134,31 +112,24 @@ export interface AuthState {
   status: AuthStatus;
   user: User | null;
   session: Session | null;
+  credits: {
+    balance: number;
+    updated_at: string;
+  } | null;
   error: string | null;
 }
 
 // API Endpoint Types
 export interface AuthEndpoints {
-  wechat: {
-    qr: string;
-    callback: string;
-    status: string;
-  };
-  session: {
-    me: string;
-    refresh: string;
-    logout: string;
-  };
+  login: string;
+  register: string;
+  logout: string;
+  refresh: string;
+  profile: string;
 }
 
 // Configuration Types
 export interface AuthConfig {
-  wechat: {
-    app_id: string;
-    app_secret: string;
-    redirect_uri: string;
-    scope: string;
-  };
   session: {
     access_token_expires_in: number;
     refresh_token_expires_in: number;
@@ -180,11 +151,15 @@ export interface AuthConfig {
       require_symbols: boolean;
     };
   };
+  credits: {
+    initial_balance: number;
+    min_balance: number;
+  };
 }
 
 // Event Types
 export interface AuthEvent {
-  type: 'login' | 'logout' | 'refresh' | 'error';
+  type: 'login' | 'logout' | 'register' | 'refresh' | 'error';
   user?: User;
   session?: Session;
   error?: AuthError;
@@ -199,9 +174,14 @@ export interface AuthEventListener {
 export interface UseAuthReturn {
   user: User | null;
   session: Session | null;
+  credits: {
+    balance: number;
+    updated_at: string;
+  } | null;
   status: AuthStatus;
   error: string | null;
-  login: (code: string, state: string) => Promise<LoginResponse>;
+  login: (email: string, password: string) => Promise<LoginResponse>;
+  register: (email: string, password: string, nickname?: string) => Promise<RegisterResponse>;
   logout: () => Promise<LogoutResponse>;
   refresh: () => Promise<RefreshTokenResponse>;
   isAuthenticated: boolean;
@@ -214,7 +194,16 @@ export interface AuthProviderProps {
   config: AuthConfig;
 }
 
-export interface LoginButtonProps {
+export interface LoginFormProps {
+  onLogin: (email: string, password: string) => void;
+  onRegister: () => void;
+  disabled?: boolean;
+  loading?: boolean;
+  className?: string;
+}
+
+export interface RegisterFormProps {
+  onRegister: (email: string, password: string, nickname?: string) => void;
   onLogin: () => void;
   disabled?: boolean;
   loading?: boolean;
@@ -223,25 +212,45 @@ export interface LoginButtonProps {
 
 export interface UserProfileProps {
   user: User;
+  credits: {
+    balance: number;
+    updated_at: string;
+  };
   onLogout: () => void;
   className?: string;
 }
 
 // Form Types
 export interface LoginFormData {
-  code: string;
-  state: string;
+  email: string;
+  password: string;
+}
+
+export interface RegisterFormData {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  nickname?: string;
 }
 
 export interface LoginFormErrors {
-  code?: string;
-  state?: string;
+  email?: string;
+  password?: string;
+  general?: string;
+}
+
+export interface RegisterFormErrors {
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+  nickname?: string;
   general?: string;
 }
 
 // Validation Types
 export interface AuthValidation {
   validateLoginRequest: (data: LoginFormData) => ValidationError[];
+  validateRegisterRequest: (data: RegisterFormData) => ValidationError[];
   validateRefreshToken: (token: string) => ValidationError[];
   validateSession: (session: Session) => ValidationError[];
 }
@@ -258,7 +267,7 @@ export interface AuthDatabase {
   users: {
     create: (user: Omit<User, 'id' | 'created_at' | 'updated_at'>) => Promise<User>;
     findById: (id: string) => Promise<User | null>;
-    findByWeChatOpenId: (openid: string) => Promise<User | null>;
+    findByEmail: (email: string) => Promise<User | null>;
     update: (id: string, updates: Partial<User>) => Promise<User>;
     delete: (id: string) => Promise<boolean>;
   };
@@ -273,16 +282,18 @@ export interface AuthDatabase {
 
 // Service Types
 export interface AuthService {
-  generateQRCode: () => Promise<WeChatQRCodeResponse>;
-  handleCallback: (code: string, state: string) => Promise<WeChatCallbackResponse>;
-  checkStatus: (sessionId: string) => Promise<WeChatStatusResponse>;
-  refreshSession: (refreshToken: string) => Promise<RefreshTokenResponse>;
+  login: (email: string, password: string) => Promise<LoginResponse>;
+  register: (email: string, password: string, nickname?: string) => Promise<RegisterResponse>;
   logout: (accessToken: string) => Promise<LogoutResponse>;
+  refreshSession: (refreshToken: string) => Promise<RefreshTokenResponse>;
   getCurrentUser: (accessToken: string) => Promise<User | null>;
+  validatePassword: (password: string) => ValidationError[];
+  hashPassword: (password: string) => Promise<string>;
+  comparePassword: (password: string, hash: string) => Promise<boolean>;
 }
 
 // Utility Types
-export type AuthMethod = 'wechat' | 'email' | 'phone';
+export type AuthMethod = 'email';
 
 export interface AuthMethodConfig {
   method: AuthMethod;
@@ -299,19 +310,16 @@ export interface AuthProvider {
 
 // Export all types
 export type {
-  WeChatUserInfo,
-  WeChatAccessToken,
-  WeChatQRCodeResponse,
-  WeChatCallbackResponse,
-  WeChatStatusResponse,
   User,
   UserProfile,
   Session,
   SessionData,
   LoginRequest,
+  RegisterRequest,
   RefreshTokenRequest,
   LogoutRequest,
   LoginResponse,
+  RegisterResponse,
   RefreshTokenResponse,
   LogoutResponse,
   AuthError,
@@ -324,10 +332,13 @@ export type {
   AuthEventListener,
   UseAuthReturn,
   AuthProviderProps,
-  LoginButtonProps,
+  LoginFormProps,
+  RegisterFormProps,
   UserProfileProps,
   LoginFormData,
+  RegisterFormData,
   LoginFormErrors,
+  RegisterFormErrors,
   AuthValidation,
   AuthMiddleware,
   AuthDatabase,

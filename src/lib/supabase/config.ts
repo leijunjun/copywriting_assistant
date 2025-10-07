@@ -2,7 +2,7 @@
  * Supabase Configuration
  * 
  * This file contains the configuration for Supabase client setup
- * for the WeChat Login and Credit System feature.
+ * for the Email Authentication and Credit System feature.
  */
 
 export const supabaseConfig = {
@@ -11,12 +11,6 @@ export const supabaseConfig = {
   anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
   serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
   
-  // WeChat OAuth configuration
-  wechat: {
-    appId: process.env.WECHAT_APP_ID || '',
-    appSecret: process.env.WECHAT_APP_SECRET || '',
-    redirectUri: process.env.WECHAT_REDIRECT_URI || '',
-  },
   
   // Database configuration
   database: {
@@ -42,9 +36,6 @@ export function validateSupabaseConfig() {
     'NEXT_PUBLIC_SUPABASE_URL',
     'NEXT_PUBLIC_SUPABASE_ANON_KEY',
     'SUPABASE_SERVICE_ROLE_KEY',
-    'WECHAT_APP_ID',
-    'WECHAT_APP_SECRET',
-    'WECHAT_REDIRECT_URI',
     'NEXTAUTH_SECRET',
   ];
   

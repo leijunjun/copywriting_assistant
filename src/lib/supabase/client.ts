@@ -2,7 +2,7 @@
  * Supabase Client Configuration
  * 
  * This file contains the client-side Supabase configuration
- * for the WeChat Login and Credit System feature.
+ * for the Email Authentication and Credit System feature.
  */
 
 import { createBrowserClient } from '@supabase/ssr';
@@ -55,28 +55,25 @@ export type Database = {
       users: {
         Row: {
           id: string;
-          wechat_openid: string;
-          wechat_unionid: string | null;
+          email: string | null;
           nickname: string;
-          avatar_url: string;
+          avatar_url: string | null;
           created_at: string;
           updated_at: string;
         };
         Insert: {
           id?: string;
-          wechat_openid: string;
-          wechat_unionid?: string | null;
+          email: string | null;
           nickname: string;
-          avatar_url: string;
+          avatar_url?: string | null;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
           id?: string;
-          wechat_openid?: string;
-          wechat_unionid?: string | null;
+          email?: string | null;
           nickname?: string;
-          avatar_url?: string;
+          avatar_url?: string | null;
           created_at?: string;
           updated_at?: string;
         };

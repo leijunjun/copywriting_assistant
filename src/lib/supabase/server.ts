@@ -2,7 +2,7 @@
  * Supabase Server Configuration
  * 
  * This file contains the server-side Supabase configuration
- * for the WeChat Login and Credit System feature.
+ * for the Email Authentication and Credit System feature.
  */
 
 import { createServerClient } from '@supabase/ssr';
@@ -86,6 +86,7 @@ export const createServerSupabaseClientForMiddleware = () => {
 export async function getServerSession() {
   const supabase = createServerSupabaseClient();
   if (!supabase) {
+    console.log('⚠️ Supabase client not available');
     return null;
   }
   
@@ -95,6 +96,16 @@ export async function getServerSession() {
     console.error('Error getting session:', error);
     return null;
   }
+
+  if (!session) {
+    console.log('⚠️ No server session found');
+    return null;
+  }
+
+  console.log('✅ Server session found:', {
+    user_id: session.user?.id,
+    expires_at: session.expires_at
+  });
 
   return session;
 }

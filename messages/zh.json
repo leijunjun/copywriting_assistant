@@ -2,26 +2,30 @@
   "auth": {
     "login": "登录",
     "logout": "退出登录",
-    "wechatLogin": "微信登录",
-    "scanQRCode": "使用微信扫描二维码",
-    "scanInstructions": "请使用微信扫描上方二维码完成登录",
-    "generatingQRCode": "正在生成二维码...",
-    "refreshQR": "刷新二维码",
-    "retry": "重试",
-    "cancel": "取消",
+    "register": "注册",
+    "email": "邮箱",
+    "password": "密码",
+    "nickname": "昵称",
+    "confirmPassword": "确认密码",
+    "emailPlaceholder": "请输入邮箱地址",
+    "passwordPlaceholder": "请输入密码",
+    "nicknamePlaceholder": "请输入昵称（可选）",
+    "confirmPasswordPlaceholder": "请再次输入密码",
+    "loggingIn": "登录中...",
+    "registering": "注册中...",
     "loginSuccess": "登录成功",
     "loginFailed": "登录失败",
     "sessionExpired": "会话已过期，请重新登录",
     "welcome": "欢迎使用AI文案助手",
-    "loginDescription": "使用微信快速登录，开始您的创作之旅",
-    "loginInstructions": "点击上方按钮，使用微信扫描二维码完成登录",
-    "privacyNotice": "我们承诺保护您的隐私，仅用于提供更好的服务",
+    "loginDescription": "使用邮箱和密码登录，开始您的创作之旅",
+    "registerDescription": "创建新账户，开始您的创作之旅",
+    "noAccount": "还没有账户？",
+    "haveAccount": "已有账户？",
     "needHelp": "需要帮助？",
     "contactSupport": "联系客服",
     "authenticationRequired": "需要身份验证",
     "checkingAuthentication": "正在验证身份...",
-    "goToLogin": "前往登录",
-    "wechatConnected": "微信已连接"
+    "goToLogin": "前往登录"
   },
   "credits": {
     "balance": "积分余额",
@@ -62,7 +66,9 @@
     "memberSince": "注册时间",
     "creditBalance": "积分余额",
     "accountStatus": "账户状态",
-    "active": "活跃"
+    "active": "活跃",
+    "credits": "积分",
+    "retry": "重试"
   },
   "profile": {
     "title": "用户资料",
@@ -71,7 +77,7 @@
     "joinDate": "加入日期",
     "totalCredits": "已使用积分"
   },
-  "common": {
+  "Common": {
     "loading": "加载中...",
     "error": "发生错误",
     "success": "成功",
@@ -88,7 +94,27 @@
     "manageCredits": "积分管理",
     "settings": "设置",
     "login": "登录",
-    "logout": "退出登录"
+    "logout": "退出登录",
+    "profileDescription": "管理您的个人信息和账户设置",
+    "quickActions": "快速操作",
+    "transactionHistory": "交易记录",
+    "memberSince": "注册时间",
+    "creditBalance": "积分余额",
+    "accountStatus": "账户状态",
+    "active": "活跃",
+    "wechatConnected": "微信已连接",
+    "lastUpdated": "最后更新",
+    "refresh": "刷新",
+    "retry": "重试"
+  },
+  "Credits": {
+    "currentBalance": "当前余额",
+    "credits": "积分",
+    "lastUpdated": "最后更新",
+    "recharge": "充值",
+    "refresh": "刷新",
+    "retry": "重试",
+    "lowBalanceWarning": "积分余额较低"
   },
   "navigation": {
     "home": "首页",

@@ -17,6 +17,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { CreditIcon, UserIcon, LogOutIcon, SettingsIcon } from '@/components/ui/icons';
 import { LanguagePopover } from '@/components/LanguagePopover';
 import { logger, LogCategory } from '@/lib/utils/logger';
+import { useAuth, useAuthListener } from '@/lib/auth/auth-context';
 
 interface HeaderProps {
   className?: string;
@@ -34,49 +35,24 @@ interface CreditData {
 }
 
 export function Header({ className }: HeaderProps) {
-  const t = useTranslations('common');
+  const t = useTranslations('Common');
   const router = useRouter();
   const pathname = usePathname();
-  const [user, setUser] = useState<UserData | null>(null);
-  const [credits, setCredits] = useState<CreditData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { authState, refreshAuthState, clearAuthState } = useAuth();
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchUserData();
-  }, []);
-
-  const fetchUserData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const response = await fetch('/api/user/profile');
-      
-      if (response.ok) {
-        const data = await response.json();
-        
-        if (data.success) {
-          setUser(data.user);
-          setCredits(data.credits);
-          
-          logger.api('User data fetched for header', {
-            userId: data.user.id,
-            balance: data.credits.balance,
-          });
-        }
-      } else if (response.status === 401) {
-        // User not authenticated, clear user data
-        setUser(null);
-        setCredits(null);
-      }
-    } catch (err) {
-      logger.error('Failed to fetch user data for header', undefined, LogCategory.API);
-      setError('Failed to load user data');
-    } finally {
-      setLoading(false);
+  // 监听认证状态变化
+  useAuthListener((event) => {
+    logger.auth(`Header received auth event: ${event}`);
+    if (event === 'login' || event === 'register') {
+      refreshAuthState();
+    } else if (event === 'logout') {
+      clearAuthState();
     }
-  };
+  });
+
+  // 使用全局认证状态
+  const { user, credits, isAuthenticated, isLoading } = authState;
 
   const handleLogout = async () => {
     try {
@@ -88,6 +64,9 @@ export function Header({ className }: HeaderProps) {
         // Clear local storage
         localStorage.removeItem('user');
         localStorage.removeItem('session');
+        
+        // Clear global auth state
+        clearAuthState();
         
         // Redirect to login page
         router.push('/auth/login');
@@ -117,7 +96,7 @@ export function Header({ className }: HeaderProps) {
     return pathname.startsWith(path);
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <header className={`bg-white border-b border-gray-200 ${className}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -165,7 +144,7 @@ export function Header({ className }: HeaderProps) {
                 {t('home')}
               </button>
               
-              {user && (
+              {isAuthenticated && user && (
                 <>
                   <button
                     onClick={() => handleNavigation('/profile')}
@@ -198,7 +177,7 @@ export function Header({ className }: HeaderProps) {
             {/* Language Switcher */}
             <LanguagePopover />
             
-            {user && credits ? (
+            {isAuthenticated && user && credits ? (
               <>
                 {/* Credit Balance */}
                 <div className="flex items-center space-x-2">

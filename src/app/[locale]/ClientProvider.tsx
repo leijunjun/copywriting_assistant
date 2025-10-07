@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import { NextIntlClientProvider } from 'next-intl';
 import store from "../store";
 import { useEffect } from "react";
+import { AuthProvider } from '@/lib/auth/auth-context';
 
 const ClientProvider = ({ 
   children, 
@@ -28,7 +29,11 @@ const ClientProvider = ({
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
-      <Provider store={store}>{children}</Provider>
+      <Provider store={store}>
+        <AuthProvider>
+          {children}
+        </AuthProvider>
+      </Provider>
     </NextIntlClientProvider>
   );
 };
