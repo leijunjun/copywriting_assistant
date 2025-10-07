@@ -107,59 +107,88 @@ export async function handleWeChatCallback(
   state: string
 ): Promise<WeChatCallbackResponse> {
   try {
+    console.log('🔄 Starting WeChat callback processing...');
+    console.log('🎫 Code:', code.substring(0, 10) + '...');
+    console.log('🔑 State:', state);
+
     validateWeChatConfig();
+    console.log('✅ WeChat configuration validated');
 
     // Validate state
+    console.log('🔍 Validating session state...');
     if (!(await validateSessionState(state))) {
+      console.log('❌ Invalid or expired state');
       return {
         success: false,
         error: 'Invalid or expired state',
       };
     }
+    console.log('✅ Session state validated');
 
     // Exchange code for access token
+    console.log('🔄 Exchanging code for access token...');
     const accessToken = await exchangeCodeForToken(code);
     if (!accessToken) {
+      console.log('❌ Failed to exchange code for access token');
       return {
         success: false,
         error: 'Failed to exchange code for access token',
       };
     }
+    console.log('✅ Access token obtained');
 
     // Get user info from WeChat
+    console.log('👤 Getting user info from WeChat...');
     const userInfo = await getWeChatUserInfo(accessToken.access_token, accessToken.openid);
     if (!userInfo) {
+      console.log('❌ Failed to get user info from WeChat');
       return {
         success: false,
         error: 'Failed to get user info from WeChat',
       };
     }
+    console.log('✅ User info obtained:', userInfo.nickname);
 
     // Create or update user in database
+    console.log('💾 Creating or updating user in database...');
     const user = await createOrUpdateUser(userInfo);
     if (!user) {
+      console.log('❌ Failed to create or update user');
       return {
         success: false,
         error: 'Failed to create or update user',
       };
     }
+    console.log('✅ User created/updated:', user.id);
 
     // Create session
+    console.log('🎫 Creating user session...');
     const session = await createUserSession(user.id);
+    console.log('✅ User session created');
+
+    // Update oauth_sessions with user info for status checking
+    console.log('🔄 Updating session with user info...');
+    await updateSessionWithUser(state, user.id);
+    console.log('✅ Session updated with user info');
 
     // Set Supabase session for authentication
+    console.log('🔐 Setting Supabase session...');
     await setSupabaseSession(user.id, session);
+    console.log('✅ Supabase session set');
 
-    // Clean up session state
-    await clearSessionState(state);
-
+    console.log('🎉 WeChat callback processing completed successfully');
     return {
       success: true,
       user,
       session,
     };
   } catch (error) {
-    console.error('Error handling WeChat callback:', error);
+    console.error('❌ Error handling WeChat callback:', error);
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      name: error instanceof Error ? error.name : undefined,
+    });
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to handle callback',
@@ -533,36 +562,85 @@ async function setSupabaseSession(userId: string, session: Session): Promise<voi
 }
 
 /**
+ * Update session with user info
+ */
+async function updateSessionWithUser(state: string, userId: string): Promise<void> {
+  try {
+    console.log('🔄 Updating session with user info...');
+    console.log('🎫 State:', state);
+    console.log('👤 User ID:', userId);
+
+    if (!supabaseServer) {
+      throw new Error('Supabase server client not initialized');
+    }
+
+    const { error } = await supabaseServer
+      .from('oauth_sessions')
+      .update({
+        user_id: userId,
+        status: 'completed',
+        updated_at: new Date().toISOString(),
+      })
+      .eq('state', state);
+
+    if (error) {
+      console.error('❌ Failed to update session with user info:', error);
+      throw new Error(`Failed to update session: ${error.message}`);
+    }
+
+    console.log('✅ Session updated with user info successfully');
+  } catch (error) {
+    console.error('❌ Error updating session with user info:', error);
+    throw error;
+  }
+}
+
+/**
  * Get session user
  */
 async function getSessionUser(sessionId: string): Promise<User | null> {
   try {
-    const { data, error } = await supabase
+    console.log('🔍 Getting session user for session ID:', sessionId);
+
+    if (!supabaseServer) {
+      throw new Error('Supabase server client not initialized');
+    }
+
+    // First check if session exists and is completed
+    const { data: sessionData, error: sessionError } = await supabaseServer
       .from('oauth_sessions')
-      .select(`
-        user_sessions (
-          user_id,
-          users (
-            id,
-            wechat_openid,
-            wechat_unionid,
-            nickname,
-            avatar_url,
-            created_at,
-            updated_at
-          )
-        )
-      `)
+      .select('user_id, status')
       .eq('state', sessionId)
       .single();
 
-    if (error || !data) {
+    if (sessionError || !sessionData) {
+      console.log('❌ Session not found or error:', sessionError);
       return null;
     }
 
-    return data.user_sessions?.users || null;
+    if (sessionData.status !== 'completed' || !sessionData.user_id) {
+      console.log('⚠️  Session not completed or no user ID');
+      return null;
+    }
+
+    console.log('✅ Session found, getting user info for user ID:', sessionData.user_id);
+
+    // Get user info
+    const { data: userData, error: userError } = await supabaseServer
+      .from('users')
+      .select('*')
+      .eq('id', sessionData.user_id)
+      .single();
+
+    if (userError || !userData) {
+      console.log('❌ User not found:', userError);
+      return null;
+    }
+
+    console.log('✅ User found:', userData.nickname);
+    return userData;
   } catch (error) {
-    console.error('Error getting session user:', error);
+    console.error('❌ Error getting session user:', error);
     return null;
   }
 }

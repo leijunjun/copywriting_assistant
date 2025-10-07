@@ -451,7 +451,17 @@ export async function GET(request: NextRequest) {
           <div class="countdown">正在为您跳转...</div>
         </div>
         <script>
-          console.log('WeChat login success, sending message to parent window...');
+          console.log('WeChat login success, processing result...');
+          
+          // Store session data in localStorage for authentication
+          try {
+            localStorage.setItem('wechat_session_token', '${result.session.access_token}');
+            localStorage.setItem('wechat_user', JSON.stringify(${JSON.stringify(result.user)}));
+            localStorage.setItem('wechat_session_expires', '${result.session.expires_at}');
+            console.log('✅ Session data stored in localStorage');
+          } catch (error) {
+            console.error('❌ Failed to store session data:', error);
+          }
           
           // Close the popup window if opened in popup
           if (window.opener) {
@@ -474,7 +484,7 @@ export async function GET(request: NextRequest) {
             // Redirect to home page if not in popup
             setTimeout(() => {
               window.location.href = '/';
-            }, 3000);
+            }, 2000);
           }
         </script>
       </body>

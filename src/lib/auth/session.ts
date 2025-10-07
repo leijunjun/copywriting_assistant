@@ -111,8 +111,12 @@ export async function getCurrentUserWithSession(): Promise<SessionData | null> {
  */
 async function getWeChatSession(): Promise<Session | null> {
   try {
-    // This would be called from client-side
-    // For now, return null as this is server-side code
+    console.log('🔍 Checking for WeChat session...');
+    
+    // This is server-side code, so we can't access localStorage directly
+    // The WeChat session should be passed via request headers or cookies
+    // For now, return null as this needs to be handled by the API route
+    console.log('⚠️  WeChat session check is server-side, needs client-side implementation');
     return null;
   } catch (error) {
     console.error('Error getting WeChat session:', error);
