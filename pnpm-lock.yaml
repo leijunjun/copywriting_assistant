@@ -64,7 +64,7 @@ importers:
         version: 1.5.5
       ai:
         specifier: ^3.4.5
-        version: 3.4.33(openai@4.104.0(ws@8.18.3)(zod@3.25.76))(react@18.3.1)(sswr@2.2.0(svelte@5.39.8))(svelte@5.39.8)(vue@3.5.22(typescript@5.9.3))(zod@3.25.76)
+        version: 3.4.33(openai@4.104.0(ws@8.18.3)(zod@3.25.76))(react@18.3.1)(sswr@2.2.0(svelte@5.39.9))(svelte@5.39.9)(vue@3.5.22(typescript@5.9.3))(zod@3.25.76)
       axios:
         specifier: ^1.7.2
         version: 1.12.2
@@ -1452,8 +1452,8 @@ packages:
   '@types/node@20.19.19':
     resolution: {integrity: sha512-pb1Uqj5WJP7wrcbLU7Ru4QtA0+3kAXrkutGiD26wUKzSMgNNaPARTUDQmElUXp64kh3cWdou3Q0C7qwwxqSFmg==}
 
-  '@types/node@24.6.2':
-    resolution: {integrity: sha512-d2L25Y4j+W3ZlNAeMKcy7yDsK425ibcAOO2t7aPTz6gNMH0z2GThtwENCDc0d/Pw9wgyRqE5Px1wkV7naz8ang==}
+  '@types/node@24.7.0':
+    resolution: {integrity: sha512-IbKooQVqUBrlzWTi79E8Fw78l8k1RNtlDDNWsFZs7XonuQSJ8oNYfEeclhprUldXISRMLzBpILuKgPlIxm+/Yw==}
 
   '@types/papaparse@5.3.16':
     resolution: {integrity: sha512-T3VuKMC2H0lgsjI9buTB3uuKj3EMD2eap1MOuEQuBQ44EnDx/IkGhU6EwiTf9zG3za4SKlmwKAImdDKdNnCsXg==}
@@ -1980,8 +1980,8 @@ packages:
     resolution: {integrity: sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==}
     engines: {node: '>=10'}
 
-  caniuse-lite@1.0.30001747:
-    resolution: {integrity: sha512-mzFa2DGIhuc5490Nd/G31xN1pnBnYMadtkyTjefPI7wzypqgCEpeWu9bJr0OnDsyKrW75zA9ZAt7pbQFmwLsQg==}
+  caniuse-lite@1.0.30001748:
+    resolution: {integrity: sha512-5P5UgAr0+aBmNiplks08JLw+AW/XG/SurlgZLgB1dDLfAw7EfRGxIwzPHxdSCGY/BTKDqIVyJL87cCN6s0ZR0w==}
 
   ccount@2.0.1:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
@@ -2201,8 +2201,8 @@ packages:
     resolution: {integrity: sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==}
     engines: {node: '>=6'}
 
-  detect-libc@2.1.1:
-    resolution: {integrity: sha512-ecqj/sy1jcK1uWrwpR67UhYrIFQ+5WlGxth34WquCbamhFA6hkkwiu37o6J5xCHdo1oixJRfVRw+ywV+Hq/0Aw==}
+  detect-libc@2.1.2:
+    resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
     engines: {node: '>=8'}
 
   detect-newline@3.1.0:
@@ -4196,8 +4196,8 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  svelte@5.39.8:
-    resolution: {integrity: sha512-KfZ3hCITdxIXTOvrea4nFZX2o+47HPTChKeocgj9BwJQYqWrviVCcPj4boXHF5yf8+eBKqhHY8xii//XaakKXA==}
+  svelte@5.39.9:
+    resolution: {integrity: sha512-sVOie0sbU9F/Lh0IoUfaq9hLzujRKxiL7xTMbG0y8ROx/qErtbfmm6sLSlJUbUMW4NcIgqHQPFiHX4LakA8fzA==}
     engines: {node: '>=18'}
 
   swr@2.3.6:
@@ -4343,8 +4343,8 @@ packages:
   undici-types@6.21.0:
     resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
 
-  undici-types@7.13.0:
-    resolution: {integrity: sha512-Ov2Rr9Sx+fRgagJ5AX0qvItZG/JKKoBRAVITs1zk7IqZGTJUwgUr7qoYBpWwakpWilTZFM98rG/AFRocu10iIQ==}
+  undici-types@7.14.0:
+    resolution: {integrity: sha512-QQiYxHuyZ9gQUIrmPo3IA+hUl4KYk8uSA7cHrcKd/l3p1OTpZcM0Tbp9x7FAtXdAYhlasd60ncPpgu6ihG6TOA==}
 
   unified@11.0.5:
     resolution: {integrity: sha512-xKvGhPWw3k84Qjh8bI3ZeJjqnyadK+GEFtazSfZv/rKeTkTjOJho6mFqh2SM96iIcZokxiOpg78GazTSg8+KHA==}
@@ -4622,13 +4622,13 @@ snapshots:
     transitivePeerDependencies:
       - zod
 
-  '@ai-sdk/svelte@0.0.57(svelte@5.39.8)(zod@3.25.76)':
+  '@ai-sdk/svelte@0.0.57(svelte@5.39.9)(zod@3.25.76)':
     dependencies:
       '@ai-sdk/provider-utils': 1.0.22(zod@3.25.76)
       '@ai-sdk/ui-utils': 0.0.50(zod@3.25.76)
-      sswr: 2.2.0(svelte@5.39.8)
+      sswr: 2.2.0(svelte@5.39.9)
     optionalDependencies:
-      svelte: 5.39.8
+      svelte: 5.39.9
     transitivePeerDependencies:
       - zod
 
@@ -5968,9 +5968,9 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
-  '@types/node@24.6.2':
+  '@types/node@24.7.0':
     dependencies:
-      undici-types: 7.13.0
+      undici-types: 7.14.0
 
   '@types/papaparse@5.3.16':
     dependencies:
@@ -6294,13 +6294,13 @@ snapshots:
     dependencies:
       humanize-ms: 1.2.1
 
-  ai@3.4.33(openai@4.104.0(ws@8.18.3)(zod@3.25.76))(react@18.3.1)(sswr@2.2.0(svelte@5.39.8))(svelte@5.39.8)(vue@3.5.22(typescript@5.9.3))(zod@3.25.76):
+  ai@3.4.33(openai@4.104.0(ws@8.18.3)(zod@3.25.76))(react@18.3.1)(sswr@2.2.0(svelte@5.39.9))(svelte@5.39.9)(vue@3.5.22(typescript@5.9.3))(zod@3.25.76):
     dependencies:
       '@ai-sdk/provider': 0.0.26
       '@ai-sdk/provider-utils': 1.0.22(zod@3.25.76)
       '@ai-sdk/react': 0.0.70(react@18.3.1)(zod@3.25.76)
       '@ai-sdk/solid': 0.0.54(zod@3.25.76)
-      '@ai-sdk/svelte': 0.0.57(svelte@5.39.8)(zod@3.25.76)
+      '@ai-sdk/svelte': 0.0.57(svelte@5.39.9)(zod@3.25.76)
       '@ai-sdk/ui-utils': 0.0.50(zod@3.25.76)
       '@ai-sdk/vue': 0.0.59(vue@3.5.22(typescript@5.9.3))(zod@3.25.76)
       '@opentelemetry/api': 1.9.0
@@ -6312,8 +6312,8 @@ snapshots:
     optionalDependencies:
       openai: 4.104.0(ws@8.18.3)(zod@3.25.76)
       react: 18.3.1
-      sswr: 2.2.0(svelte@5.39.8)
-      svelte: 5.39.8
+      sswr: 2.2.0(svelte@5.39.9)
+      svelte: 5.39.9
       zod: 3.25.76
     transitivePeerDependencies:
       - solid-js
@@ -6537,7 +6537,7 @@ snapshots:
   browserslist@4.26.3:
     dependencies:
       baseline-browser-mapping: 2.8.12
-      caniuse-lite: 1.0.30001747
+      caniuse-lite: 1.0.30001748
       electron-to-chromium: 1.5.230
       node-releases: 2.0.23
       update-browserslist-db: 1.1.3(browserslist@4.26.3)
@@ -6577,7 +6577,7 @@ snapshots:
 
   camelcase@6.3.0: {}
 
-  caniuse-lite@1.0.30001747: {}
+  caniuse-lite@1.0.30001748: {}
 
   ccount@2.0.1: {}
 
@@ -6798,7 +6798,7 @@ snapshots:
 
   dequal@2.0.3: {}
 
-  detect-libc@2.1.1: {}
+  detect-libc@2.1.2: {}
 
   detect-newline@3.1.0: {}
 
@@ -6832,7 +6832,7 @@ snapshots:
 
   docx@9.5.1:
     dependencies:
-      '@types/node': 24.6.2
+      '@types/node': 24.7.0
       hash.js: 1.1.7
       jszip: 3.10.1
       nanoid: 5.1.6
@@ -8555,7 +8555,7 @@ snapshots:
       '@next/env': 14.2.5
       '@swc/helpers': 0.5.5
       busboy: 1.6.0
-      caniuse-lite: 1.0.30001747
+      caniuse-lite: 1.0.30001748
       graceful-fs: 4.2.11
       postcss: 8.4.31
       react: 18.3.1
@@ -9122,7 +9122,7 @@ snapshots:
   sharp@0.34.4:
     dependencies:
       '@img/colour': 1.0.0
-      detect-libc: 2.1.1
+      detect-libc: 2.1.2
       semver: 7.7.2
     optionalDependencies:
       '@img/sharp-darwin-arm64': 0.34.4
@@ -9203,9 +9203,9 @@ snapshots:
 
   sprintf-js@1.0.3: {}
 
-  sswr@2.2.0(svelte@5.39.8):
+  sswr@2.2.0(svelte@5.39.9):
     dependencies:
-      svelte: 5.39.8
+      svelte: 5.39.9
       swrev: 4.0.0
 
   stable-hash@0.0.5: {}
@@ -9352,7 +9352,7 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  svelte@5.39.8:
+  svelte@5.39.9:
     dependencies:
       '@jridgewell/remapping': 2.3.5
       '@jridgewell/sourcemap-codec': 1.5.5
@@ -9538,7 +9538,7 @@ snapshots:
 
   undici-types@6.21.0: {}
 
-  undici-types@7.13.0: {}
+  undici-types@7.14.0: {}
 
   unified@11.0.5:
     dependencies:

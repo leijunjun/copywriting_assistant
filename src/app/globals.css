@@ -324,4 +324,45 @@ pre {
     margin: 0 !important;
     padding: 0 8px !important;
   }
+  
+  /* 移动端 Footer 优化 */
+  .footer-mobile {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    margin-top: 2rem;
+  }
+}
+
+/* Footer 布局优化 */
+.footer-container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* 确保 Footer 不被固定定位元素遮挡 */
+@media (min-width: 1024px) {
+  .footer-container {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  /* 当侧边栏显示时，确保 Footer 有足够的空间 */
+  .sidebar-visible .footer-container {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+/* 移动端 Footer 特殊处理 */
+@media (max-width: 1023px) {
+  .footer-container {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    margin-top: 1rem;
+  }
 }

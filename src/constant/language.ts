@@ -60,13 +60,12 @@ export const LANGUAGE_LIST: Array<Language> = [
 
 // 工具分类词汇 Tool classification vocabulary
 export const classify: Array<Language> = [
-  { chinese: '社交媒体', english: 'Social Media', japanese: 'ソーシャルメディア' },
+  { chinese: '公域推广', english: 'Public Domain Promotion', japanese: 'パブリックドメイン促進' },
+  { chinese: '微信私域', english: 'WeChat Private Domain', japanese: 'WeChatプライベートドメイン' },
   { chinese: '内容创作', english: 'Writing', japanese: 'コンテンツ作成' },
-  { chinese: '市场营销', english: 'Marketing', japanese: 'マーケティング' },
-  { chinese: '教育培训', english: 'Education', japanese: '教育' },
-  { chinese: '项目管理', english: 'Project Management', japanese: 'プロジェクト管理' },
-  { chinese: '生活方式', english: 'Lifestyle', japanese: 'ライフスタイル' },
-  { chinese: '工作效率', english: 'Work Efficiency', japanese: '生産性' },
+  { chinese: '营销活动', english: 'Marketing', japanese: 'マーケティング' },
+  { chinese: '顾客互动', english: 'Customer Interaction', japanese: '顧客との交流' },
+  { chinese: '工作提效', english: 'Work Efficiency', japanese: '生産性' },
 ]
 
 // 提交按钮词汇 Submit button vocabulary
@@ -120,10 +119,16 @@ export const FROM_LABEL: { [key: string]: Language } = {
   'emailTopic': { chinese: '邮件主题', english: 'Email Topic', japanese: 'メールの件名' },
   'emailContext': { chinese: '邮件上下文', english: 'Content', japanese: 'メールコンテキスト' },
   'requestForReply': { chinese: '希望回复的内容', english: 'Request for reply', japanese: '返信したい内容' },
-  'postContent': { chinese: '帖子内容', english: 'Post Content', japanese: '投稿内容' },
+  'postContent': { chinese: '对话内容', english: 'Dialogue Content', japanese: '対話内容' },
   'yourThoughts': { chinese: '你的想法', english: 'Your thoughts', japanese: 'あなたの考え' },
   'commentWhichYouWillReply': { chinese: '你想回复的评论', english: 'Comment which you will reply', japanese: 'あなたが返信したいコメント' },
   'preset': { chinese: '预设内容', english: 'Preset Content', japanese: 'プリセット内容' },
+  'momentsContent': { chinese: '朋友圈内容', english: 'Moments Content', japanese: 'モーメンツ内容' },
+  'replyTone': { chinese: '回复语气', english: 'Reply Tone', japanese: '返信のニュアンス' },
+  'activityTheme': { chinese: '活动主题', english: 'Activity Theme', japanese: '活動テーマ' },
+  'activityPurpose': { chinese: '活动目的', english: 'Activity Purpose', japanese: '活動目的' },
+  'activityVenue': { chinese: '活动场所', english: 'Activity Venue', japanese: '活動場所' },
+  'festivalType': { chinese: '节日类型', english: 'Festival Type', japanese: '祭りの種類' },
 }
 
 // 料理能力表词汇 Vocabulary of cooking ability table
@@ -360,6 +365,7 @@ export const QA_STYLE: Array<Language> = [
   { chinese: '真诚', english: 'Sincere', japanese: '誠実である' },
   { chinese: '自信', english: 'Confident', japanese: '自信を持つ' },
   { chinese: '简洁', english: 'Simplicity', japanese: '簡潔' },
+  { chinese: '幽默', english: 'Humor', japanese: 'ユーモア' },
 ]
 
 // Bio风格词汇 Bio style vocabulary
@@ -427,6 +433,34 @@ export const EMAIL_TONE: Array<Language> = [
   { chinese: '道歉', english: 'Apologize', japanese: 'あやまる' },
   { chinese: '紧急', english: 'Urgent', japanese: '緊急' },
   { chinese: '轻松', english: 'Easy', japanese: 'ゆとりがある' },
+]
+
+// 节日类型词汇 Festival type vocabulary
+export const FESTIVAL_TYPE: Array<Language> = [
+  { chinese: '春节', english: 'Spring Festival', japanese: '春節' },
+  { chinese: '元宵节', english: 'Lantern Festival', japanese: '元宵節' },
+  { chinese: '清明节', english: 'Qingming Festival', japanese: '清明節' },
+  { chinese: '劳动节', english: 'Labor Day', japanese: '労働節' },
+  { chinese: '端午节', english: 'Dragon Boat Festival', japanese: '端午節' },
+  { chinese: '七夕节', english: 'Qixi Festival', japanese: '七夕節' },
+  { chinese: '中秋节', english: 'Mid-Autumn Festival', japanese: '中秋節' },
+  { chinese: '国庆节', english: 'National Day', japanese: '国慶節' },
+  { chinese: '重阳节', english: 'Double Ninth Festival', japanese: '重陽節' },
+  { chinese: '双十一', english: 'Singles Day', japanese: 'シングルズデー' },
+  { chinese: '双十二', english: 'Double Twelve', japanese: 'ダブル12' },
+  { chinese: '圣诞节', english: 'Christmas', japanese: 'クリスマス' },
+  { chinese: '元旦', english: 'New Year\'s Day', japanese: '元日' },
+  { chinese: '情人节', english: 'Valentine\'s Day', japanese: 'バレンタインデー' },
+  { chinese: '妇女节', english: 'Women\'s Day', japanese: '女性の日' },
+  { chinese: '母亲节', english: 'Mother\'s Day', japanese: '母の日' },
+  { chinese: '父亲节', english: 'Father\'s Day', japanese: '父の日' },
+  { chinese: '儿童节', english: 'Children\'s Day', japanese: 'こどもの日' },
+]
+
+// 活动场所词汇 Activity venue vocabulary
+export const ACTIVITY_VENUE: Array<Language> = [
+  { chinese: '店面', english: 'Store', japanese: '店舗' },
+  { chinese: '线上', english: 'Online', japanese: 'オンライン' },
 ]
 
 export const LANGUAGE_LIBRARY = {

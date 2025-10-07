@@ -8,7 +8,8 @@ interface IToolParameter {
     position: string, yearsOfExperience: string, interestsAndGoals: string,
     gameType: string, topic: string, dietaryFrequency: string, workLog: string,
     calorieGoal: string, dietaryPreferencesAndRestrictions: string, videoContent: string,
-    commentWhichYouWillReply: string,
+    commentWhichYouWillReply: string, momentsContent: string, replyTone: string,
+    activityTheme: string, activityPurpose: string, activityVenue: string, festivalType: string,
 }
 
 export const toolParameter: { [key: string]: (params: IToolParameter) => Array<{ role: string, content: string }> } = {
@@ -761,6 +762,49 @@ ${params.commentWhichYouWillReply}
 User's thoughts:
 
 ${params.yourThoughts}
+`
+            }
+        ]
+    },
+
+    'WeChat Moments Reply': (params: Pick<IToolParameter, 'momentsContent' | 'replyTone' | 'language'>) => {
+        return [
+            {
+                role: 'user',
+                content: `You are a helpful WeChat Moments assistant which can help users write appropriate replies for WeChat Moments content.
+Write a reply based on the Moments content with plain text format.
+Always use ${params.language} as native speaker and write in ${params.replyTone} tone.
+
+WeChat Moments content:
+
+${params.momentsContent}
+`
+            }
+        ]
+    },
+
+    'Festival Activity Planning': (params: Pick<IToolParameter, 'activityTheme' | 'activityPurpose' | 'activityVenue' | 'festivalType' | 'language'>) => {
+        return [
+            {
+                role: 'user',
+                content: `You are an event creative planner with many years of sales experience, specializing in holiday event planning. Your event plans take into account the human and financial limitations of small and medium-sized enterprises, and provide specific event details and plans based on needs.
+Always use ${params.language} as native speaker and return in markdown format.
+
+Festival Type: ${params.festivalType}
+Activity Theme: ${params.activityTheme}
+Activity Venue: ${params.activityVenue}
+
+Activity Purpose:
+${params.activityPurpose}
+
+请提供详细的营销活动创意，包括：
+1. 活动创意主题（针对${params.activityVenue}活动，吸引人眼球并结合当下社会热点）
+2. 活动目标客群及利益点抓手（基于客户参与的动机）
+3. 活动情绪铺垫及高潮点（基于成交导向）
+4. 活动核心玩法（考虑场地类型：${params.activityVenue}）
+5. 活动推广步骤及时间线（以私域为主，公域为辅）
+6. 活动核心指标及成功标准
+7. 风险评估及应对方法
 `
             }
         ]

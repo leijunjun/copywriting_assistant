@@ -9,12 +9,14 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Avatar } from '@/components/ui/avatar';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { CreditIcon, UserIcon, LogOutIcon, SettingsIcon } from '@/components/ui/icons';
-import { logger } from '@/lib/utils/logger';
+import { LanguagePopover } from '@/components/LanguagePopover';
+import { logger, LogCategory } from '@/lib/utils/logger';
 
 interface HeaderProps {
   className?: string;
@@ -69,7 +71,7 @@ export function Header({ className }: HeaderProps) {
         setCredits(null);
       }
     } catch (err) {
-      logger.error('Failed to fetch user data for header', err, 'API');
+      logger.error('Failed to fetch user data for header', undefined, LogCategory.API);
       setError('Failed to load user data');
     } finally {
       setLoading(false);
@@ -93,7 +95,7 @@ export function Header({ className }: HeaderProps) {
         logger.auth('User logged out from header');
       }
     } catch (err) {
-      logger.error('Failed to logout from header', err, 'API');
+      logger.error('Failed to logout from header', undefined, LogCategory.API);
     }
   };
 
@@ -120,9 +122,8 @@ export function Header({ className }: HeaderProps) {
       <header className={`bg-white border-b border-gray-200 ${className}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <div className="h-8 w-8 bg-gray-200 rounded animate-pulse" />
-              <div className="h-4 w-24 bg-gray-200 rounded animate-pulse" />
+            <div className="flex items-center">
+              <div className="bg-gray-200 rounded animate-pulse" style={{ height: '48px', width: '60px' }} />
             </div>
             <div className="h-8 w-8 bg-gray-200 rounded animate-pulse" />
           </div>
@@ -137,12 +138,18 @@ export function Header({ className }: HeaderProps) {
         <div className="flex justify-between items-center h-16">
           {/* Logo and Navigation */}
           <div className="flex items-center space-x-8">
-            <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">AI</span>
-              </div>
-              <span className="font-bold text-xl text-gray-900">
-                {t('appName')}
+            <div className="flex items-center">
+              <img
+                src="/logo.png"
+                alt="AI Writing Assistant Logo"
+                style={{ height: '40px', width: 'auto' }}
+                className="object-contain"
+              />
+              <span
+                className="ml-2 px-2 py-0.5 rounded text-xs font-semibold bg-blue-100 text-blue-700"
+                style={{ lineHeight: '1.5' }}
+              >
+                AI 文秘
               </span>
             </div>
             
@@ -188,6 +195,9 @@ export function Header({ className }: HeaderProps) {
 
           {/* User Menu and Credit Balance */}
           <div className="flex items-center space-x-4">
+            {/* Language Switcher */}
+            <LanguagePopover />
+            
             {user && credits ? (
               <>
                 {/* Credit Balance */}
@@ -205,11 +215,10 @@ export function Header({ className }: HeaderProps) {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                      <Avatar
-                        src={user.avatar_url}
-                        alt={user.nickname}
-                        size="sm"
-                      />
+                      <Avatar>
+                        <AvatarImage src={user.avatar_url} alt={user.nickname} />
+                        <AvatarFallback>{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
+                      </Avatar>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56" align="end" forceMount>

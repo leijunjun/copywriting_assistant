@@ -191,7 +191,7 @@ export function WeChatLoginModal({ isOpen, onClose, onSuccess, className }: WeCh
 
               <div className="text-center space-y-2">
                 <p className="text-sm text-muted-foreground">
-                  {t('scanQrCode')}
+                  {t('scanQRCode')}
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {t('scanInstructions')}

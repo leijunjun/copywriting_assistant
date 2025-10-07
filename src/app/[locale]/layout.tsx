@@ -8,6 +8,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 const ClientProvider = dynamic(() => import('./ClientProvider'), { ssr: false });
 const Header = dynamic(() => import('@/components/Header'), { ssr: false });
+const Footer = dynamic(() => import('@/components/Footer'), { ssr: false });
 
 export default async function RootLayout({
   children,
@@ -33,6 +34,7 @@ export default async function RootLayout({
           <main className="min-h-screen">
             {children}
           </main>
+          <Footer />
         </ClientProvider>
         <Toaster />
       </body>

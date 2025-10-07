@@ -250,7 +250,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen relative housekeeping-theme pt-16 w-full overflow-x-hidden">
+    <div className="min-h-screen relative housekeeping-theme pt-16 w-full overflow-x-hidden pb-20">
       {/* 装饰性背景元素 */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary-300 to-primary-200 rounded-full opacity-20 blur-3xl"></div>
@@ -280,7 +280,10 @@ export default function Home() {
         {/* 左侧导航栏 */}
         <div className={`hidden lg:flex w-80 bg-bg-100/80 backdrop-blur-sm border-r border-bg-300 flex-col transition-all duration-300 fixed left-0 top-16 h-[calc(100vh-4rem)] z-20 ${
           sidebarVisible ? 'translate-x-0' : '-translate-x-full'
-        }`}>
+        }`} style={{ 
+          maxHeight: 'calc(100vh - 4rem)',
+          overflowY: 'auto'
+        }}>
           {/* 分类导航标题 */}
           <div className="p-6 border-b border-bg-300">
             <h2 className="text-xl font-bold bg-gradient-to-r from-primary-100 to-primary-200 bg-clip-text text-transparent">
@@ -314,13 +317,26 @@ export default function Home() {
                 // 为每个分类定义图标
                 const getCategoryIcon = (category: string) => {
                   const iconMap: { [key: string]: string } = {
-                    'Writing': 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z',
-                    'Social Media': 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z',
-                    'Marketing': 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z',
-                    'Education': 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z',
-                    'Project Management': 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z',
-                    'Lifestyle': 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z',
-                    'Work Efficiency': 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'
+                    // 公域推广 - 推广图标
+                    'Public Domain Promotion': 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z',
+                    
+                    // 内容创作 - 编辑图标
+                    'Writing': 'M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z',
+                    
+                    // 营销活动 - 趋势图标
+                    'Marketing': 'M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z',
+                    
+                    // 微信私域 - 微信图标
+                    'WeChat Private Domain': 'M8.5 2C6.57 2 5 3.57 5 5.5S6.57 9 8.5 9S12 7.43 12 5.5S10.43 2 8.5 2ZM8.5 7C7.67 7 7 6.33 7 5.5S7.67 4 8.5 4S10 4.67 10 5.5S9.33 7 8.5 7ZM15.5 2C13.57 2 12 3.57 12 5.5S13.57 9 15.5 9S19 7.43 19 5.5S17.43 2 15.5 2ZM15.5 7C14.67 7 14 6.33 14 5.5S14.67 4 15.5 4S17 4.67 17 5.5S16.33 7 15.5 7ZM8.5 10C6.57 10 5 11.57 5 13.5S6.57 17 8.5 17S12 15.43 12 13.5S10.43 10 8.5 10ZM8.5 15C7.67 15 7 14.33 7 13.5S7.67 12 8.5 12S10 12.67 10 13.5S9.33 15 8.5 15ZM15.5 10C13.57 10 12 11.57 12 13.5S13.57 17 15.5 17S19 15.43 19 13.5S17.43 10 15.5 10ZM15.5 15C14.67 15 14 14.33 14 13.5S14.67 12 15.5 12S17 12.67 17 13.5S16.33 15 15.5 15Z',
+                    
+                    // 教育培训 - 书本图标
+                    'Education': 'M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19ZM17 12H7V10H17V12ZM15 16H7V14H15V16ZM17 8H7V6H17V8Z',
+                    
+                    // 顾客互动 - 聊天图标
+                    'Customer Interaction': 'M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H6L4 18V4H20V16Z',
+                    
+                    // 工作提效 - 齿轮图标
+                    'Work Efficiency': 'M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z'
                   };
                   return iconMap[category] || 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z';
                 };
@@ -390,7 +406,7 @@ export default function Home() {
         </div>
         
         {/* 右侧内容区域 */}
-        <div className={`flex flex-col transition-all duration-300 ${
+        <div className={`flex flex-col transition-all duration-300 min-h-screen ${
           sidebarVisible ? 'lg:ml-80 ml-0' : 'ml-0'
         } mobile-content`}>
           {/* 顶部搜索区域 */}
@@ -549,7 +565,7 @@ export default function Home() {
           </div>
           
           {/* 内容滚动区域 */}
-          <div className={`transition-all duration-300 pb-8 ${
+          <div className={`transition-all duration-300 pb-16 sm:pb-20 ${
             sidebarVisible ? 'p-4 sm:p-6' : 'px-4 sm:px-6 lg:px-12 py-4 sm:py-6 lg:py-8'
           }`}>
             {/* Recently used tools */}

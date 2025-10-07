@@ -571,17 +571,17 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
                       
                       {/* 生成内容卡片列表 */}
                       {generateRecords.map((item) => (
-                        <div key={item?.id} className="p-4 mb-4 bg-gradient-to-br from-accent-100 to-accent-200 text-white rounded-xl shadow-lg border border-bg-300 hover:shadow-xl transition-all duration-300">
+                        <div key={item?.id} className="p-4 mb-4 bg-white text-gray-800 rounded-xl shadow-md border border-gray-200 hover:shadow-lg hover:border-gray-300 transition-all duration-300">
                           <div className="text-left">
                             {onRenderingResult(item, item?.id)}
                           </div>
-                          <div className="flex items-end justify-between mt-4 pt-3 border-t border-bg-300">
-                            <div className="text-accent-200 text-sm">{dayjs(item.createdAt).format('MM-DD HH:mm')}</div>
+                          <div className="flex items-end justify-between mt-4 pt-3 border-t border-gray-200">
+                            <div className="text-gray-500 text-sm">{dayjs(item.createdAt).format('MM-DD HH:mm')}</div>
                             <div className="flex gap-2">
                               <Button 
                                 variant="outline" 
                                 size="icon" 
-                                className="bg-accent-100 hover:bg-accent-200 border-accent-200 text-white" 
+                                className="bg-blue-500 hover:bg-blue-600 border-blue-500 text-white" 
                                 disabled={load} 
                                 onClick={() => onHandleCopyResult(item?.output)}
                               >
