@@ -52,12 +52,18 @@ export function WeChatLoginModal({ isOpen, onClose, onSuccess, className }: WeCh
   // Listen for messages from WeChat callback
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
+      console.log('Received message from WeChat callback:', event.data);
+      
       if (event.data.type === 'WECHAT_LOGIN_SUCCESS') {
         console.log('WeChat login success message received:', event.data);
         if (event.data.success && event.data.user && event.data.session) {
           onSuccess(event.data.user, event.data.session);
           onClose();
         }
+      } else if (event.data.type === 'WECHAT_LOGIN_ERROR') {
+        console.log('WeChat login error message received:', event.data);
+        setError(event.data.errorDescription || event.data.error || '登录失败');
+        setPolling(false);
       }
     };
 

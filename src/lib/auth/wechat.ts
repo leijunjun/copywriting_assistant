@@ -208,6 +208,11 @@ export async function checkWeChatLoginStatus(sessionId: string): Promise<WeChatS
  */
 async function exchangeCodeForToken(code: string): Promise<WeChatAccessToken | null> {
   try {
+    console.log('🔄 Exchanging code for access token...');
+    console.log('📱 App ID:', WECHAT_CONFIG.appId);
+    console.log('🔑 App Secret:', WECHAT_CONFIG.appSecret ? 'Set' : 'Missing');
+    console.log('🎫 Code:', code.substring(0, 10) + '...');
+
     const params = new URLSearchParams({
       appid: WECHAT_CONFIG.appId,
       secret: WECHAT_CONFIG.appSecret,
@@ -215,14 +220,27 @@ async function exchangeCodeForToken(code: string): Promise<WeChatAccessToken | n
       grant_type: 'authorization_code',
     });
 
-    const response = await fetch(`${WECHAT_ENDPOINTS.accessToken}?${params.toString()}`);
+    const url = `${WECHAT_ENDPOINTS.accessToken}?${params.toString()}`;
+    console.log('🌐 Requesting URL:', url.replace(WECHAT_CONFIG.appSecret, '***'));
+
+    const response = await fetch(url);
     const data = await response.json();
 
+    console.log('📥 WeChat API response:', data);
+
     if (data.errcode) {
-      console.error('WeChat API error:', data);
+      console.error('❌ WeChat API error:', data);
+      console.error('Error code:', data.errcode);
+      console.error('Error message:', data.errmsg);
       return null;
     }
 
+    if (!data.access_token) {
+      console.error('❌ No access token in response:', data);
+      return null;
+    }
+
+    console.log('✅ Access token obtained successfully');
     return {
       access_token: data.access_token,
       expires_in: data.expires_in,
@@ -232,7 +250,7 @@ async function exchangeCodeForToken(code: string): Promise<WeChatAccessToken | n
       unionid: data.unionid,
     };
   } catch (error) {
-    console.error('Error exchanging code for token:', error);
+    console.error('❌ Error exchanging code for token:', error);
     return null;
   }
 }
@@ -242,20 +260,37 @@ async function exchangeCodeForToken(code: string): Promise<WeChatAccessToken | n
  */
 async function getWeChatUserInfo(accessToken: string, openid: string): Promise<WeChatUserInfo | null> {
   try {
+    console.log('👤 Getting user info from WeChat...');
+    console.log('🎫 Access token:', accessToken.substring(0, 10) + '...');
+    console.log('🆔 OpenID:', openid);
+
     const params = new URLSearchParams({
       access_token: accessToken,
       openid,
       lang: 'zh_CN',
     });
 
-    const response = await fetch(`${WECHAT_ENDPOINTS.userInfo}?${params.toString()}`);
+    const url = `${WECHAT_ENDPOINTS.userInfo}?${params.toString()}`;
+    console.log('🌐 Requesting user info URL:', url);
+
+    const response = await fetch(url);
     const data = await response.json();
 
+    console.log('📥 WeChat user info response:', data);
+
     if (data.errcode) {
-      console.error('WeChat API error:', data);
+      console.error('❌ WeChat user info API error:', data);
+      console.error('Error code:', data.errcode);
+      console.error('Error message:', data.errmsg);
       return null;
     }
 
+    if (!data.openid) {
+      console.error('❌ No openid in user info response:', data);
+      return null;
+    }
+
+    console.log('✅ User info obtained successfully');
     return {
       openid: data.openid,
       unionid: data.unionid,
@@ -268,7 +303,7 @@ async function getWeChatUserInfo(accessToken: string, openid: string): Promise<W
       country: data.country,
     };
   } catch (error) {
-    console.error('Error getting WeChat user info:', error);
+    console.error('❌ Error getting WeChat user info:', error);
     return null;
   }
 }
