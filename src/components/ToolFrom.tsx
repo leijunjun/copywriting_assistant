@@ -57,7 +57,7 @@ export default function ToolFrom(props: IProps) {
   }
 
   const onFormSchema = (defaultValues?: boolean) => {
-    let obj: { [key: string]: any } = {};
+    const obj: { [key: string]: any } = {};
     for (const key in dataSource.from) {
       if (defaultValues) {
         obj[key] = '';

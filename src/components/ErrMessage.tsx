@@ -64,7 +64,7 @@ export function ErrMessage(err_code: number, language: 'chinese' | 'english' | '
         <div className="font-bold">このツールの総クォータが最大限度に達しました。詳細については{gw}をご参照ください。</div>
       ) : (
         <div className="font-bold">
-          This tool's total quota reached maximum limit, Please refer to {gw} for details.
+          This tool&apos;s total quota reached maximum limit, Please refer to {gw} for details.
         </div>
       );
     case -10007:
@@ -74,7 +74,7 @@ export function ErrMessage(err_code: number, language: 'chinese' | 'english' | '
         <div className="font-bold">このツールの日次クォータが最大限度に達しました。詳細については{gw}をご参照ください。</div>
       ) : (
         <div className="font-bold">
-          This tool's daily quota reached maximum limit, Please refer to {gw} for details.
+          This tool&apos;s daily quota reached maximum limit, Please refer to {gw} for details.
         </div>
       );
     case -10008:
@@ -108,7 +108,7 @@ export function ErrMessage(err_code: number, language: 'chinese' | 'english' | '
         </div>
       ) : (
         <div className="font-bold">
-          This free tool's hour quota reached maximum limit. Please view {gw} to create your own tool
+          This free tool&apos;s hour quota reached maximum limit. Please view {gw} to create your own tool
         </div>
       );
     case -1024:

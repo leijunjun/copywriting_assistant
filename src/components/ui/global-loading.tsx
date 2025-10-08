@@ -126,7 +126,7 @@ export function usePageLoading() {
 export function useApiLoading() {
   const { showLoading, hideLoading } = useLoading();
 
-  const withLoading = useCallback(async <T>(
+  const withLoading = useCallback(async <T,>(
     apiCall: () => Promise<T>,
     message: string = '请求处理中...'
   ): Promise<T> => {

@@ -252,8 +252,8 @@ export function EditCustomToolForm(params: { dataSource: ITool & { prompt?: stri
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          {selectClassify.custom.map(item => (<SelectItem value={item.value}>{item.label}</SelectItem>))}
-                          {selectClassify.preset.map(item => (<SelectItem value={item.value}>{item.label}</SelectItem>))}
+                          {selectClassify.custom.map(item => (<SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>))}
+                          {selectClassify.preset.map(item => (<SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>

@@ -145,7 +145,7 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
 
             // Decoding and processing data blocks
             partialData += decoder.decode(value, { stream: true });
-            let lines = partialData.split('\n');
+            const lines = partialData.split('\n');
             // @ts-ignore
             partialData = lines.pop();
             lines.forEach(line => {
