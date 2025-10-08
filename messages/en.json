@@ -105,7 +105,13 @@
     "wechatConnected": "WeChat Connected",
     "lastUpdated": "Last Updated",
     "refresh": "Refresh",
-    "retry": "Retry"
+    "retry": "Retry",
+    "accountType": "Account Type",
+    "emailAccount": "Email Account",
+    "joinDate": "Join Date",
+    "lastActive": "Last Active",
+    "aiCreation": "AI Creation",
+    "rechargeHistory": "Recharge History"
   },
   "Credits": {
     "currentBalance": "Current Balance",

@@ -40,6 +40,7 @@ export function Header({ className }: HeaderProps) {
   const pathname = usePathname();
   const { authState, refreshAuthState, clearAuthState } = useAuth();
   const [error, setError] = useState<string | null>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   // 监听认证状态变化
   useAuthListener((event) => {
@@ -50,6 +51,25 @@ export function Header({ className }: HeaderProps) {
       clearAuthState();
     }
   });
+
+  // 监听页面滚动
+  useEffect(() => {
+    let ticking = false;
+    
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const scrollTop = window.scrollY;
+          setIsScrolled(scrollTop > 10);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // 使用全局认证状态
   const { user, credits, isAuthenticated, isLoading } = authState;
@@ -98,7 +118,7 @@ export function Header({ className }: HeaderProps) {
 
   if (isLoading) {
     return (
-      <header className={`bg-white border-b border-gray-200 ${className}`}>
+      <header className={`sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200/50 shadow-lg shadow-gray-200/20 transition-all duration-300 ease-in-out ${className}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
@@ -112,11 +132,15 @@ export function Header({ className }: HeaderProps) {
   }
 
   return (
-    <header className={`bg-white border-b border-gray-200 ${className}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo and Navigation */}
-          <div className="flex items-center space-x-8">
+    <header className={`sticky top-0 z-50 transition-all duration-300 ease-in-out ${
+      isScrolled 
+        ? 'bg-white/95 backdrop-blur-md border-b border-gray-200/50 shadow-lg shadow-gray-200/20' 
+        : 'bg-white border-b border-gray-200'
+    } ${className}`}>
+      <div className="w-full">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo区域 - 完全左对齐，无左侧留白 */}
+          <div className="flex items-center pl-4 sm:pl-6 lg:pl-8">
             <div className="flex items-center">
               <img
                 src="/logo.png"
@@ -131,100 +155,148 @@ export function Header({ className }: HeaderProps) {
                 AI 文秘
               </span>
             </div>
-            
-            <nav className="hidden md:flex space-x-6">
-              <button
-                onClick={() => handleNavigation('/')}
-                className={`text-sm font-medium transition-colors ${
-                  isActivePath('/') 
-                    ? 'text-blue-600' 
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                {t('home')}
-              </button>
-              
-              {isAuthenticated && user && (
-                <>
-                  <button
-                    onClick={() => handleNavigation('/profile')}
-                    className={`text-sm font-medium transition-colors ${
-                      isActivePath('/profile') 
-                        ? 'text-blue-600' 
-                        : 'text-gray-600 hover:text-gray-900'
-                    }`}
-                  >
-                    {t('profile')}
-                  </button>
-                  
-                  <button
-                    onClick={() => handleNavigation('/credits')}
-                    className={`text-sm font-medium transition-colors ${
-                      isActivePath('/credits') 
-                        ? 'text-blue-600' 
-                        : 'text-gray-600 hover:text-gray-900'
-                    }`}
-                  >
-                    {t('credits')}
-                  </button>
-                </>
-              )}
-            </nav>
           </div>
 
-          {/* User Menu and Credit Balance */}
-          <div className="flex items-center space-x-4">
-            {/* Language Switcher */}
+          {/* 导航区域 - 居中 */}
+          <nav className="hidden md:flex items-center space-x-8 px-4">
+            <button
+              onClick={() => handleNavigation('/')}
+              className={`text-sm font-medium transition-colors ${
+                isActivePath('/') 
+                  ? 'text-blue-600' 
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              首页
+            </button>
+            
+            <button
+              onClick={() => handleNavigation('/features')}
+              className={`text-sm font-medium transition-colors ${
+                isActivePath('/features') 
+                  ? 'text-blue-600' 
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              特色
+            </button>
+            
+            <button
+              onClick={() => handleNavigation('/pricing')}
+              className={`text-sm font-medium transition-colors ${
+                isActivePath('/pricing') 
+                  ? 'text-blue-600' 
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              套餐
+            </button>
+            
+            <button
+              onClick={() => handleNavigation('/about')}
+              className={`text-sm font-medium transition-colors ${
+                isActivePath('/about') 
+                  ? 'text-blue-600' 
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              关于
+            </button>
+          </nav>
+
+          {/* 个人信息区域 - 右对齐 */}
+          <div className="flex items-center space-x-4 pr-4 sm:pr-6 lg:pr-8">
+            {/* 语种切换按钮 */}
             <LanguagePopover />
             
             {isAuthenticated && user && credits ? (
               <>
-                {/* Credit Balance */}
-                <div className="flex items-center space-x-2">
-                  <CreditIcon className="h-4 w-4 text-gray-600" />
-                  <span className="text-sm font-medium text-gray-900">
+                {/* 积分显示 - 融合样式 */}
+                <div className={`flex items-center space-x-2 rounded-lg px-3 py-1.5 ${
+                  getCreditStatus(credits.balance).color === 'default' 
+                    ? 'bg-gray-100 text-gray-700' 
+                    : getCreditStatus(credits.balance).color === 'destructive'
+                    ? 'bg-red-100 text-red-700'
+                    : getCreditStatus(credits.balance).color === 'secondary'
+                    ? 'bg-yellow-100 text-yellow-700'
+                    : 'bg-green-100 text-green-700'
+                }`}>
+                  <CreditIcon className="h-4 w-4" />
+                  <span className="text-sm font-medium">
                     {credits.balance.toLocaleString()}
                   </span>
-                  <Badge variant={getCreditStatus(credits.balance).color as any}>
-                    {getCreditStatus(credits.balance).icon}
-                  </Badge>
+                  {/* 移除图标符号 */}
                 </div>
 
-                {/* User Menu */}
+                {/* 个人信息菜单 - 优化版本 */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                      <Avatar>
-                        <AvatarImage src={user.avatar_url} alt={user.nickname} />
-                        <AvatarFallback>{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
-                      </Avatar>
+                    <Button 
+                      variant="ghost" 
+                      className="relative h-9 w-auto px-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={user.avatar_url} alt={user.nickname} />
+                          <AvatarFallback className="text-sm">{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
+                        </Avatar>
+                      </div>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56" align="end" forceMount>
-                    <div className="flex items-center justify-start gap-2 p-2">
+                  <DropdownMenuContent 
+                    className="w-64 bg-white border border-gray-200 shadow-lg rounded-lg p-1" 
+                    align="end" 
+                    forceMount
+                    sideOffset={8}
+                  >
+                    {/* 用户信息头部 */}
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-md mb-1">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={user.avatar_url} alt={user.nickname} />
+                        <AvatarFallback className="text-sm font-medium">{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
+                      </Avatar>
                       <div className="flex flex-col space-y-1 leading-none">
-                        <p className="font-medium">{user.nickname}</p>
-                        <p className="w-[200px] truncate text-sm text-muted-foreground">
+                        <p className="font-medium text-gray-900">{user.nickname}</p>
+                        <p className="text-sm text-gray-600">
                           {credits.balance.toLocaleString()} {t('credits')}
                         </p>
                       </div>
                     </div>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => handleNavigation('/profile')}>
-                      <UserIcon className="mr-2 h-4 w-4" />
+                    
+                    <DropdownMenuSeparator className="my-2" />
+                    
+                    {/* 菜单项 */}
+                    <DropdownMenuItem 
+                      onClick={() => handleNavigation('/profile')}
+                      className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-700 rounded-md cursor-pointer transition-colors duration-150"
+                    >
+                      <UserIcon className="h-4 w-4" />
                       <span>{t('profile')}</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleNavigation('/credits')}>
-                      <CreditIcon className="mr-2 h-4 w-4" />
+                    
+                    <DropdownMenuItem 
+                      onClick={() => handleNavigation('/credits')}
+                      className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-700 rounded-md cursor-pointer transition-colors duration-150"
+                    >
+                      <CreditIcon className="h-4 w-4" />
                       <span>{t('manageCredits')}</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleNavigation('/settings')}>
-                      <SettingsIcon className="mr-2 h-4 w-4" />
+                    
+                    <DropdownMenuItem 
+                      onClick={() => handleNavigation('/settings')}
+                      className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-700 rounded-md cursor-pointer transition-colors duration-150"
+                    >
+                      <SettingsIcon className="h-4 w-4" />
                       <span>{t('settings')}</span>
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout}>
-                      <LogOutIcon className="mr-2 h-4 w-4" />
+                    
+                    <DropdownMenuSeparator className="my-2" />
+                    
+                    <DropdownMenuItem 
+                      onClick={handleLogout}
+                      className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 rounded-md cursor-pointer transition-colors duration-150"
+                    >
+                      <LogOutIcon className="h-4 w-4" />
                       <span>{t('logout')}</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -236,6 +308,7 @@ export function Header({ className }: HeaderProps) {
                   onClick={() => handleNavigation('/auth/login')}
                   variant="outline"
                   size="sm"
+                  className="px-4"
                 >
                   {t('login')}
                 </Button>

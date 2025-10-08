@@ -105,7 +105,13 @@
     "wechatConnected": "WeChat接続済み",
     "lastUpdated": "最終更新",
     "refresh": "更新",
-    "retry": "再試行"
+    "retry": "再試行",
+    "accountType": "アカウントタイプ",
+    "emailAccount": "メールアカウント",
+    "joinDate": "参加日",
+    "lastActive": "最終アクティブ",
+    "aiCreation": "AI創作",
+    "rechargeHistory": "チャージ履歴"
   },
   "Credits": {
     "currentBalance": "現在の残高",

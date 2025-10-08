@@ -105,7 +105,13 @@
     "wechatConnected": "微信已连接",
     "lastUpdated": "最后更新",
     "refresh": "刷新",
-    "retry": "重试"
+    "retry": "重试",
+    "accountType": "账户类型",
+    "emailAccount": "邮箱账户",
+    "joinDate": "加入日期",
+    "lastActive": "最后活跃",
+    "aiCreation": "AI创作",
+    "rechargeHistory": "充值记录"
   },
   "Credits": {
     "currentBalance": "当前余额",

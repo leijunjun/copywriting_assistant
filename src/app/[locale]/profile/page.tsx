@@ -182,30 +182,36 @@ export default function ProfilePage() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Button
+                onClick={() => router.push('/')}
+                variant="outline"
+                className="h-20 flex flex-col items-center justify-center space-y-2 hover:bg-blue-50 hover:border-blue-300 transition-colors group"
+              >
+                <svg className="w-6 h-6 text-blue-600 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+                <span className="text-sm font-medium text-gray-700 group-hover:text-gray-700">{t('aiCreation')}</span>
+              </Button>
+              
+              <Button
                 onClick={() => router.push('/credits')}
                 variant="outline"
-                className="h-20 flex flex-col items-center justify-center space-y-2"
+                className="h-20 flex flex-col items-center justify-center space-y-2 hover:bg-green-50 hover:border-green-300 transition-colors group"
               >
-                <span className="text-2xl">💰</span>
-                <span>{t('manageCredits')}</span>
+                <svg className="w-6 h-6 text-green-600 group-hover:text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                </svg>
+                <span className="text-sm font-medium text-gray-700 group-hover:text-gray-700">{t('manageCredits')}</span>
               </Button>
               
               <Button
                 onClick={() => router.push('/credits/history')}
                 variant="outline"
-                className="h-20 flex flex-col items-center justify-center space-y-2"
+                className="h-20 flex flex-col items-center justify-center space-y-2 hover:bg-purple-50 hover:border-purple-300 transition-colors group"
               >
-                <span className="text-2xl">📊</span>
-                <span>{t('transactionHistory')}</span>
-              </Button>
-              
-              <Button
-                onClick={() => router.push('/settings')}
-                variant="outline"
-                className="h-20 flex flex-col items-center justify-center space-y-2"
-              >
-                <span className="text-2xl">⚙️</span>
-                <span>{t('settings')}</span>
+                <svg className="w-6 h-6 text-purple-600 group-hover:text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span className="text-sm font-medium text-gray-700 group-hover:text-gray-700">{t('rechargeHistory')}</span>
               </Button>
             </div>
           </CardContent>
