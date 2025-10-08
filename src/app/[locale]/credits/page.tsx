@@ -39,6 +39,14 @@ export default function CreditsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>('all');
+  const [pagination, setPagination] = useState<{
+    page: number;
+    limit: number;
+    total: number;
+    total_pages: number;
+    has_next: boolean;
+    has_prev: boolean;
+  } | null>(null);
 
   useEffect(() => {
     fetchCreditData();
@@ -80,12 +88,13 @@ export default function CreditsPage() {
     }
   };
 
-  const fetchTransactionHistory = async () => {
+  const fetchTransactionHistory = async (page: number = 1) => {
     try {
       const params = new URLSearchParams();
       if (filter !== 'all') {
         params.append('type', filter);
       }
+      params.append('page', page.toString());
       params.append('limit', '10');
 
       const response = await fetch(`/api/credits/history?${params.toString()}`);
@@ -93,6 +102,7 @@ export default function CreditsPage() {
 
       if (data.success) {
         setTransactions(data.transactions || []);
+        setPagination(data.pagination);
       }
     } catch (err) {
       logger.error('Failed to fetch transaction history', err, 'API');
@@ -109,11 +119,18 @@ export default function CreditsPage() {
   };
 
   const handleLoadMore = () => {
-    fetchTransactionHistory();
+    if (pagination && pagination.has_next) {
+      fetchTransactionHistory(pagination.page + 1);
+    }
   };
 
   const handleFilter = (type: string) => {
     setFilter(type);
+    fetchTransactionHistory(1); // Reset to first page when filtering
+  };
+
+  const handlePageChange = (page: number) => {
+    fetchTransactionHistory(page);
   };
 
   if (loading) {
@@ -178,8 +195,10 @@ export default function CreditsPage() {
           <div className="lg:col-span-2">
             <TransactionHistory
               transactions={transactions}
+              pagination={pagination}
               onLoadMore={handleLoadMore}
               onFilter={handleFilter}
+              onPageChange={handlePageChange}
             />
           </div>
         </div>

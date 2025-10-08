@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { CLEAR_CONTENT_BUTTON, FROM_LABEL, LANGUAGE_LIST, OUTPUT_LANGUAGE, PLEASE_ENTER, PLEASE_SELECT, SUBMIT_BUTTON, XIAOHONGSHU_PRESET_CONTENT } from "@/constant/language";
+import { useCreditDeductionRate } from '@/hooks/useCreditDeductionRate';
 
 interface IProps {
   onOk: (value: any) => void
@@ -28,6 +29,9 @@ export default function ToolFrom(props: IProps) {
   const { language, dataSource, onOk, generateRecords = [], onExportToWord, load: externalLoad } = props;
   const [outputLanguage, setOutputLanguage] = useState('Chinese')
   const [presetOpen, setPresetOpen] = useState(false)
+  
+  // Get credit deduction rate
+  const { deductionRate, loading: rateLoading } = useCreditDeductionRate();
   const [searchQuery, setSearchQuery] = useState('')
   
   // 使用外部传入的 load 状态，如果没有则使用内部状态
@@ -285,10 +289,20 @@ export default function ToolFrom(props: IProps) {
                 {onRenderingSelect(LANGUAGE_LIST, OUTPUT_LANGUAGE[language])}
               </Select>
             </div>
-            <Button type="submit" disabled={isLoading} className="bg-[#8e47f0] hover:bg-[#7f39ea] w-64" >
+            <Button type="submit" disabled={isLoading || rateLoading} className="bg-[#8e47f0] hover:bg-[#7f39ea] w-64 relative" >
               {
-                isLoading ? <Loader2 className="animate-spin" style={{ width: 18, height: 18 }} />
-                  : SUBMIT_BUTTON[dataSource.submitButton][language]
+                isLoading ? (
+                  <Loader2 className="animate-spin" style={{ width: 18, height: 18 }} />
+                ) : (
+                  <span>
+                    {SUBMIT_BUTTON[dataSource.submitButton][language]}
+                    <span className="ml-2 text-xs opacity-80">
+                      {language === 'chinese' ? `${deductionRate}积分/次` : 
+                       language === 'english' ? `${deductionRate}credits/use` : 
+                       `${deductionRate}クレジット/回`}
+                    </span>
+                  </span>
+                )
               }
             </Button>
           </div>

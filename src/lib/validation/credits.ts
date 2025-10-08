@@ -162,7 +162,7 @@ export const CreditHistoryRequestSchema = z.object({
   user_id: z.string().uuid('Invalid user ID'),
   page: z.number().int().positive('Page must be positive').optional(),
   limit: z.number().int().positive('Limit must be positive').max(100, 'Limit cannot exceed 100').optional(),
-  type: TransactionTypeSchema.optional(),
+  type: TransactionTypeSchema.optional().nullable(),
   start_date: z.string().datetime().optional(),
   end_date: z.string().datetime().optional(),
 });

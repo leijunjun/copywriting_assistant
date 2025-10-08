@@ -35,6 +35,7 @@ interface TransactionHistoryProps {
   };
   onLoadMore: () => void;
   onFilter: (type: string) => void;
+  onPageChange?: (page: number) => void;
   className?: string;
 }
 
@@ -48,6 +49,7 @@ export function TransactionHistory({
   pagination, 
   onLoadMore, 
   onFilter, 
+  onPageChange,
   className 
 }: TransactionHistoryProps) {
   const t = useTranslations('Credits');
@@ -96,7 +98,20 @@ export function TransactionHistory({
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString();
+    const date = new Date(dateString);
+    // 根据当前语种进行本地化
+    const locale = typeof window !== 'undefined' ? 
+      (window.location.pathname.startsWith('/en') ? 'en-US' : 
+       window.location.pathname.startsWith('/ja') ? 'ja-JP' : 'zh-CN') : 'zh-CN';
+    
+    return date.toLocaleString(locale, {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
   };
 
   const formatAmount = (amount: number, type: string) => {
@@ -131,6 +146,21 @@ export function TransactionHistory({
         return '💰';
       default:
         return '💳';
+    }
+  };
+
+  const getTransactionTypeLabel = (type: string) => {
+    switch (type) {
+      case 'deduction':
+        return t('deductions');
+      case 'bonus':
+        return t('bonuses');
+      case 'refund':
+        return t('refunds');
+      case 'recharge':
+        return t('recharges');
+      default:
+        return type;
     }
   };
 
@@ -185,7 +215,7 @@ export function TransactionHistory({
   return (
     <Card className={className}>
       <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
+        <CardTitle className="flex items-center space-x-2 mb-6">
           <HistoryIcon className="h-5 w-5" />
           <span>{t('transactionHistory')}</span>
         </CardTitle>
@@ -234,7 +264,7 @@ export function TransactionHistory({
                 </div>
                 <div className="flex items-center space-x-2">
                   <Badge variant={getTransactionTypeColor(transaction.transaction_type) as any}>
-                    {transaction.transaction_type}
+                    {getTransactionTypeLabel(transaction.transaction_type)}
                   </Badge>
                   <span className={`font-mono ${
                     transaction.transaction_type === 'deduction' ? 'text-destructive' : 'text-success'
@@ -247,7 +277,38 @@ export function TransactionHistory({
           </div>
         )}
 
-        {currentPagination && currentPagination.has_next && (
+        {/* Pagination Controls */}
+        {currentPagination && currentPagination.total_pages > 1 && (
+          <div className="flex items-center justify-between pt-4 border-t">
+            <div className="text-sm text-muted-foreground">
+              {t('showing')} {((currentPagination.page - 1) * currentPagination.limit) + 1} - {Math.min(currentPagination.page * currentPagination.limit, currentPagination.total)} {t('of')} {currentPagination.total} {t('transactions')}
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onPageChange?.(currentPagination.page - 1)}
+                disabled={!currentPagination.has_prev}
+              >
+                {t('previous')}
+              </Button>
+              <span className="text-sm">
+                {t('page')} {currentPagination.page} {t('of')} {currentPagination.total_pages}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onPageChange?.(currentPagination.page + 1)}
+                disabled={!currentPagination.has_next}
+              >
+                {t('next')}
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Load More Button (for backward compatibility) */}
+        {currentPagination && currentPagination.has_next && !onPageChange && (
           <div className="flex justify-center pt-4">
             <Button onClick={onLoadMore} variant="outline">
               {t('loadMore')}

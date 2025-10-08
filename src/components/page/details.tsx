@@ -25,6 +25,7 @@ import { deleteCustomToolData, getAllCustomToolData } from '@/app/api/customTool
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { COPY_ERROR, COPY_SUCCESSFUL, DELETE_RECORD_CANCEL, DELETE_RECORD_CONTINUE, DELETE_RECORD_MESSAGE, HEADER_TITLE, LANGUAGE_LIBRARY, SUBMIT_BUTTON, SUCCESSFULLY_GENERATED, BREADCRUMB } from "@/constant/language";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { useAuth } from '@/lib/auth/auth-context';
 
 interface IGenerateRecords { id: number; toolId: string | number; output: string; createdAt: string; }
 
@@ -32,6 +33,7 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
   const router = useRouter();
   const dispatch = useAppDispatch()
   const global = useAppSelector(selectGlobal)
+  const { refreshAuthState } = useAuth();
 
   const [load, setLoad] = useState(false);
   const [open, setOpen] = useState(false);
@@ -114,7 +116,7 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
         const res = await fetch('/api/generateWriting', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...data }),
+          body: JSON.stringify({ ...data, language: global.language }),
         })
         if (res?.body && res.ok) {
           const reader = res.body.getReader();
@@ -127,7 +129,16 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
             if (done) {
               console.log('Stream complete');
               await addData(newParams);
-              onToast(`${SUBMIT_BUTTON[dataSource?.submitButton || ''][global.language]}${SUCCESSFULLY_GENERATED[global.language]}`)
+              onToast(`${SUBMIT_BUTTON[dataSource?.submitButton || ''][global.language]}${SUCCESSFULLY_GENERATED[global.language]}`, 'success')
+              
+              // 异步更新积分余额
+              try {
+                await refreshAuthState();
+                console.log('积分余额已更新');
+              } catch (error) {
+                console.error('更新积分余额失败:', error);
+              }
+              
               setLoad(false);
               return;
             }
@@ -275,8 +286,8 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
     }
   }
 
-  const onToast = (description: string) => {
-    toast({ duration: 2000, description })
+  const onToast = (description: string, variant: 'default' | 'destructive' | 'success' = 'default') => {
+    toast({ duration: 2000, description, variant })
   }
 
   const onHandleCopyResult = (text: string) => {

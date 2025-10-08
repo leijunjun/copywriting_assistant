@@ -87,6 +87,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             isLoading: false,
           });
           
+          // 触发积分更新事件
+          triggerAuthEvent('refresh');
+          
           logger.auth('Auth state refreshed', {
             userId: data.user.id,
             balance: data.credits.balance,
@@ -116,7 +119,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isLoading: false,
       });
     }
-  }, []);
+  }, [triggerAuthEvent]);
 
   // 清除认证状态
   const clearAuthState = useCallback(() => {

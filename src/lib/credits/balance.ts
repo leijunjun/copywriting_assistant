@@ -5,6 +5,7 @@
  */
 
 import { UserCreditsModel, DatabaseUtils } from '@/lib/database/models';
+import { supabase } from '@/lib/supabase/client';
 import type {
   CreditBalance,
   CreditBalanceResponse,

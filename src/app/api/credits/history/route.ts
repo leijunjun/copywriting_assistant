@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
       user_id: user.id,
       page: page ? parseInt(page, 10) : undefined,
       limit: limit ? parseInt(limit, 10) : undefined,
-      type: type as 'deduction' | 'bonus' | 'refund' | 'recharge' | undefined,
+      type: type && type !== 'all' ? type as 'deduction' | 'bonus' | 'refund' | 'recharge' : undefined,
       start_date: startDate || undefined,
       end_date: endDate || undefined,
     };
@@ -149,7 +149,7 @@ export async function POST(request: NextRequest) {
       user_id: user.id,
       page: body.page,
       limit: body.limit,
-      type: body.type,
+      type: body.type && body.type !== 'all' ? body.type : undefined,
       start_date: body.start_date,
       end_date: body.end_date,
     };

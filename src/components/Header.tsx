@@ -41,6 +41,7 @@ export function Header({ className }: HeaderProps) {
   const { authState, refreshAuthState, clearAuthState } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isUpdatingCredits, setIsUpdatingCredits] = useState(false);
 
   // 监听认证状态变化
   useAuthListener((event) => {
@@ -49,6 +50,10 @@ export function Header({ className }: HeaderProps) {
       refreshAuthState();
     } else if (event === 'logout') {
       clearAuthState();
+    } else if (event === 'refresh') {
+      // 积分更新时显示动画
+      setIsUpdatingCredits(true);
+      setTimeout(() => setIsUpdatingCredits(false), 1000);
     }
   });
 
@@ -212,7 +217,7 @@ export function Header({ className }: HeaderProps) {
             {isAuthenticated && user && credits ? (
               <>
                 {/* 积分显示 - 融合样式 */}
-                <div className={`flex items-center space-x-2 rounded-lg px-3 py-1.5 ${
+                <div className={`flex items-center space-x-2 rounded-lg px-3 py-1.5 transition-all duration-300 ${
                   getCreditStatus(credits.balance).color === 'default' 
                     ? 'bg-gray-100 text-gray-700' 
                     : getCreditStatus(credits.balance).color === 'destructive'
@@ -220,12 +225,14 @@ export function Header({ className }: HeaderProps) {
                     : getCreditStatus(credits.balance).color === 'secondary'
                     ? 'bg-yellow-100 text-yellow-700'
                     : 'bg-green-100 text-green-700'
-                }`}>
-                  <CreditIcon className="h-4 w-4" />
-                  <span className="text-sm font-medium">
+                } ${isUpdatingCredits ? 'animate-pulse bg-blue-100 text-blue-700' : ''}`}>
+                  <CreditIcon className={`h-4 w-4 ${isUpdatingCredits ? 'animate-spin' : ''}`} />
+                  <span className={`text-sm font-medium ${isUpdatingCredits ? 'animate-pulse' : ''}`}>
                     {credits.balance.toLocaleString()}
                   </span>
-                  {/* 移除图标符号 */}
+                  {isUpdatingCredits && (
+                    <span className="text-xs text-blue-600 animate-pulse">更新中...</span>
+                  )}
                 </div>
 
                 {/* 个人信息菜单 - 优化版本 */}

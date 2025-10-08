@@ -4,7 +4,7 @@
  * This file contains utilities for managing credit transactions.
  */
 
-import { CreditTransactionModel, DatabaseUtils } from '@/lib/database/models';
+import { CreditTransactionModel, DatabaseUtils, UserCreditsModel } from '@/lib/database/models';
 import { supabase } from '@/lib/supabase/client';
 import type {
   CreditTransaction,
@@ -48,29 +48,37 @@ export async function createCreditTransaction(
       }
     }
 
-    // Process transaction using database function
-    const result = await DatabaseUtils.processCreditTransaction(
-      userId,
-      transactionType === 'deduction' ? -amount : amount,
-      transactionType,
-      description
-    );
+    // Process transaction using database function with proper authentication
+    try {
+      const result = await DatabaseUtils.processCreditTransaction(
+        userId,
+        transactionType === 'deduction' ? -amount : amount,
+        transactionType,
+        description
+      );
 
-    if (!result.success) {
+      if (!result.success) {
+        return {
+          success: false,
+          error: result.error || 'Failed to process transaction',
+        };
+      }
+
+      // Get the created transaction
+      const transaction = await CreditTransactionModel.findById(result.transaction_id!);
+
+      return {
+        success: true,
+        transaction,
+        new_balance: result.new_balance,
+      };
+    } catch (error) {
+      console.error('Error processing credit transaction:', error);
       return {
         success: false,
-        error: result.error || 'Failed to process transaction',
+        error: error instanceof Error ? error.message : 'Failed to process transaction',
       };
     }
-
-    // Get the created transaction
-    const transaction = await CreditTransactionModel.findById(result.transaction_id!);
-
-    return {
-      success: true,
-      transaction,
-      new_balance: result.new_balance,
-    };
   } catch (error) {
     console.error('Error creating credit transaction:', error);
     return {
@@ -157,9 +165,13 @@ export async function getCreditHistory(
   request: CreditHistoryRequest
 ): Promise<CreditHistoryResponse> {
   try {
+    const page = request.page || 1;
+    const limit = Math.min(request.limit || 10, 50); // 最多50条
+    const offset = (page - 1) * limit;
+
     const transactions = await CreditTransactionModel.findByUserId(request.user_id, {
-      limit: request.limit,
-      offset: request.offset,
+      limit,
+      offset,
       type: request.type,
       startDate: request.start_date,
       endDate: request.end_date,
@@ -167,15 +179,15 @@ export async function getCreditHistory(
 
     // Get total count for pagination
     const totalCount = await CreditTransactionModel.countByUserId(request.user_id);
-    const totalPages = Math.ceil(totalCount / (request.limit || 10));
+    const totalPages = Math.ceil(totalCount / limit);
 
     const pagination: PaginationInfo = {
-      page: request.page || 1,
-      limit: request.limit || 10,
+      page,
+      limit,
       total: totalCount,
       total_pages: totalPages,
-      has_next: (request.page || 1) < totalPages,
-      has_prev: (request.page || 1) > 1,
+      has_next: page < totalPages,
+      has_prev: page > 1,
     };
 
     return {
