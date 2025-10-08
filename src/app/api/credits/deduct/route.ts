@@ -5,6 +5,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+
+// Force dynamic rendering for this route
+export const dynamic = 'force-dynamic';
 import { getCurrentUser } from '@/lib/auth/session';
 import { deductCredits } from '@/lib/credits/transactions';
 import { validateCreditDeductionRequest } from '@/lib/validation/credits';

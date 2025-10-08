@@ -5,6 +5,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+
+// Force dynamic rendering for this route
+export const dynamic = 'force-dynamic';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { getCreditBalance } from '@/lib/credits/balance';
 import { logger } from '@/lib/utils/logger';
