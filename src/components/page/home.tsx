@@ -19,6 +19,7 @@ import { deleteCustomToolDataKey, getAllCustomToolData } from "@/app/api/customT
 import { deleteClassifyData, getAllClassifyData, IClassify } from "@/app/api/classify/indexedDB";
 import { CARD_RECENTLY_USED, classify, INPUT_PLACEHOLDER, LANGUAGE_LIBRARY, HOME_TITLE, HOME_SEARCH_PLACEHOLDER, HOME_CATEGORY_NAVIGATION, HOME_ALL_CATEGORIES, HOME_SIDEBAR_HIDE, HOME_SIDEBAR_SHOW } from "@/constant/language";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { GradientRotatingText } from "../ui/rotating-text";
 
 export default function Home() {
   const dispatch = useAppDispatch()
@@ -467,9 +468,34 @@ export default function Home() {
             <div className={`mx-auto text-center transition-all duration-300 ${
               sidebarVisible ? 'max-w-3xl' : 'max-w-7xl'
             }`}>
-              {/* 主标题 */}
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-primary-100 to-primary-200 bg-clip-text text-transparent">
-                {HOME_TITLE[global.language]}
+              {/* 主标题 - 旋转文字动画 */}
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">
+                <GradientRotatingText
+                  words={global.language === 'chinese' ? [
+                    HOME_TITLE[global.language],
+                    "智能文案生成",
+                    "AI 写作助手", 
+                    "内容创作工具",
+                    "文案优化神器"
+                  ] : global.language === 'english' ? [
+                    HOME_TITLE[global.language],
+                    "Smart Content Generation",
+                    "AI Writing Assistant",
+                    "Content Creation Tools",
+                    "Copywriting Optimization"
+                  ] : [
+                    HOME_TITLE[global.language],
+                    "スマートコンテンツ生成",
+                    "AIライティングアシスタント",
+                    "コンテンツ作成ツール",
+                    "コピーライティング最適化"
+                  ]}
+                  className="text-2xl sm:text-3xl md:text-4xl font-bold"
+                  duration={2500}
+                  delay={200}
+                  gradientFrom="from-primary-100"
+                  gradientTo="to-primary-200"
+                />
               </h1>
               
               {/* 搜索框 */}

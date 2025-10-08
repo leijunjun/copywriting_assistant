@@ -154,8 +154,14 @@ export function Header({ className }: HeaderProps) {
                 className="object-contain"
               />
               <span
-                className="ml-2 px-2 py-0.5 rounded text-xs font-semibold bg-blue-100 text-blue-700"
-                style={{ lineHeight: '1.5' }}
+                className="ml-3 px-3 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25 border border-blue-400/20 backdrop-blur-sm transition-all duration-300 ease-out hover:scale-105 hover:shadow-xl hover:shadow-blue-500/30 hover:from-blue-600 hover:to-purple-700"
+                style={{ 
+                  lineHeight: '1.2',
+                  letterSpacing: '0.025em',
+                  textShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                  background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
+                  boxShadow: '0 4px 14px 0 rgba(59, 130, 246, 0.25), 0 2px 4px 0 rgba(0,0,0,0.1)'
+                }}
               >
                 AI 文秘
               </span>
