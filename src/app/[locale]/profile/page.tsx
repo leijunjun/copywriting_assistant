@@ -6,7 +6,7 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -14,8 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { UserProfile } from '@/components/auth/UserProfile';
 import { CreditBalance } from '@/components/credits/CreditBalance';
 import { LowCreditWarning } from '@/components/credits/LowCreditWarning';
-import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import { ErrorMessage } from '@/components/ui/error-message';
+import { ProfilePageSkeleton, LoadingIndicator, PageLoadingOverlay } from '@/components/ui/loading-skeleton';
 import { logger } from '@/lib/utils/logger';
 
 interface UserData {
@@ -33,6 +32,28 @@ interface CreditData {
   updated_at: string;
 }
 
+// 优化的用户资料组件
+const OptimizedUserProfile = memo(({ user, onLogout }: { user: UserData; onLogout: () => void }) => {
+  return <UserProfile user={user} onLogout={onLogout} />;
+});
+
+OptimizedUserProfile.displayName = 'OptimizedUserProfile';
+
+// 优化的积分余额组件
+const OptimizedCreditBalance = memo(({ 
+  balance, 
+  onRecharge, 
+  showWarning 
+}: { 
+  balance: number; 
+  onRecharge: () => void; 
+  showWarning: boolean; 
+}) => {
+  return <CreditBalance balance={balance} onRecharge={onRecharge} showWarning={showWarning} />;
+});
+
+OptimizedCreditBalance.displayName = 'OptimizedCreditBalance';
+
 export default function ProfilePage() {
   const t = useTranslations('Common');
   const router = useRouter();
@@ -40,18 +61,28 @@ export default function ProfilePage() {
   const [credits, setCredits] = useState<CreditData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [loadingProgress, setLoadingProgress] = useState(0);
 
   useEffect(() => {
     fetchUserProfile();
   }, []);
 
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
+      setLoadingProgress(0);
+
+      // 模拟加载进度
+      const progressInterval = setInterval(() => {
+        setLoadingProgress(prev => Math.min(prev + 10, 90));
+      }, 100);
 
       const response = await fetch('/api/user/profile');
       const data = await response.json();
+
+      clearInterval(progressInterval);
+      setLoadingProgress(100);
 
       if (!data.success) {
         if (response.status === 401) {
@@ -76,7 +107,7 @@ export default function ProfilePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [router]);
 
   const handleLogout = async () => {
     try {
@@ -105,20 +136,34 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <LoadingSpinner size="lg" />
-      </div>
+      <>
+        <ProfilePageSkeleton />
+        <PageLoadingOverlay 
+          message="正在加载个人资料..." 
+          showProgress={true}
+          progress={loadingProgress}
+        />
+      </>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="max-w-md w-full">
-          <ErrorMessage message={error} />
-          <Button onClick={fetchUserProfile} variant="outline" className="mt-4">
-            {t('retry')}
-          </Button>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+            <div className="text-red-600 text-lg font-medium mb-2">
+              加载失败
+            </div>
+            <p className="text-red-500 mb-4">{error}</p>
+            <Button
+              onClick={fetchUserProfile}
+              className="w-full"
+              variant="outline"
+            >
+              {t('retry')}
+            </Button>
+          </div>
         </div>
       </div>
     );
@@ -153,13 +198,13 @@ export default function ProfilePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* User Profile Card */}
-          <UserProfile
+          <OptimizedUserProfile
             user={user}
             onLogout={handleLogout}
           />
 
           {/* Credit Balance Card */}
-          <CreditBalance
+          <OptimizedCreditBalance
             balance={credits.balance}
             onRecharge={handleRecharge}
             showWarning={credits.balance < 20}

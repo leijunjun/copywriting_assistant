@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { memo, useMemo, useCallback, lazy, Suspense } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "../ui/use-toast";
 import { useEffect, useState } from "react";
@@ -19,11 +19,115 @@ import { deleteCustomToolDataKey, getAllCustomToolData } from "@/app/api/customT
 import { deleteClassifyData, getAllClassifyData, IClassify } from "@/app/api/classify/indexedDB";
 import { CARD_RECENTLY_USED, classify, INPUT_PLACEHOLDER, LANGUAGE_LIBRARY, HOME_TITLE, HOME_SEARCH_PLACEHOLDER, HOME_CATEGORY_NAVIGATION, HOME_ALL_CATEGORIES, HOME_SIDEBAR_HIDE, HOME_SIDEBAR_SHOW } from "@/constant/language";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
-import { GradientRotatingText } from "../ui/rotating-text";
+import { HomePageSkeleton, LoadingIndicator, ToolCardSkeleton } from "../ui/loading-skeleton";
+
+// 懒加载旋转文字组件
+const GradientRotatingText = lazy(() => import("../ui/rotating-text").then(module => ({ default: module.GradientRotatingText })));
+
+// 优化的工具卡片组件
+const ToolCard = memo(({ item, global, router, isTikTok }: { 
+  item: Pick<ITool, 'id' | 'title' | 'url' | 'name' | 'describe'>, 
+  global: any, 
+  router: any,
+  isTikTok: boolean 
+}) => {
+  const handleClick = useCallback(() => {
+    router.push(`/${item.title}`);
+  }, [router, item.title]);
+
+  return (
+    <div
+      key={item.id}
+      onClick={handleClick}
+      className={`group flex items-center cursor-pointer p-3 sm:p-4 h-24 sm:h-28 md:h-32 hover:shadow-xl transition-all duration-300 relative rounded-xl border hover:-translate-y-1 w-full ${
+        isTikTok 
+          ? 'bg-bg-100 border-pink-300/30 hover:border-pink-400/50 hover:shadow-pink-300/20' 
+          : 'bg-bg-100 border-bg-300 hover:border-primary-200 hover:shadow-primary-300/20'
+      }`}
+      style={{ 
+        background: 'linear-gradient(135deg, var(--bg-100) 0%, var(--bg-200) 100%)',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)'
+      }}
+    >
+      <div className={`md:min-w-20 md:max-w-20 md:h-20 min-w-16 max-w-16 h-16 p-2 rounded-lg transition-all duration-300 ${
+        isTikTok 
+          ? 'bg-gradient-to-br from-pink-500/20 to-cyan-500/20 group-hover:from-pink-500/40 group-hover:to-cyan-500/40' 
+          : 'bg-gradient-to-br from-primary-300/20 to-primary-200/20 group-hover:from-primary-300/40 group-hover:to-primary-200/40'
+      }`}>
+        <img 
+          className="w-full h-full object-cover rounded-md" 
+          src={item.url} 
+          alt={item.name[global.language as keyof typeof item.name]}
+          loading="lazy"
+        />
+      </div>
+      <div className="pl-4 flex-1 min-w-0">
+        <div className="font-bold md:text-lg text-base pb-2 text-text-100 group-hover:text-primary-100 transition-colors duration-300 truncate">
+          {item.name[global.language as keyof typeof item.name]}
+        </div>
+        <div className="text-sm text-text-200 group-hover:text-text-100 transition-colors duration-300 line-clamp-2">
+          {item.describe[global.language as keyof typeof item.describe]}
+        </div>
+      </div>
+      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className={`w-2 h-2 rounded-full ${
+          isTikTok ? 'bg-pink-400' : 'bg-primary-200'
+        }`}></div>
+      </div>
+    </div>
+  );
+});
+
+ToolCard.displayName = 'ToolCard';
+
+// 优化的工具列表组件
+const ToolList = memo(({ data, global, router, sidebarVisible, loading }: {
+  data: Array<Pick<ITool, 'id' | 'title' | 'url' | 'name' | 'describe'>>,
+  global: any,
+  router: any,
+  sidebarVisible: boolean,
+  loading?: boolean
+}) => {
+  if (loading) {
+    return (
+      <div className={`grid gap-3 sm:gap-4 transition-all ${
+        sidebarVisible 
+          ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' 
+          : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+      }`}>
+        {Array.from({ length: 6 }).map((_, i) => (
+          <ToolCardSkeleton key={i} />
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className={`grid gap-3 sm:gap-4 transition-all ${
+      sidebarVisible 
+        ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' 
+        : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+    }`}>
+      {data.map(item => {
+        const isTikTok = item.title === 'tiktok-post-generation';
+        return (
+          <ToolCard
+            key={item.id}
+            item={item}
+            global={global}
+            router={router}
+            isTikTok={isTikTok}
+          />
+        );
+      })}
+    </div>
+  );
+});
+
+ToolList.displayName = 'ToolList';
 
 export default function Home() {
   const dispatch = useAppDispatch()
-
   const router = useRouter();
   const global = useAppSelector(selectGlobal)
 
@@ -34,17 +138,65 @@ export default function Home() {
   const [recentlyUsedData, setRecentlyUsedData] = useState<Array<ITool>>([]);
   const [toolData, setToolData] = useState({ list: toolList, searchList: {} as any });
   const [sidebarVisible, setSidebarVisible] = useState(true);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   const showBrand = process.env.NEXT_PUBLIC_SHOW_BRAND === "true";
 
+  // 初始化加载状态
   useEffect(() => {
-    const lang = getLanguage()
-    dispatch(setGlobalState({ language: lang }))
-  }, [])
+    const initializeApp = async () => {
+      try {
+        const lang = getLanguage();
+        dispatch(setGlobalState({ language: lang }));
+        
+        // 模拟初始化时间，确保加载状态可见
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        setIsInitialLoading(false);
+      } catch (error) {
+        console.error('Failed to initialize app:', error);
+        setIsInitialLoading(false);
+      }
+    };
+
+    initializeApp();
+  }, [dispatch]);
+
+  // 优化搜索逻辑
+  const searchResults = useMemo(() => {
+    if (!search.query && type === 'All') {
+      return {};
+    }
+
+    const toolDataTemp: { [key: string]: Array<ITool> } = {};
+    const query = search.query.toLowerCase();
+    
+    for (const key in toolData.list) {
+      toolData.list[key].forEach((item: ITool) => {
+        const { name, describe } = item;
+        const matchesQuery = !query || (
+          name.chinese.toLowerCase().includes(query) ||
+          name.english.toLowerCase().includes(query) ||
+          describe.chinese.toLowerCase().includes(query) ||
+          describe.japanese.toLowerCase().includes(query) ||
+          describe.english.toLowerCase().includes(query)
+        );
+        
+        const matchesType = type === 'All' || type === key;
+        
+        if (matchesQuery && matchesType) {
+          if (!toolDataTemp[key]) toolDataTemp[key] = [];
+          toolDataTemp[key].push(item);
+        }
+      });
+    }
+    
+    return toolDataTemp;
+  }, [search.query, type, toolData.list]);
 
   useEffect(() => {
-    onGetRecentlyUsedData()
-  }, [toolData])
+    onGetRecentlyUsedData();
+  }, [toolData]);
 
   useEffect(() => {
     const tempData = JSON.parse(JSON.stringify(toolList));
@@ -60,15 +212,14 @@ export default function Home() {
         const presetToolKeys = Object.keys(tempData);
         const element = global.customTool[index];
         if (presetToolKeys.indexOf(element.classify_key) > -1) {
-          tempData[element.classify_key].unshift(element)
-        }
-        else {
-          tempData[element.classify_key] = [element]
+          tempData[element.classify_key].unshift(element);
+        } else {
+          tempData[element.classify_key] = [element];
         }
       }
     }
-    setToolData((v) => ({ ...v, list: tempData }))
-  }, [global.customTool])
+    setToolData((v) => ({ ...v, list: tempData }));
+  }, [global.customTool]);
 
   const onGetRecentlyUsedData = () => {
     // Get a list of recently used tools
@@ -87,42 +238,13 @@ export default function Home() {
     }
   }
 
-  const onSearch = (query: string) => {
+  const onSearch = useCallback((query: string) => {
     setSearch({ query, querying: true });
-    const toolDataTemp: { [key: string]: Array<ITool> } = {};
-    if (query || type) {
-      for (const key in toolData.list) {
-        toolData.list[key].forEach((item: ITool) => {
-          const { name, describe } = item;
-          if (type !== 'All') {
-            if ((name.chinese.indexOf(query) > -1 ||
-              name.english.indexOf(query) > -1 ||
-              describe.chinese.indexOf(query) > -1 ||
-              describe.japanese.indexOf(query) > -1 ||
-              describe.english.indexOf(query) > -1) && type === key) {
-              if (!toolDataTemp[key]) toolDataTemp[key] = [];
-              toolDataTemp[key].push(item)
-            }
-          } else {
-            if (name.chinese.indexOf(query) > -1 ||
-              name.english.indexOf(query) > -1 ||
-              describe.chinese.indexOf(query) > -1 ||
-              describe.japanese.indexOf(query) > -1 ||
-              describe.english.indexOf(query) > -1) {
-              if (!toolDataTemp[key]) toolDataTemp[key] = [];
-              toolDataTemp[key].push(item)
-            }
-          }
-        })
-      }
-      if (Object.keys(toolDataTemp).length) {
-        setToolData((v) => ({ ...v, searchList: toolDataTemp }))
-      }
-    } else {
-      setToolData((v) => ({ ...v, searchList: {} }))
-    }
-    setSearch((v) => ({ ...v, querying: false }));
-  }
+    // 搜索结果现在由useMemo处理，这里只需要更新状态
+    setTimeout(() => {
+      setSearch((v) => ({ ...v, querying: false }));
+    }, 100);
+  }, []);
 
   const onRenderingToolCard = (data: Array<Pick<ITool, 'id' | 'title' | 'url' | 'name' | 'describe'>>) => {
     return (
@@ -180,9 +302,14 @@ export default function Home() {
     )
   }
 
-  const onInputChange = debounce((event: React.ChangeEvent<HTMLInputElement>) => {
-    onSearch(event.target.value)
-  }, 300);
+  const onInputChange = useCallback(debounce((event: React.ChangeEvent<HTMLInputElement>) => {
+    onSearch(event.target.value);
+  }, 300), [onSearch]);
+
+  // 显示初始加载状态
+  if (isInitialLoading) {
+    return <HomePageSkeleton />;
+  }
 
   const onDelCustomTool = (params: IClassify) => {
     const onDelData = async () => {
@@ -470,32 +597,38 @@ export default function Home() {
             }`}>
               {/* 主标题 - 旋转文字动画 */}
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">
-                <GradientRotatingText
-                  words={global.language === 'chinese' ? [
-                    HOME_TITLE[global.language],
-                    "智能文案生成",
-                    "AI 写作助手", 
-                    "内容创作工具",
-                    "文案优化神器"
-                  ] : global.language === 'english' ? [
-                    HOME_TITLE[global.language],
-                    "Smart Content Generation",
-                    "AI Writing Assistant",
-                    "Content Creation Tools",
-                    "Copywriting Optimization"
-                  ] : [
-                    HOME_TITLE[global.language],
-                    "スマートコンテンツ生成",
-                    "AIライティングアシスタント",
-                    "コンテンツ作成ツール",
-                    "コピーライティング最適化"
-                  ]}
-                  className="text-2xl sm:text-3xl md:text-4xl font-bold"
-                  duration={2500}
-                  delay={200}
-                  gradientFrom="from-primary-100"
-                  gradientTo="to-primary-200"
-                />
+                <Suspense fallback={
+                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary-100 to-primary-200 bg-clip-text text-transparent">
+                    {HOME_TITLE[global.language]}
+                  </div>
+                }>
+                  <GradientRotatingText
+                    words={global.language === 'chinese' ? [
+                      HOME_TITLE[global.language],
+                      "智能文案生成",
+                      "AI 写作助手", 
+                      "内容创作工具",
+                      "文案优化神器"
+                    ] : global.language === 'english' ? [
+                      HOME_TITLE[global.language],
+                      "Smart Content Generation",
+                      "AI Writing Assistant",
+                      "Content Creation Tools",
+                      "Copywriting Optimization"
+                    ] : [
+                      HOME_TITLE[global.language],
+                      "スマートコンテンツ生成",
+                      "AIライティングアシスタント",
+                      "コンテンツ作成ツール",
+                      "コピーライティング最適化"
+                    ]}
+                    className="text-2xl sm:text-3xl md:text-4xl font-bold"
+                    duration={2500}
+                    delay={200}
+                    gradientFrom="from-primary-100"
+                    gradientTo="to-primary-200"
+                  />
+                </Suspense>
               </h1>
               
               {/* 搜索框 */}
@@ -605,7 +738,13 @@ export default function Home() {
                         {CARD_RECENTLY_USED[global.language]}
                       </h2>
                     </div>
-                    {onRenderingToolCard(recentlyUsedData)}
+                    <ToolList 
+                      data={recentlyUsedData} 
+                      global={global} 
+                      router={router} 
+                      sidebarVisible={sidebarVisible}
+                      loading={search.querying}
+                    />
                     <div className="md:mt-8 mt-6 md:mb-6 mb-4 h-px bg-gradient-to-r from-transparent via-bg-300 to-transparent"></div>
                   </> : <></>
               }
@@ -623,18 +762,30 @@ export default function Home() {
                           {item[global.language]}
                         </h2>
                       </div>
-                      {onRenderingToolCard(toolData.list[item.english])}
+                      <ToolList 
+                        data={toolData.list[item.english]} 
+                        global={global} 
+                        router={router} 
+                        sidebarVisible={sidebarVisible}
+                        loading={search.querying}
+                      />
                     </>
                   }
                   {
-                    search.query && toolData.searchList[item.english]?.length && <>
+                    search.query && searchResults[item.english]?.length && <>
                       <div className="flex items-center my-6">
                         <div className="h-8 w-1 bg-gradient-to-b from-primary-100 to-primary-200 rounded-full mr-3"></div>
                         <h2 className="font-bold text-lg md:text-xl bg-gradient-to-r from-primary-100 to-primary-200 bg-clip-text text-transparent">
                           {item[global.language]}
                         </h2>
                       </div>
-                      {onRenderingToolCard(toolData.searchList[item.english])}
+                      <ToolList 
+                        data={searchResults[item.english]} 
+                        global={global} 
+                        router={router} 
+                        sidebarVisible={sidebarVisible}
+                        loading={search.querying}
+                      />
                     </>
                   }
                 </React.Fragment>
