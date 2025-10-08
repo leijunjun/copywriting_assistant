@@ -14,7 +14,6 @@ const nextConfig = {
   },
   // Vercel优化配置
   experimental: {
-    optimizeCss: true,
     optimizePackageImports: ['lucide-react', 'react-icons', '@radix-ui/react-icons'],
   },
   // 图片优化
