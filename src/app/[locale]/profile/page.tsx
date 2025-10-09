@@ -119,9 +119,10 @@ export default function ProfilePage() {
         // Clear local storage
         localStorage.removeItem('user');
         localStorage.removeItem('session');
+        localStorage.removeItem('loginRedirectUrl'); // 清除重定向URL
         
-        // Redirect to login page
-        router.push('/auth/login');
+        // 强制刷新页面以确保所有状态都被清除
+        window.location.href = '/auth/login';
         
         logger.auth('User logged out successfully');
       }

@@ -89,12 +89,13 @@ export function Header({ className }: HeaderProps) {
         // Clear local storage
         localStorage.removeItem('user');
         localStorage.removeItem('session');
+        localStorage.removeItem('loginRedirectUrl'); // 清除重定向URL
         
         // Clear global auth state
         clearAuthState();
         
-        // Redirect to login page
-        router.push('/auth/login');
+        // 强制刷新页面以确保所有状态都被清除
+        window.location.href = '/auth/login';
         
         logger.auth('User logged out from header');
       }
@@ -189,7 +190,7 @@ export function Header({ className }: HeaderProps) {
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              特色
+              功能
             </button>
             
             <button

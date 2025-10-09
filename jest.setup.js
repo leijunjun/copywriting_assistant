@@ -69,7 +69,3 @@ jest.mock('@supabase/supabase-js', () => ({
 process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://test.supabase.co'
 process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test-anon-key'
 process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-service-role-key'
-process.env.WECHAT_APP_ID = 'test-wechat-app-id'
-process.env.WECHAT_APP_SECRET = 'test-wechat-app-secret'
-process.env.WECHAT_REDIRECT_URI = 'http://localhost:3000/api/auth/wechat/callback'
-process.env.NEXTAUTH_SECRET = 'test-nextauth-secret'

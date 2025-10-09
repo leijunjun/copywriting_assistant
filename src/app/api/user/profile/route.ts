@@ -23,8 +23,6 @@ export async function GET(request: NextRequest) {
     const userWithSession = await getCurrentUserWithSession();
     
     if (!userWithSession) {
-      logger.error('User not authenticated', undefined, 'API');
-      
       return NextResponse.json(
         createErrorResponse({
           code: 'UNAUTHENTICATED',

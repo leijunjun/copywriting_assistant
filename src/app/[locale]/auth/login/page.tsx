@@ -27,7 +27,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showWeChatModal, setShowWeChatModal] = useState(false);
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,8 +64,17 @@ export default function LoginPage() {
         // Trigger auth event to update header state
         triggerAuthEvent('login');
         
-        // Redirect to profile page
-        router.push('/profile');
+        // Check if there's a redirect URL stored
+        const redirectUrl = localStorage.getItem('loginRedirectUrl');
+        if (redirectUrl) {
+          // Clear the stored redirect URL
+          localStorage.removeItem('loginRedirectUrl');
+          // Redirect to the original page
+          router.push(redirectUrl);
+        } else {
+          // Redirect to profile page as default
+          router.push('/profile');
+        }
       } else {
         // Handle error response structure
         const errorMessage = typeof data.error === 'string' 
@@ -81,6 +89,8 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  const [showWeChatModal, setShowWeChatModal] = useState(false);
 
   const handleContactSupport = () => {
     setShowWeChatModal(true);

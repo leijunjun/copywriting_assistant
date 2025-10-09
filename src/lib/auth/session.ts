@@ -18,14 +18,9 @@ export async function getCurrentSession(): Promise<Session | null> {
     const session = await getServerSession();
     
     if (!session) {
-      console.log('⚠️ No server session found');
       return null;
     }
 
-    console.log('✅ Server session found:', {
-      user_id: session.user?.id,
-      expires_at: session.expires_at
-    });
 
     return {
       access_token: session.access_token,
@@ -65,20 +60,15 @@ export async function getCurrentUser(): Promise<User | null> {
  */
 export async function getCurrentUserWithSession(): Promise<SessionData | null> {
   try {
-    console.log('🔍 Checking authentication status...');
-    
     // Get Supabase session
     const session = await getCurrentSession();
     if (session) {
-      console.log('✅ Supabase session found');
       const user = await getCurrentUser();
       if (user) {
-        console.log('✅ User found via Supabase session');
         return { user, session };
       }
     }
 
-    console.log('❌ No valid session found');
     return null;
   } catch (error) {
     console.error('Error getting current user with session:', error);

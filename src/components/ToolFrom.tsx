@@ -14,6 +14,8 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { CLEAR_CONTENT_BUTTON, FROM_LABEL, LANGUAGE_LIST, OUTPUT_LANGUAGE, PLEASE_ENTER, PLEASE_SELECT, SUBMIT_BUTTON, XIAOHONGSHU_PRESET_CONTENT } from "@/constant/language";
 import { useCreditDeductionRate } from '@/hooks/useCreditDeductionRate';
+import { useAuthCheck } from '@/hooks/useAuthCheck';
+import { LoginReminderModal } from '@/components/ui/login-reminder-modal';
 
 interface IProps {
   onOk: (value: any) => void
@@ -33,6 +35,9 @@ export default function ToolFrom(props: IProps) {
   // Get credit deduction rate
   const { deductionRate, loading: rateLoading } = useCreditDeductionRate();
   const [searchQuery, setSearchQuery] = useState('')
+  
+  // Auth check hook
+  const { withAuthCheck, showLoginModal, setShowLoginModal } = useAuthCheck();
   
   // 使用外部传入的 load 状态，如果没有则使用内部状态
   const isLoading = externalLoad !== undefined ? externalLoad : load;
@@ -77,9 +82,13 @@ export default function ToolFrom(props: IProps) {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     if (isLoading) return;
-    setLoad(true);
-    await onOk({ ...data, language: outputLanguage })
-    setLoad(false);
+    
+    // Check authentication before proceeding
+    withAuthCheck(async () => {
+      setLoad(true);
+      await onOk({ ...data, language: outputLanguage })
+      setLoad(false);
+    }, window.location.pathname + window.location.search);
   }
 
   const onChangeOutputLanguage = (value: string) => {
@@ -202,8 +211,9 @@ export default function ToolFrom(props: IProps) {
   const isXiaohongshuTool = dataSource.title === 'xiaohongshu-post-generation';
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} >
+    <>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} >
         {isXiaohongshuTool ? (
           // 小红书帖子生成工具的特殊布局
           <>
@@ -309,5 +319,10 @@ export default function ToolFrom(props: IProps) {
         </div>
       </form>
     </Form>
+    <LoginReminderModal
+      open={showLoginModal}
+      onOpenChange={setShowLoginModal}
+    />
+    </>
   )
 }

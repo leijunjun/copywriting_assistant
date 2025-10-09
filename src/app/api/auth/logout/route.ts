@@ -36,12 +36,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    logger.auth('User logged out successfully');
-
-    return NextResponse.json({
+    // Create response with headers to clear cookies
+    const response = NextResponse.json({
       success: true,
       message: 'Logged out successfully',
     });
+
+    // Clear any authentication cookies
+    response.cookies.delete('sb-access-token');
+    response.cookies.delete('sb-refresh-token');
+    response.cookies.delete('supabase-auth-token');
+
+    logger.auth('User logged out successfully');
+
+    return response;
 
   } catch (error) {
     logger.error('Unexpected error in logout', error, 'API');

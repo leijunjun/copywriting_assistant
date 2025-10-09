@@ -86,7 +86,6 @@ export const createServerSupabaseClientForMiddleware = () => {
 export async function getServerSession() {
   const supabase = createServerSupabaseClient();
   if (!supabase) {
-    console.log('⚠️ Supabase client not available');
     return null;
   }
   
@@ -98,14 +97,9 @@ export async function getServerSession() {
   }
 
   if (!session) {
-    console.log('⚠️ No server session found');
     return null;
   }
 
-  console.log('✅ Server session found:', {
-    user_id: session.user?.id,
-    expires_at: session.expires_at
-  });
 
   return session;
 }

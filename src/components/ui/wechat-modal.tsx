@@ -1,5 +1,5 @@
 /**
- * WeChat Contact Modal Component
+ * WeChat Customer Service Modal
  * 
  * This component displays a modal with WeChat QR code for customer service contact.
  */
@@ -7,6 +7,7 @@
 'use client';
 
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
@@ -14,39 +15,48 @@ import Image from 'next/image';
 interface WeChatModalProps {
   isOpen: boolean;
   onClose: () => void;
+  className?: string;
 }
 
-export function WeChatModal({ isOpen, onClose }: WeChatModalProps) {
+export function WeChatModal({ isOpen, onClose, className }: WeChatModalProps) {
+  const t = useTranslations('auth');
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className={`sm:max-w-md ${className}`}>
         <DialogHeader>
           <DialogTitle className="text-center">
-            联系客服
+            {t('contactSupport')}
           </DialogTitle>
         </DialogHeader>
+        
         <div className="flex flex-col items-center space-y-4 py-4">
-          <div className="text-center text-sm text-gray-600 mb-4">
-            扫描下方二维码添加客服微信
+          <div className="text-center text-sm text-gray-600 mb-2">
+            {t('scanQRCode')}
           </div>
-          <div className="relative w-64 h-64 bg-white p-4 rounded-lg shadow-lg">
+          
+          <div className="relative">
             <Image
               src="/weixin.png"
               alt="WeChat QR Code"
-              fill
-              className="object-contain"
-              priority
+              width={200}
+              height={200}
+              className="rounded-lg border-2 border-gray-200"
             />
           </div>
-          <div className="text-center text-xs text-gray-500">
-            请使用微信扫描二维码
+          
+          <div className="text-center text-xs text-gray-500 max-w-xs">
+            {t('wechatContactDescription')}
           </div>
-          <Button
+        </div>
+        
+        <div className="flex justify-center pt-4">
+          <Button 
             onClick={onClose}
             variant="outline"
-            className="w-full"
+            className="w-full max-w-xs"
           >
-            关闭
+            {t('close')}
           </Button>
         </div>
       </DialogContent>
