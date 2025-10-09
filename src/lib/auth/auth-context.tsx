@@ -72,14 +72,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // 刷新认证状态
   const refreshAuthState = useCallback(async () => {
     try {
+      console.log('AuthProvider: Starting auth state refresh');
+      console.log('AuthProvider: localStorage user:', localStorage.getItem('user'));
+      console.log('AuthProvider: localStorage session:', localStorage.getItem('session'));
       setAuthState(prev => ({ ...prev, isLoading: true }));
 
       const response = await fetch('/api/user/profile');
+      console.log('AuthProvider: Profile API response status:', response.status);
       
       if (response.ok) {
         const data = await response.json();
+        console.log('AuthProvider: Profile API response data:', data);
         
         if (data.success) {
+          console.log('AuthProvider: User authenticated successfully');
+          console.log('AuthProvider: Setting auth state to authenticated');
           setAuthState({
             user: data.user,
             credits: data.credits,
@@ -95,6 +102,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             balance: data.credits.balance,
           });
         } else {
+          console.log('AuthProvider: User not authenticated (data.success = false)');
+          console.log('AuthProvider: Setting auth state to not authenticated');
           setAuthState({
             user: null,
             credits: null,
@@ -103,6 +112,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           });
         }
       } else if (response.status === 401) {
+        console.log('AuthProvider: User not authenticated (401 status)');
         setAuthState({
           user: null,
           credits: null,
@@ -111,6 +121,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
       }
     } catch (error) {
+      console.log('AuthProvider: Error refreshing auth state:', error);
       logger.error('Failed to refresh auth state', error);
       setAuthState({
         user: null,
@@ -133,6 +144,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // 初始化时获取认证状态
   useEffect(() => {
+    console.log('AuthProvider: Initializing auth state');
+    console.log('AuthProvider: Current authState:', authState);
     refreshAuthState();
   }, [refreshAuthState]);
 
