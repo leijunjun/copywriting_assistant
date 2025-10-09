@@ -126,7 +126,7 @@ class PerformanceTester {
     const results: PerformanceTestResult[] = [];
     
     // Test authentication endpoints
-    const authResult = await this.testAPIEndpoint('/api/auth/wechat/qr', 'GET');
+    const authResult = await this.testAPIEndpoint('/api/auth/login', 'POST');
     results.push(authResult);
     
     // Test user profile endpoint

@@ -7,11 +7,7 @@ require('dotenv').config({ path: '.env.local' });
 const requiredEnvVars = [
   'NEXT_PUBLIC_SUPABASE_URL',
   'NEXT_PUBLIC_SUPABASE_ANON_KEY', 
-  'SUPABASE_SERVICE_ROLE_KEY',
-  'WECHAT_APP_ID',
-  'WECHAT_APP_SECRET',
-  'WECHAT_REDIRECT_URI',
-  'NEXTAUTH_SECRET'
+  'SUPABASE_SERVICE_ROLE_KEY'
 ];
 
 console.log('🔍 Checking environment variables...\n');
@@ -42,8 +38,4 @@ console.log(`
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
-WECHAT_APP_ID=your_wechat_app_id
-WECHAT_APP_SECRET=your_wechat_app_secret
-WECHAT_REDIRECT_URI=http://localhost:3000/api/auth/wechat/callback
-NEXTAUTH_SECRET=your_nextauth_secret
 `);

@@ -50,7 +50,7 @@ class SupabaseAuthIntegration {
       // Create a custom JWT token for the user
       const { data, error } = await supabase.auth.admin.generateLink({
         type: 'magiclink',
-        email: `user_${userId}@temp.com`, // Temporary email for WeChat users
+        email: userMetadata.email || `user_${userId}@temp.com`,
         options: {
           redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
         },
@@ -60,16 +60,16 @@ class SupabaseAuthIntegration {
         throw new CustomError('AuthError', `Failed to create session: ${error.message}`);
       }
 
-      // For WeChat users, we'll use a different approach
       // Create a custom session token
       const sessionToken = await this.generateCustomSessionToken(userId, userMetadata);
 
       const sessionData: SessionData = {
         accessToken: sessionToken,
-        refreshToken: sessionToken, // Simplified for WeChat users
+        refreshToken: sessionToken,
         expiresIn: 3600, // 1 hour
         user: {
           id: userId,
+          email: userMetadata.email,
           user_metadata: userMetadata,
         },
       };
@@ -212,7 +212,7 @@ class SupabaseAuthIntegration {
   }
 
   /**
-   * Generate custom session token for WeChat users
+   * Generate custom session token
    */
   private async generateCustomSessionToken(userId: string, userMetadata: any): Promise<string> {
     // In a real implementation, you would generate a proper JWT token

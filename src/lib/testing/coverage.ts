@@ -53,7 +53,7 @@ class TestCoverageVerifier {
       // In a real implementation, this would read from Jest coverage output
     // For now, we'll simulate coverage data
       this.coverageData = {
-        'src/lib/auth/wechat.ts': {
+        'src/lib/auth/session.ts': {
           s: { total: 20, covered: 18, uncovered: 2 },
           b: { total: 8, covered: 7, uncovered: 1 },
           f: { total: 5, covered: 5, uncovered: 0 },

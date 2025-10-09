@@ -341,7 +341,7 @@ class AccessibilityTester {
    */
   private getRandomElement(): string {
     const elements = [
-      'button[data-testid="wechat-login-button"]',
+      'button[data-testid="login-button"]',
       'input[data-testid="amount-input"]',
       'div[data-testid="credit-balance"]',
       'nav[data-testid="navigation"]',

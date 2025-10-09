@@ -1,29 +1,15 @@
 /**
  * Authentication Validation Schemas
  * 
- * This file contains Zod validation schemas for authentication functionality.
+ * This file contains Zod validation schemas for email/password authentication functionality.
  */
 
 import { z } from 'zod';
 
-// WeChat OAuth validation schemas
-export const WeChatQRCodeRequestSchema = z.object({
-  // No additional parameters needed for QR code generation
-});
-
-export const WeChatCallbackRequestSchema = z.object({
-  code: z.string().min(1, 'Authorization code is required'),
-  state: z.string().min(1, 'State parameter is required'),
-});
-
-export const WeChatStatusRequestSchema = z.object({
-  session_id: z.string().min(1, 'Session ID is required'),
-});
-
 // User validation schemas
 export const UserCreateSchema = z.object({
-  wechat_openid: z.string().min(1, 'WeChat OpenID is required'),
-  wechat_unionid: z.string().optional(),
+  email: z.string().email('Invalid email format'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
   nickname: z.string().min(1, 'Nickname is required').max(100, 'Nickname too long'),
   avatar_url: z.string().url('Invalid avatar URL').optional(),
 });
@@ -35,8 +21,7 @@ export const UserUpdateSchema = z.object({
 
 export const UserProfileSchema = z.object({
   id: z.string().uuid('Invalid user ID'),
-  wechat_openid: z.string().min(1, 'WeChat OpenID is required'),
-  wechat_unionid: z.string().optional(),
+  email: z.string().email('Invalid email format'),
   nickname: z.string().min(1, 'Nickname is required'),
   avatar_url: z.string().url('Invalid avatar URL'),
   created_at: z.string().datetime('Invalid created date'),
@@ -61,8 +46,14 @@ export const SessionValidateSchema = z.object({
 
 // Authentication request validation schemas
 export const LoginRequestSchema = z.object({
-  code: z.string().min(1, 'Authorization code is required'),
-  state: z.string().min(1, 'State parameter is required'),
+  email: z.string().email('Invalid email format'),
+  password: z.string().min(1, 'Password is required'),
+});
+
+export const RegisterRequestSchema = z.object({
+  email: z.string().email('Invalid email format'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+  nickname: z.string().min(1, 'Nickname is required').max(100, 'Nickname too long'),
 });
 
 export const LogoutRequestSchema = z.object({
@@ -77,7 +68,25 @@ export const LoginResponseSchema = z.object({
     access_token: z.string(),
     refresh_token: z.string(),
     expires_at: z.number(),
-    user_id: z.string(),
+  }).optional(),
+  credits: z.object({
+    balance: z.number(),
+    updated_at: z.string(),
+  }).optional(),
+  error: z.string().optional(),
+});
+
+export const RegisterResponseSchema = z.object({
+  success: z.boolean(),
+  user: UserProfileSchema.optional(),
+  session: z.object({
+    access_token: z.string(),
+    refresh_token: z.string(),
+    expires_at: z.number(),
+  }).optional(),
+  credits: z.object({
+    balance: z.number(),
+    updated_at: z.string(),
   }).optional(),
   error: z.string().optional(),
 });
@@ -99,6 +108,8 @@ export const LogoutResponseSchema = z.object({
 export const AuthErrorSchema = z.object({
   code: z.string().min(1, 'Error code is required'),
   message: z.string().min(1, 'Error message is required'),
+  type: z.string().min(1, 'Error type is required'),
+  severity: z.enum(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']),
   details: z.any().optional(),
 });
 
@@ -110,24 +121,33 @@ export const ValidationErrorSchema = z.object({
 
 // Form validation schemas
 export const LoginFormSchema = z.object({
-  code: z.string().min(1, 'Authorization code is required'),
-  state: z.string().min(1, 'State parameter is required'),
+  email: z.string().email('Invalid email format'),
+  password: z.string().min(1, 'Password is required'),
+});
+
+export const RegisterFormSchema = z.object({
+  email: z.string().email('Invalid email format'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+  confirmPassword: z.string().min(6, 'Password must be at least 6 characters'),
+  nickname: z.string().min(1, 'Nickname is required').max(100, 'Nickname too long'),
 });
 
 export const LoginFormErrorsSchema = z.object({
-  code: z.string().optional(),
-  state: z.string().optional(),
+  email: z.string().optional(),
+  password: z.string().optional(),
+  general: z.string().optional(),
+});
+
+export const RegisterFormErrorsSchema = z.object({
+  email: z.string().optional(),
+  password: z.string().optional(),
+  confirmPassword: z.string().optional(),
+  nickname: z.string().optional(),
   general: z.string().optional(),
 });
 
 // Configuration validation schemas
 export const AuthConfigSchema = z.object({
-  wechat: z.object({
-    app_id: z.string().min(1, 'WeChat App ID is required'),
-    app_secret: z.string().min(1, 'WeChat App Secret is required'),
-    redirect_uri: z.string().url('Invalid redirect URI'),
-    scope: z.string().min(1, 'Scope is required'),
-  }),
   session: z.object({
     access_token_expires_in: z.number().positive('Access token expiry must be positive'),
     refresh_token_expires_in: z.number().positive('Refresh token expiry must be positive'),
@@ -159,7 +179,6 @@ export const AuthEventSchema = z.object({
     access_token: z.string(),
     refresh_token: z.string(),
     expires_at: z.number(),
-    user_id: z.string(),
   }).optional(),
   error: AuthErrorSchema.optional(),
   timestamp: z.number().positive('Timestamp must be positive'),
@@ -172,7 +191,6 @@ export const UseAuthReturnSchema = z.object({
     access_token: z.string(),
     refresh_token: z.string(),
     expires_at: z.number(),
-    user_id: z.string(),
   }).nullable(),
   status: z.enum(['authenticated', 'unauthenticated', 'loading', 'error']),
   error: z.string().nullable(),
@@ -203,7 +221,7 @@ export const UserProfilePropsSchema = z.object({
 });
 
 // Utility validation schemas
-export const AuthMethodSchema = z.enum(['wechat', 'email', 'phone']);
+export const AuthMethodSchema = z.enum(['email']);
 
 export const AuthMethodConfigSchema = z.object({
   method: AuthMethodSchema,
@@ -219,18 +237,6 @@ export const AuthProviderSchema = z.object({
 });
 
 // Validation utility functions
-export function validateWeChatQRCodeRequest(data: unknown) {
-  return WeChatQRCodeRequestSchema.parse(data);
-}
-
-export function validateWeChatCallbackRequest(data: unknown) {
-  return WeChatCallbackRequestSchema.parse(data);
-}
-
-export function validateWeChatStatusRequest(data: unknown) {
-  return WeChatStatusRequestSchema.parse(data);
-}
-
 export function validateUserCreate(data: unknown) {
   return UserCreateSchema.parse(data);
 }
@@ -259,12 +265,20 @@ export function validateLoginRequest(data: unknown) {
   return LoginRequestSchema.parse(data);
 }
 
+export function validateRegisterRequest(data: unknown) {
+  return RegisterRequestSchema.parse(data);
+}
+
 export function validateLogoutRequest(data: unknown) {
   return LogoutRequestSchema.parse(data);
 }
 
 export function validateLoginResponse(data: unknown) {
   return LoginResponseSchema.parse(data);
+}
+
+export function validateRegisterResponse(data: unknown) {
+  return RegisterResponseSchema.parse(data);
 }
 
 export function validateRefreshTokenResponse(data: unknown) {
@@ -287,8 +301,16 @@ export function validateLoginForm(data: unknown) {
   return LoginFormSchema.parse(data);
 }
 
+export function validateRegisterForm(data: unknown) {
+  return RegisterFormSchema.parse(data);
+}
+
 export function validateLoginFormErrors(data: unknown) {
   return LoginFormErrorsSchema.parse(data);
+}
+
+export function validateRegisterFormErrors(data: unknown) {
+  return RegisterFormErrorsSchema.parse(data);
 }
 
 export function validateAuthConfig(data: unknown) {
@@ -326,4 +348,3 @@ export function validateAuthMethodConfig(data: unknown) {
 export function validateAuthProvider(data: unknown) {
   return AuthProviderSchema.parse(data);
 }
-

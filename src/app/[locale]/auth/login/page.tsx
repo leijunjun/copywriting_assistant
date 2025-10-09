@@ -15,8 +15,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { ErrorMessage } from '@/components/ui/error-message';
-import { logger } from '@/lib/utils/logger';
+import { logger, LogCategory } from '@/lib/utils/logger';
 import { useAuth } from '@/lib/auth/auth-context';
+import { WeChatModal } from '@/components/ui/wechat-modal';
 
 export default function LoginPage() {
   const t = useTranslations('auth');
@@ -26,6 +27,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showWeChatModal, setShowWeChatModal] = useState(false);
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,14 +76,14 @@ export default function LoginPage() {
       }
     } catch (err) {
       setError('Login failed. Please try again.');
-      logger.error('Login failed', err, 'AUTH');
+      logger.error('Login failed', undefined, LogCategory.AUTH);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleRegister = () => {
-    router.push('/auth/register');
+  const handleContactSupport = () => {
+    setShowWeChatModal(true);
   };
 
   return (
@@ -148,24 +150,18 @@ export default function LoginPage() {
               </Button>
             </form>
 
-            <div className="mt-4 text-center">
-              <p className="text-sm text-gray-600">
-                {t('noAccount')}{' '}
-                <button
-                  onClick={handleRegister}
-                  className="text-blue-600 hover:underline"
-                >
-                  {t('register')}
-                </button>
-              </p>
-            </div>
           </CardContent>
         </Card>
 
         <div className="text-center text-sm text-gray-500">
-          {t('needHelp')} <a href="/help" className="text-blue-600 hover:underline">{t('contactSupport')}</a>
+          {t('needHelp')} <button onClick={handleContactSupport} className="text-blue-600 hover:underline">{t('contactSupport')}</button>
         </div>
       </div>
+      
+      <WeChatModal 
+        isOpen={showWeChatModal} 
+        onClose={() => setShowWeChatModal(false)} 
+      />
     </div>
   );
 }

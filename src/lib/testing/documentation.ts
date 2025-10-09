@@ -139,7 +139,6 @@ class DocumentationUpdater {
   private async getFilesToReview(): Promise<string[]> {
     // Simulate file discovery
     const files = [
-      'src/lib/auth/wechat.ts',
       'src/lib/auth/session.ts',
       'src/lib/credits/balance.ts',
       'src/lib/credits/transactions.ts',
@@ -148,12 +147,11 @@ class DocumentationUpdater {
       'src/lib/validation/credits.ts',
       'src/lib/utils/error.ts',
       'src/lib/utils/logger.ts',
-      'src/components/auth/WeChatLoginModal.tsx',
       'src/components/auth/UserProfile.tsx',
       'src/components/credits/CreditBalance.tsx',
       'src/components/credits/TransactionHistory.tsx',
-      'src/app/api/auth/wechat/qr/route.ts',
-      'src/app/api/auth/wechat/callback/route.ts',
+      'src/app/api/auth/login/route.ts',
+      'src/app/api/auth/register/route.ts',
       'src/app/api/user/profile/route.ts',
       'src/app/api/credits/deduct/route.ts',
       'README.md',

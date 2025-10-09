@@ -9,13 +9,12 @@
 import React from 'react';
 import { useTranslations } from 'next-intl';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Avatar } from '@/components/ui/avatar';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 interface UserProfileProps {
   user: {
     id: string;
-    wechat_openid: string;
-    wechat_unionid?: string;
+    email: string;
     nickname: string;
     avatar_url: string;
     created_at: string;
@@ -43,12 +42,15 @@ export function UserProfile({ user, onLogout, className }: UserProfileProps) {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center space-x-4">
-          <Avatar
-            src={user.avatar_url || '/default-avatar.png'}
-            alt={user.nickname}
-            size="lg"
-            className="border-2"
-          />
+          <Avatar className="h-16 w-16 border-2">
+            <AvatarImage
+              src={user.avatar_url || '/default-avatar.png'}
+              alt={user.nickname}
+            />
+            <AvatarFallback>
+              {user.nickname.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
           <div className="flex-1">
             <h3 className="font-semibold text-lg">{user.nickname}</h3>
             <p className="text-sm text-muted-foreground">

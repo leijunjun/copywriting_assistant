@@ -61,15 +61,14 @@ class E2ETestExecutor {
     this.scenarios = [
       // Authentication Scenarios
       {
-        name: 'WeChat Login Flow',
-        description: 'User can log in using WeChat OAuth',
+        name: 'Email Login Flow',
+        description: 'User can log in using email and password',
         priority: 'high',
         steps: [
           { action: 'navigate', value: '/auth/login' },
-          { action: 'click', selector: '[data-testid="wechat-login-button"]' },
-          { action: 'wait', value: 'QR code to appear', timeout: 5000 },
-          { action: 'verify', selector: '[data-testid="qr-code"]', expected: 'QR code is visible' },
-          { action: 'simulate', value: 'WeChat QR scan' },
+          { action: 'type', selector: '[data-testid="email-input"]', value: 'test@example.com' },
+          { action: 'type', selector: '[data-testid="password-input"]', value: 'password123' },
+          { action: 'click', selector: '[data-testid="login-button"]' },
           { action: 'wait', value: 'redirect to profile', timeout: 10000 },
           { action: 'verify', selector: '[data-testid="user-profile"]', expected: 'User profile is displayed' },
         ],
@@ -81,8 +80,9 @@ class E2ETestExecutor {
         priority: 'high',
         steps: [
           { action: 'navigate', value: '/auth/login' },
-          { action: 'click', selector: '[data-testid="wechat-login-button"]' },
-          { action: 'simulate', value: 'WeChat login failure' },
+          { action: 'type', selector: '[data-testid="email-input"]', value: 'invalid@example.com' },
+          { action: 'type', selector: '[data-testid="password-input"]', value: 'wrongpassword' },
+          { action: 'click', selector: '[data-testid="login-button"]' },
           { action: 'wait', value: 'error message', timeout: 5000 },
           { action: 'verify', selector: '[data-testid="error-message"]', expected: 'Error message is displayed' },
         ],

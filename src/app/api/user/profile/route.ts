@@ -157,8 +157,7 @@ export async function PUT(request: NextRequest) {
       success: true,
       user: {
         id: updatedUser.id,
-        wechat_openid: updatedUser.wechat_openid,
-        wechat_unionid: updatedUser.wechat_unionid,
+        email: updatedUser.email,
         nickname: updatedUser.nickname,
         avatar_url: updatedUser.avatar_url,
         created_at: updatedUser.created_at,

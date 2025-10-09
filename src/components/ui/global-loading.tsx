@@ -152,7 +152,7 @@ export function useRouteLoading() {
       '/profile': '正在加载个人中心...',
       '/credits': '正在加载积分管理...',
       '/auth/login': '正在加载登录页面...',
-      '/auth/register': '正在加载注册页面...',
+      '/auth/Secret-Manual-Registration': '正在加载注册页面...',
     };
 
     showLoading(routeMessages[route] || '正在加载页面...');
