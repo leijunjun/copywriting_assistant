@@ -92,34 +92,7 @@ export async function POST(request: Request) {
       }
     };
 
-    // Deduct credits before content generation
-    const deductionResult = await deductCredits({
-      user_id: user.id,
-      amount: creditDeductionRate,
-      description: getDescription(tool_name, language || 'chinese'),
-      service_type: 'content_generation'
-    });
-
-    if (!deductionResult.success) {
-      logger.error('Failed to deduct credits', undefined, undefined, {
-        userId: user.id,
-        amount: creditDeductionRate,
-        error: deductionResult.error
-      });
-      
-      return NextResponse.json({ 
-        error: 'Failed to deduct credits',
-        error_code: 'CREDIT_DEDUCTION_FAILED',
-        details: deductionResult.error
-      }, { status: 500 });
-    }
-
-    logger.credits('Credits deducted successfully', {
-      userId: user.id,
-      amount: creditDeductionRate,
-      transactionId: deductionResult.transaction_id,
-      newBalance: deductionResult.new_balance
-    });
+    // Note: Credits will be deducted AFTER successful content generation
 
     // Proceed with content generation
     const messages = prompt ? [{ role: 'user', content: prompt }] : toolParameter[tool_name]({ ...params });
@@ -147,9 +120,51 @@ export async function POST(request: Request) {
             try {
               const reader: any = response?.body?.getReader();
               const decoder = new TextDecoder();
+              let hasContent = false; // Track if we received any content
+              
               while (true) {
                 const { done, value } = await reader.read();
-                if (done) break;
+                if (done) {
+                  // Only deduct credits after we've successfully streamed content
+                  if (hasContent) {
+                    try {
+                      const deductionResult = await deductCredits({
+                        user_id: user.id,
+                        amount: creditDeductionRate,
+                        description: getDescription(tool_name, language || 'chinese'),
+                        service_type: 'content_generation'
+                      });
+
+                      if (!deductionResult.success) {
+                        logger.error('Failed to deduct credits after successful generation', undefined, undefined, {
+                          userId: user.id,
+                          amount: creditDeductionRate,
+                          error: deductionResult.error
+                        });
+                        
+                        logger.credits('Warning: Content generated but credit deduction failed', {
+                          userId: user.id,
+                          amount: creditDeductionRate,
+                          error: deductionResult.error
+                        });
+                      } else {
+                        logger.credits('Credits deducted successfully after content generation', {
+                          userId: user.id,
+                          amount: creditDeductionRate,
+                          transactionId: deductionResult.transaction_id,
+                          newBalance: deductionResult.new_balance
+                        });
+                      }
+                    } catch (deductionError) {
+                      logger.error('Error during credit deduction after content generation', deductionError, undefined, {
+                        userId: user.id,
+                        amount: creditDeductionRate
+                      });
+                    }
+                  }
+                  break;
+                }
+                
                 const strChunk = decoder.decode(value, { stream: true });
                 if (strChunk && strChunk.length > 1) {
                   const arr = strChunk.split('data: ');
@@ -160,6 +175,7 @@ export async function POST(request: Request) {
                       if (parsedChunk.choices[0]) {
                         const delta = parsedChunk.choices[0].delta;
                         if (delta && Object.keys(delta).length > 0) {
+                          hasContent = true; // Mark that we received content
                           controller.enqueue(`data: ${JSON.stringify(delta)}\n\n`);
                         } else {
                           controller.enqueue(`data: ${JSON.stringify({ stop: parsedChunk.choices[0].finish_reason })}\n\n`);

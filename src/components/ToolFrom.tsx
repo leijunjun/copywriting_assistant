@@ -81,19 +81,10 @@ export default function ToolFrom(props: IProps) {
   })
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log('=== ToolFrom onSubmit ===');
-    console.log('ToolFrom: onSubmit called, isLoading:', isLoading);
-    console.log('ToolFrom: Current auth state from hook:', { isAuthenticated, isLoading });
-    
-    if (isLoading) {
-      console.log('ToolFrom: Form is loading, returning early');
-      return;
-    }
+    if (isLoading) return;
     
     // Check authentication before proceeding
-    console.log('ToolFrom: Calling withAuthCheck');
     withAuthCheck(async () => {
-      console.log('ToolFrom: Auth check passed, proceeding with generation');
       setLoad(true);
       await onOk({ ...data, language: outputLanguage })
       setLoad(false);

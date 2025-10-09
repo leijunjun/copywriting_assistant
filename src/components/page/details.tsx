@@ -26,7 +26,6 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { COPY_ERROR, COPY_SUCCESSFUL, DELETE_RECORD_CANCEL, DELETE_RECORD_CONTINUE, DELETE_RECORD_MESSAGE, HEADER_TITLE, LANGUAGE_LIBRARY, SUBMIT_BUTTON, SUCCESSFULLY_GENERATED, BREADCRUMB } from "@/constant/language";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useAuth } from '@/lib/auth/auth-context';
-import { AuthDebug } from '@/components/AuthDebug';
 
 interface IGenerateRecords { id: number; toolId: string | number; output: string; createdAt: string; }
 
@@ -492,7 +491,6 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
 
   return (
     <div className='md:py-5 py-3 min-h-screen relative pt-16' style={{ backgroundColor: 'var(--bg-100)' }}>
-      <AuthDebug />
       <>
         {
           dataSource?.id ?
