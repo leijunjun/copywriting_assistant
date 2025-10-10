@@ -12,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { CLEAR_CONTENT_BUTTON, FROM_LABEL, LANGUAGE_LIST, OUTPUT_LANGUAGE, PLEASE_ENTER, PLEASE_SELECT, SUBMIT_BUTTON, XIAOHONGSHU_PRESET_CONTENT } from "@/constant/language";
+import { CLEAR_CONTENT_BUTTON, FROM_LABEL, LANGUAGE_LIST, OUTPUT_LANGUAGE, PLEASE_ENTER, PLEASE_SELECT, SUBMIT_BUTTON, ROLE_TEMPLATES } from "@/constant/language";
 import { useCreditDeductionRate } from '@/hooks/useCreditDeductionRate';
 import { useAuthCheck } from '@/hooks/useAuthCheck';
 import { LoginReminderModal } from '@/components/ui/login-reminder-modal';
@@ -102,6 +102,12 @@ export default function ToolFrom(props: IProps) {
     if (value) {
       form.setValue('content', value);
       setPresetOpen(false);
+    }
+  }
+
+  const onRoleTemplateSelect = (value: string) => {
+    if (value) {
+      form.setValue('role', value);
     }
   }
 
@@ -217,44 +223,69 @@ export default function ToolFrom(props: IProps) {
         {isXiaohongshuTool ? (
           // 小红书帖子生成工具的特殊布局
           <>
-            {/* 内容输入区域 - 包含预设选择器 */}
+            {/* 1. 角色输入 */}
             <FormField
               disabled={isLoading}
               control={form.control}
-              name="content"
+              name="role"
               render={({ field }: any) => (
                 <FormItem className="px-3 pb-3">
-                  <FormLabel className="font-bold text-black">{FROM_LABEL.content[language]}</FormLabel>
-                  <FormControl>
-                    <div className="space-y-2 relative">
-                      {/* 预设内容选择器 */}
-                      <div className="flex gap-2">
-                        {onRenderingSearchableSelect(XIAOHONGSHU_PRESET_CONTENT, FROM_LABEL.preset[language], onPresetSelect)}
-                      </div>
-                      {/* 内容输入框 */}
-                      <Textarea 
-                        className="min-h-20" 
-                        placeholder={onReminderInformation('Textarea', 'content')} 
-                        {...field} 
-                      />
-                      {/* 清空内容按钮 - 悬浮在右下角 */}
-                      <Button 
-                        disabled={isLoading} 
-                        type="button" 
-                        variant="ghost" 
-                        onClick={() => form.reset()}
-                        className="absolute bottom-2 right-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 px-2 py-1 text-xs"
-                      >
-                        {CLEAR_CONTENT_BUTTON[language]}
-                      </Button>
+                  <div className="flex items-center justify-between mb-2">
+                    <FormLabel className="font-bold text-black">{FROM_LABEL.role[language]}</FormLabel>
+                    {/* 角色模板选择器 - 右对齐，宽度缩小 */}
+                    <div className="w-48">
+                      {onRenderingSearchableSelect(ROLE_TEMPLATES, FROM_LABEL.preset[language], onRoleTemplateSelect)}
                     </div>
+                  </div>
+                  <FormControl>
+                    <Input 
+                      {...field} 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             
-            {/* 语气选择 */}
+            {/* 2. 背景输入 */}
+            <FormField
+              disabled={isLoading}
+              control={form.control}
+              name="background"
+              render={({ field }: any) => (
+                <FormItem className="px-3 pb-3">
+                  <FormLabel className="font-bold text-black">{FROM_LABEL.background[language]}</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      className="min-h-20" 
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* 3. 目的需求输入 */}
+            <FormField
+              disabled={isLoading}
+              control={form.control}
+              name="purpose"
+              render={({ field }: any) => (
+                <FormItem className="px-3 pb-3">
+                  <FormLabel className="font-bold text-black">{FROM_LABEL.purpose[language]}</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      className="min-h-20" 
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* 4. 语气选择 */}
             <FormField
               disabled={isLoading}
               control={form.control}

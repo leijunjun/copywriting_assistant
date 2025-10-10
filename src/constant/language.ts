@@ -21,6 +21,15 @@ export const PLEASE_SELECT: Language = { chinese: '请选择', english: 'Please 
 export const GENERATE_BUTTON: Language = { chinese: '生成', english: 'generate', japanese: '生成する' }
 export const CLEAR_CONTENT_BUTTON: Language = { chinese: '清除内容', english: 'Clear Content', japanese: '内容をクリア' }
 
+// 角色模板选项
+export const ROLE_TEMPLATES: Array<Language & { value: string }> = [
+  { chinese: '保姆阿姨', english: 'Nanny', japanese: 'ベビーシッター', value: '保姆阿姨' },
+  { chinese: '中介公司', english: 'Agency', japanese: '仲介会社', value: '中介公司' },
+  { chinese: '孕妈客户', english: 'Pregnant Mom', japanese: '妊婦さん', value: '孕妈客户' },
+  { chinese: '行业协会', english: 'Industry Association', japanese: '業界団体', value: '行业协会' },
+  { chinese: '培训老师', english: 'Training Teacher', japanese: '研修講師', value: '培训老师' },
+]
+
 // 首页相关词汇 Home page vocabulary
 export const HOME_TITLE: Language = { chinese: '为家政服务提效', english: 'Efficiency for Home Services', japanese: '家政サービスを効率化' }
 export const HOME_SEARCH_PLACEHOLDER: Language = { chinese: '查找你需要的 AI 智能体', english: 'Find the AI Agent You Need', japanese: '必要なAIエージェントを見つける' }
@@ -92,6 +101,9 @@ export const FROM_LABEL: { [key: string]: Language } = {
   'tone': { chinese: '语气', english: 'Tone', japanese: 'ニュアンス' },
   'style': { chinese: '风格', english: 'Style', japanese: 'スタイル' },
   'content': { chinese: '内容', english: 'Content', japanese: '内容' },
+  'role': { chinese: '角色（作为什么人）', english: 'Role (As who)', japanese: '役割（誰として）' },
+  'background': { chinese: '背景（遇到什么情况）', english: 'Background (What situation)', japanese: '背景（どんな状況）' },
+  'purpose': { chinese: '目的需求（想实现什么）', english: 'Purpose (What to achieve)', japanese: '目的・ニーズ（何を実現したいか）' },
   'question': { chinese: '问题', english: 'Question', japanese: '問題' },
   'keywords': { chinese: '关键词', english: 'Keywords', japanese: 'キーワード' },
   'audience': { chinese: '目标用户', english: 'Audience', japanese: 'ターゲット・ユーザー' },

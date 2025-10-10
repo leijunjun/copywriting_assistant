@@ -325,7 +325,9 @@ export const toolList: IToolList = {
         japanese: '小さな赤書プラットフォーム風のノートを生成する'
       },
       from: {
-        content: { type: 'Textarea', isBig: true, },
+        role: { type: 'Input', isBig: false, },
+        background: { type: 'Textarea', isBig: true, },
+        purpose: { type: 'Textarea', isBig: true, },
         tone: { type: 'Select', list: SOCIAL_MEDIA_STYLE },
       }
     },

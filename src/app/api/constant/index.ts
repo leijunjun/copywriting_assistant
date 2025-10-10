@@ -10,6 +10,7 @@ interface IToolParameter {
     calorieGoal: string, dietaryPreferencesAndRestrictions: string, videoContent: string,
     commentWhichYouWillReply: string, momentsContent: string, replyTone: string,
     activityTheme: string, activityPurpose: string, activityVenue: string, festivalType: string,
+    role: string, background: string, purpose: string,
 }
 
 export const toolParameter: { [key: string]: (params: IToolParameter) => Array<{ role: string, content: string }> } = {
@@ -294,21 +295,26 @@ ${params.content}
         ]
     },
 
-    'Xiaohongshu post generation': (params: Pick<IToolParameter, 'content' | 'language' | 'tone'>) => {
+    'Xiaohongshu post generation': (params: Pick<IToolParameter, 'role' | 'background' | 'purpose' | 'language' | 'tone'>) => {
         return [
             {
                 role: 'user',
-                content: `BGēnjù yǔqì hé tíshì cí, yòng nín zìjǐ dehuà shēngchéng xiǎo hóng shū píngtái fēnggé de tiězǐ, chuānchā pǐpèi de fúhào zēngjiā fēnwéi gǎn, jiéwěi tíliàn 3-5 gè biāoqiān.
-54 / 5,000
-Based on the tone and prompt words, use your own words to generate a post in the style of the 小红书 platform, interspersed with matching symbols to add a sense of atmosphere, and finally refined 3-5 tags.
-Language: ${params.language}
-Format: Plain text without explanations and notes
-Tone: ${params.tone}
+                content: `根据以下信息生成一个小红书平台风格的帖子，穿插匹配的符号增加氛围感，结尾提炼3-5个标签。
 
-Input draft:
+角色：${params.role}
+背景：${params.background}
+目的需求：${params.purpose}
+语气：${params.tone}
+语言：${params.language}
 
-${params.content}
-`
+要求：
+- 使用小红书平台的语言风格和表达方式
+- 穿插合适的emoji和符号增加氛围感
+- 内容要符合角色设定和背景情况
+- 结尾添加3-5个相关标签
+- 格式：纯文本，无需解释和注释
+
+请直接生成帖子内容：`
             }
         ]
     },
