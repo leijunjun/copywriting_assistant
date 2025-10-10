@@ -14,8 +14,7 @@ export default function PoweredBy({ language }: { language: 'chinese' | 'english
             {LANGUAGE_LIBRARY[language]['内容由AI生成，仅供参考']}
         </div>
         <div className="flex justify-center items-center gap-1">
-            Powered By
-            <a target="_blank" href={href}><img className="object-contain" src="https://file.302.ai/gpt/imgs/91f7b86c2cf921f61e8cf9dc7b1ec5ee.png" alt="gpt302" width="55" /></a>
+            Powered By 一推火
         </div>
     </div >
 }

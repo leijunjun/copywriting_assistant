@@ -39,19 +39,9 @@ export function LoginReminderModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <div className="flex items-center justify-between">
-            <DialogTitle className="text-xl font-semibold text-gray-900">
-              {t('loginRequired')}
-            </DialogTitle>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleCancel}
-              className="h-6 w-6 text-gray-400 hover:text-gray-600"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
+          <DialogTitle className="text-xl font-semibold text-gray-900">
+            {t('loginRequired')}
+          </DialogTitle>
           <DialogDescription className="text-gray-600">
             {t('loginRequiredDescription')}
           </DialogDescription>
