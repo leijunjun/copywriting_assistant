@@ -31,9 +31,9 @@ export const ROLE_TEMPLATES: Array<Language & { value: string }> = [
 ]
 
 // 首页相关词汇 Home page vocabulary
-export const HOME_TITLE: Language = { chinese: '为家政服务提效', english: 'Efficiency for Home Services', japanese: '家政サービスを効率化' }
+export const HOME_TITLE: Language = { chinese: 'AI 精准配图', english: 'AI Precision Image Generation', japanese: 'AI精密画像生成' }
 export const HOME_SEARCH_PLACEHOLDER: Language = { chinese: '查找你需要的 AI 智能体', english: 'Find the AI Agent You Need', japanese: '必要なAIエージェントを見つける' }
-export const HOME_CATEGORY_NAVIGATION: Language = { chinese: '分类导航', english: 'Category Navigation', japanese: 'カテゴリナビゲーション' }
+export const HOME_CATEGORY_NAVIGATION: Language = { chinese: '文案创作导航', english: 'Copywriting Navigation', japanese: 'コピーライティングナビゲーション' }
 export const HOME_ALL_CATEGORIES: Language = { chinese: '全部', english: 'All', japanese: 'すべて' }
 export const HOME_SIDEBAR_HIDE: Language = { chinese: '隐藏侧边栏', english: 'Hide Sidebar', japanese: 'サイドバーを隠す' }
 export const HOME_SIDEBAR_SHOW: Language = { chinese: '显示侧边栏', english: 'Show Sidebar', japanese: 'サイドバーを表示' }

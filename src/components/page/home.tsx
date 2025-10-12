@@ -18,6 +18,7 @@ import { debounce, getLanguage, getLocalStorage, setLocalStorage } from "@/lib/u
 import { deleteCustomToolDataKey, getAllCustomToolData } from "@/app/api/customTool/indexedDB";
 import { deleteClassifyData, getAllClassifyData, IClassify } from "@/app/api/classify/indexedDB";
 import { CARD_RECENTLY_USED, classify, INPUT_PLACEHOLDER, LANGUAGE_LIBRARY, HOME_TITLE, HOME_SEARCH_PLACEHOLDER, HOME_CATEGORY_NAVIGATION, HOME_ALL_CATEGORIES, HOME_SIDEBAR_HIDE, HOME_SIDEBAR_SHOW } from "@/constant/language";
+import { useAuth } from "@/lib/auth/auth-context";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { HomePageSkeleton, LoadingIndicator, ToolCardSkeleton } from "../ui/loading-skeleton";
 
@@ -130,6 +131,8 @@ export default function Home() {
   const dispatch = useAppDispatch()
   const router = useRouter();
   const global = useAppSelector(selectGlobal)
+  const { authState } = useAuth();
+  const { user } = authState;
 
   const [type, setType] = useState('All');
   const [open, setOpen] = useState(false);
@@ -141,6 +144,32 @@ export default function Home() {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   const showBrand = process.env.NEXT_PUBLIC_SHOW_BRAND === "true";
+
+  // 根据用户行业生成动态搜索框占位符
+  const getDynamicSearchPlaceholder = () => {
+    if (!user?.industry || user.industry === 'general') {
+      return HOME_SEARCH_PLACEHOLDER[global.language];
+    }
+    
+    const industryNames = {
+      housekeeping: { chinese: '家政', english: 'Housekeeping', japanese: '家事代行' },
+      beauty: { chinese: '美业', english: 'Beauty', japanese: '美容業' },
+      general: { chinese: '通用', english: 'General', japanese: '一般' }
+    };
+    
+    const industryName = industryNames[user.industry as keyof typeof industryNames];
+    const basePlaceholder = HOME_SEARCH_PLACEHOLDER[global.language];
+    
+    if (global.language === 'chinese') {
+      return `查找你需要的 ${industryName.chinese} AI 智能体`;
+    } else if (global.language === 'english') {
+      return `Find the ${industryName.english} AI Agent You Need`;
+    } else if (global.language === 'japanese') {
+      return `必要な${industryName.japanese}AIエージェントを見つける`;
+    }
+    
+    return basePlaceholder;
+  };
 
   // 初始化加载状态
   useEffect(() => {
@@ -528,8 +557,18 @@ export default function Home() {
           
           {/* 底部按钮区域 */}
           <div className="p-3 border-t border-bg-300 space-y-2">
-            <CustomToolForm />
-            <ToolClassify />
+            {/* AI出图按钮 */}
+            <Button
+              onClick={() => router.push('/ai-image-generation')}
+              className="w-full h-12 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
+            >
+              <div className="flex items-center">
+                <svg className="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                </svg>
+                <span>AI 出图</span>
+              </div>
+            </Button>
           </div>
         </div>
         
@@ -606,21 +645,18 @@ export default function Home() {
                     words={global.language === 'chinese' ? [
                       HOME_TITLE[global.language],
                       "智能文案生成",
-                      "AI 写作助手", 
-                      "内容创作工具",
-                      "文案优化神器"
+                      "AI 精准配图", 
+                      "AI文秘，最佳创作伴侣"
                     ] : global.language === 'english' ? [
                       HOME_TITLE[global.language],
                       "Smart Content Generation",
-                      "AI Writing Assistant",
-                      "Content Creation Tools",
-                      "Copywriting Optimization"
+                      "AI Precision Image Generation",
+                      "AI Secretary, Your Best Creative Partner"
                     ] : [
                       HOME_TITLE[global.language],
                       "スマートコンテンツ生成",
-                      "AIライティングアシスタント",
-                      "コンテンツ作成ツール",
-                      "コピーライティング最適化"
+                      "AI精密画像生成",
+                      "AI秘書、最高の創作パートナー"
                     ]}
                     className="text-2xl sm:text-3xl md:text-4xl font-bold"
                     duration={2500}
@@ -637,7 +673,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-r from-primary-300/10 via-primary-200/5 to-primary-300/10 rounded-xl sm:rounded-2xl blur-sm"></div>
                 
                 <Input 
-                  placeholder={HOME_SEARCH_PLACEHOLDER[global.language]} 
+                  placeholder={getDynamicSearchPlaceholder()} 
                   onChange={onInputChange}
                   className="relative w-full h-12 sm:h-14 lg:h-16 px-4 sm:px-6 pr-12 sm:pr-16 text-base sm:text-lg lg:text-xl border-2 sm:border-3 border-bg-300 rounded-xl sm:rounded-2xl focus:border-primary-100 focus:ring-4 sm:focus:ring-6 focus:ring-primary-300/20 transition-all duration-300 shadow-lg sm:shadow-xl hover:shadow-xl sm:hover:shadow-2xl bg-bg-100/95 backdrop-blur-sm focus:scale-105"
                 />
@@ -718,8 +754,18 @@ export default function Home() {
               }
             </div>
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-3">
-              <CustomToolForm />
-              <ToolClassify />
+              {/* AI出图按钮 */}
+              <Button
+                onClick={() => router.push('/ai-image-generation')}
+                className="w-full h-12 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
+              >
+                <div className="flex items-center justify-center">
+                  <svg className="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                  </svg>
+                  <span>AI 出图</span>
+                </div>
+              </Button>
             </div>
           </div>
           

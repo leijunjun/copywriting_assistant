@@ -226,7 +226,7 @@ export default function ProfilePage() {
             <CardTitle>{t('quickActions')}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <Button
                 onClick={() => router.push('/')}
                 variant="outline"
@@ -236,6 +236,17 @@ export default function ProfilePage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                 </svg>
                 <span className="text-sm font-medium text-gray-700 group-hover:text-gray-700">{t('aiCreation')}</span>
+              </Button>
+              
+              <Button
+                onClick={() => router.push('/ai-image-generation')}
+                variant="outline"
+                className="h-20 flex flex-col items-center justify-center space-y-2 hover:bg-pink-50 hover:border-pink-300 transition-colors group"
+              >
+                <svg className="w-6 h-6 text-pink-600 group-hover:text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span className="text-sm font-medium text-gray-700 group-hover:text-gray-700">AI 出图</span>
               </Button>
               
               <Button

@@ -10,6 +10,7 @@ export interface User {
   email: string;
   nickname: string;
   avatar_url?: string;
+  industry?: string;
   created_at: string;
   updated_at: string;
 }
@@ -44,6 +45,7 @@ export interface RegisterRequest {
   email: string;
   password: string;
   nickname?: string;
+  industry?: string;
 }
 
 export interface RefreshTokenRequest {
@@ -231,6 +233,7 @@ export interface RegisterFormData {
   password: string;
   confirmPassword: string;
   nickname?: string;
+  industry?: string;
 }
 
 export interface LoginFormErrors {

@@ -8,12 +8,15 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 interface FooterProps {
   className?: string;
 }
 
 export function Footer({ className }: FooterProps) {
+  const t = useTranslations('footer');
+  
   return (
     <footer className={`footer-container ${className}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -29,7 +32,7 @@ export function Footer({ className }: FooterProps) {
               </div>
               <div className="flex-1">
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">50%-80%</h3>
-                <p className="text-sm text-gray-600">大幅节省人力成本</p>
+                <p className="text-sm text-gray-600">{t('costSavings')}</p>
               </div>
             </div>
 
@@ -41,8 +44,8 @@ export function Footer({ className }: FooterProps) {
                 </svg>
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">智能大脑</h3>
-                <p className="text-sm text-gray-600">国内外顶级大模型支持</p>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">{t('intelligentBrain')}</h3>
+                <p className="text-sm text-gray-600">{t('intelligentBrainDesc')}</p>
               </div>
             </div>
 
@@ -54,8 +57,8 @@ export function Footer({ className }: FooterProps) {
                 </svg>
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">行业模版</h3>
-                <p className="text-sm text-gray-600">懂AI更多业务场景</p>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">{t('industryTemplates')}</h3>
+                <p className="text-sm text-gray-600">{t('industryTemplatesDesc')}</p>
               </div>
             </div>
 
@@ -67,8 +70,8 @@ export function Footer({ className }: FooterProps) {
                 </svg>
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">无限扩展</h3>
-                <p className="text-sm text-gray-600">支持自定义智能体</p>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">{t('unlimitedExpansion')}</h3>
+                <p className="text-sm text-gray-600">{t('unlimitedExpansionDesc')}</p>
               </div>
             </div>
           </div>
@@ -79,13 +82,13 @@ export function Footer({ className }: FooterProps) {
           {/* Copyright Information */}
           <div className="flex flex-col items-center md:items-start space-y-2">
             <p className="text-sm text-gray-600">
-              © 2025 一推火. All rights reserved.
+              {t('copyright')}
             </p>
             <p className="text-xs text-gray-500">
-              让营销更智能，让增长更简单
+              {t('tagline')}
             </p>
             <p className="text-xs text-gray-400">
-              豫ICP备15009166号
+              {t('icpNumber')}
             </p>
           </div>
 
@@ -126,7 +129,7 @@ export function Footer({ className }: FooterProps) {
               </svg>
             </a>
             <p className="text-xs text-gray-500">
-              点击拨打客服热线
+              {t('clickToCall')}
             </p>
           </div>
 
@@ -139,7 +142,7 @@ export function Footer({ className }: FooterProps) {
                 rel="noopener noreferrer"
                 className="text-sm text-gray-600 hover:text-blue-600 transition-colors duration-200"
               >
-                裂变宝
+                {t('lietianbao')}
               </Link>
               <Link 
                 href="https://#" 
@@ -147,11 +150,11 @@ export function Footer({ className }: FooterProps) {
                 rel="noopener noreferrer"
                 className="text-sm text-gray-600 hover:text-blue-600 transition-colors duration-200"
               >
-                AI 销冠
+                {t('aiChampion')}
               </Link>
             </div>
             <p className="text-xs text-gray-500">
-              一推火 AI 营销矩阵产品
+              {t('productMatrix')}
             </p>
           </div>
         </div>

@@ -33,7 +33,8 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
   const router = useRouter();
   const dispatch = useAppDispatch()
   const global = useAppSelector(selectGlobal)
-  const { refreshAuthState } = useAuth();
+  const { refreshAuthState, authState } = useAuth();
+  const { user } = authState;
 
   const [load, setLoad] = useState(false);
   const [open, setOpen] = useState(false);
@@ -388,6 +389,23 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
   const renderBreadcrumb = () => {
     if (!dataSource) return null;
 
+    // 获取行业专用标签
+    const getIndustryTag = () => {
+      if (!user?.industry || user.industry === 'general') {
+        return null;
+      }
+      
+      const industryNames = {
+        housekeeping: { chinese: '家政专用', english: 'Housekeeping', japanese: '家事代行専用' },
+        beauty: { chinese: '美业专用', english: 'Beauty', japanese: '美容業専用' }
+      };
+      
+      return industryNames[user.industry as keyof typeof industryNames];
+    };
+
+    const industryTag = getIndustryTag();
+    const toolName = dataSource.name[global.language];
+
     const breadcrumbItems = [
       {
         label: BREADCRUMB.home[global.language],
@@ -400,9 +418,10 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
         clickable: true
       },
       {
-        label: dataSource.name[global.language],
+        label: toolName,
         href: '#',
-        clickable: false
+        clickable: false,
+        industryTag: industryTag
       }
     ];
 
@@ -423,9 +442,28 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
                 {item.label}
               </button>
             ) : (
-              <span className="text-text-100 font-semibold px-2 py-1 bg-primary-300/20 rounded-md">
-                {item.label}
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-text-100 font-semibold px-2 py-1 bg-primary-300/20 rounded-md">
+                  {item.label}
+                </span>
+                {item.industryTag && (() => {
+                  const getIndustryTagStyle = () => {
+                    if (user?.industry === 'housekeeping') {
+                      return 'bg-gradient-to-r from-green-500 to-emerald-600';
+                    } else if (user?.industry === 'beauty') {
+                      return 'bg-gradient-to-r from-pink-500 to-rose-600';
+                    }
+                    return 'bg-gradient-to-r from-blue-500 to-purple-600';
+                  };
+                  
+                  return (
+                    <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium ${getIndustryTagStyle()} text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-white/20`}>
+                      <div className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
+                      <span className="font-semibold">{item.industryTag[global.language]}</span>
+                    </span>
+                  );
+                })()}
+              </div>
             )}
           </div>
         ))}

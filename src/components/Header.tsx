@@ -179,18 +179,18 @@ export function Header({ className }: HeaderProps) {
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              首页
+              {t('aiWriting')}
             </button>
             
             <button
-              onClick={() => handleNavigation('/features')}
+              onClick={() => handleNavigation('/ai-image-generation')}
               className={`text-sm font-medium transition-colors ${
-                isActivePath('/features') 
+                isActivePath('/ai-image-generation') 
                   ? 'text-blue-600' 
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              功能
+              {t('aiImage')}
             </button>
             
             <button
@@ -201,7 +201,7 @@ export function Header({ className }: HeaderProps) {
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              套餐
+              {t('credits')}
             </button>
             
             <button
@@ -212,7 +212,7 @@ export function Header({ className }: HeaderProps) {
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              关于
+              {t('about')}
             </button>
           </nav>
 
@@ -238,7 +238,7 @@ export function Header({ className }: HeaderProps) {
                     {credits.balance.toLocaleString()}
                   </span>
                   {isUpdatingCredits && (
-                    <span className="text-xs text-blue-600 animate-pulse">更新中...</span>
+                    <span className="text-xs text-blue-600 animate-pulse">{t('updating')}</span>
                   )}
                 </div>
 

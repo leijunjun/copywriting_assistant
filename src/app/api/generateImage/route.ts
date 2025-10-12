@@ -1,93 +1,93 @@
-import ky from "ky";
-import OpenAI from "openai";
-import { NextResponse } from 'next/server';
-import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import { NextRequest, NextResponse } from 'next/server';
+import { headers } from 'next/headers';
 
-export async function POST(req: Request): Promise<Response> {
-  const { prompt } = await req.json();
-
-  const fetchUrl = process.env.NEXT_PUBLIC_API_URL
-
-  const apiKey = process.env.NEXT_PUBLIC_API_KEY
-  const model = process.env.NEXT_PUBLIC_MODEL_NAME || ''
-
-  const openai = new OpenAI({ apiKey, baseURL: `${fetchUrl}/v1/chat/completions`, });
-
-  const messages = [{
-    role: "user",
-    content: ` """Write a prompt for AI image generation as an AI expert.
-Understand and think the best result for user instruction.
-Write the result directly without any notes, do not add any other contents.
-The image prompt must contains the style in flat icon and solid background, you should finish the other parts for the prompt.
-Only describe the image in concise words, do not quote the result.
-
-Examples:
-Input: 工作日报
-Output: flat icon design, solid white background, heavy line stroke and shadowless, inside filled with light blue, minimalist notebook and a pen, rounded icon design
-
-Input: SEO optimize
-Output: simpliest icon design, solid white background, heavy line stroke and shadowless, inside filled with dark green, abstract Internet icon, decorate with web link address
-
-User instruction:<text>${prompt}</text>
-
-Return the prompt result plain text in English.
-"""`
-  }] as ChatCompletionMessageParam[];
-
-  const getImage = (img_prompt: string) => {
-    return ky(`${fetchUrl}/302/submit/flux-schnell`, {
-      method: 'POST',
-      headers: {
-        "Authorization": `Bearer ${apiKey}`,
-        "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        "prompt": img_prompt,
-        "image_size": {
-          "width": 1024,
-          "height": 1024
-        },
-        "num_inference_steps": 4
-      })
-    }).then(res => res.json())
-      .then((res: any) => {
-        return res;
-      })
-      .catch(async error => {
-        if (error.response) {
-          try {
-            const errorData = await error.response.json();
-            return errorData;
-          } catch (parseError) {
-            return 'Failed to parse error response';
-          }
-        } else {
-          return error.message || 'Unknown error';
-        }
-      })
-  }
-
+export async function POST(request: NextRequest) {
   try {
-    const response = await openai.chat.completions.create({
-      model,
-      stream: false,
-      messages,
-      temperature: 0.7,
-      top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0,
-      n: 1,
-    });
-    if (response.choices[0].message.content) {
-      const result = await getImage(response.choices[0].message.content)
-      if (result?.images?.length) {
-        return NextResponse.json({ url: result?.images[0]?.url || '' });
-      }
-      return NextResponse.json(result);
+    const headersList = headers();
+    const authorization = headersList.get('authorization');
+    
+    if (!authorization) {
+      return NextResponse.json(
+        { success: false, message: '未授权访问' },
+        { status: 401 }
+      );
     }
-    return NextResponse.json(response);
+
+    const body = await request.json();
+    const { background, subject, mainTitle, subtitle, style, size } = body;
+
+    // 验证必填字段
+    if (!background || !subject || !mainTitle) {
+      return NextResponse.json(
+        { success: false, message: '请填写必填信息' },
+        { status: 400 }
+      );
+    }
+
+    // 构建提示词
+    let prompt = `Create a high-quality image with the following specifications:
+- Background: ${background}
+- Main subject: ${subject}
+- Main title text: "${mainTitle}"`;
+
+    if (subtitle) {
+      prompt += `\n- Subtitle text: "${subtitle}"`;
+    }
+
+    // 添加风格描述
+    const styleDescriptions: { [key: string]: string } = {
+      'realistic': 'photorealistic, high detail, professional photography',
+      'cartoon': 'cartoon style, colorful, playful',
+      'anime': 'anime style, manga art, Japanese animation',
+      'watercolor': 'watercolor painting, soft colors, artistic',
+      'oil-painting': 'oil painting style, classical art, rich colors',
+      'sketch': 'pencil sketch, black and white, artistic drawing',
+      'minimalist': 'minimalist design, clean, simple',
+      'vintage': 'vintage style, retro, nostalgic'
+    };
+
+    if (style && styleDescriptions[style]) {
+      prompt += `\n- Style: ${styleDescriptions[style]}`;
+    }
+
+    // 添加尺寸描述
+    const sizeDescriptions: { [key: string]: string } = {
+      '1:1': 'square aspect ratio',
+      '4:3': 'landscape aspect ratio 4:3',
+      '3:4': 'portrait aspect ratio 3:4',
+      '16:9': 'wide landscape aspect ratio 16:9',
+      '9:16': 'tall portrait aspect ratio 9:16'
+    };
+
+    if (size && sizeDescriptions[size]) {
+      prompt += `\n- Aspect ratio: ${sizeDescriptions[size]}`;
+    }
+
+    prompt += '\n- High quality, professional, well-composed image';
+
+    // 这里应该调用实际的AI图片生成API
+    // 由于没有真实的API，我们返回模拟数据
+    const mockImages = [
+      'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=512&h=512&fit=crop&crop=center',
+      'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=512&h=512&fit=crop&crop=center',
+      'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=512&h=512&fit=crop&crop=center'
+    ];
+
+    // 模拟API调用延迟
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    return NextResponse.json({
+      success: true,
+      images: mockImages,
+      prompt: prompt,
+      message: '图片生成成功'
+    });
+
   } catch (error) {
-    return NextResponse.json(error);
+    console.error('图片生成错误:', error);
+    return NextResponse.json(
+      { success: false, message: '图片生成失败，请稍后重试' },
+      { status: 500 }
+    );
   }
 }

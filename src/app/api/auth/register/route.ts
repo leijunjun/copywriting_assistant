@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     logger.api('Registration request received');
 
     const body = await request.json();
-    const { email, password, nickname } = body;
+    const { email, password, nickname, industry } = body;
 
     if (!email || !password) {
       return NextResponse.json(
@@ -52,6 +52,21 @@ export async function POST(request: NextRequest) {
         createErrorResponse({
           code: 'WEAK_PASSWORD',
           message: 'Password must be at least 6 characters long',
+          type: 'VALIDATION',
+          severity: 'MEDIUM',
+        }),
+        { status: 400 }
+      );
+    }
+
+    // Validate industry value
+    const validIndustries = ['general', 'housekeeping', 'beauty'];
+    const userIndustry = industry || 'general';
+    if (!validIndustries.includes(userIndustry)) {
+      return NextResponse.json(
+        createErrorResponse({
+          code: 'INVALID_INDUSTRY',
+          message: 'Invalid industry selection',
           type: 'VALIDATION',
           severity: 'MEDIUM',
         }),
@@ -116,6 +131,7 @@ export async function POST(request: NextRequest) {
         email: data.user.email,
         nickname: nickname || data.user.email?.split('@')[0] || 'User',
         avatar_url: '', // Empty avatar for email users
+        industry: userIndustry,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       })
@@ -186,6 +202,7 @@ export async function POST(request: NextRequest) {
         email: userData.email,
         nickname: userData.nickname,
         avatar_url: userData.avatar_url,
+        industry: userData.industry,
         created_at: userData.created_at,
         updated_at: userData.updated_at,
       },

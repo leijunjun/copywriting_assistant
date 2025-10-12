@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { ErrorMessage } from '@/components/ui/error-message';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { logger } from '@/lib/utils/logger';
 import { useAuth } from '@/lib/auth/auth-context';
 
@@ -26,6 +27,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [nickname, setNickname] = useState('');
+  const [industry, setIndustry] = useState('general');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -65,7 +67,8 @@ export default function RegisterPage() {
         body: JSON.stringify({ 
           email, 
           password, 
-          nickname: nickname || email.split('@')[0] 
+          nickname: nickname || email.split('@')[0],
+          industry
         }),
       });
 
@@ -137,6 +140,20 @@ export default function RegisterPage() {
                   onChange={(e) => setNickname(e.target.value)}
                   placeholder={t('nicknamePlaceholder')}
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="industry">{t('industry')}</Label>
+                <Select value={industry} onValueChange={setIndustry}>
+                  <SelectTrigger>
+                    <SelectValue placeholder={t('selectIndustry')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="general">{t('general')}</SelectItem>
+                    <SelectItem value="housekeeping">{t('housekeeping')}</SelectItem>
+                    <SelectItem value="beauty">{t('beauty')}</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-2">
