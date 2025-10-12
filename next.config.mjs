@@ -15,6 +15,18 @@ const nextConfig = {
   // Vercel优化配置
   experimental: {
     optimizePackageImports: ['lucide-react', 'react-icons', '@radix-ui/react-icons'],
+    // 减少 webpack 缓存错误
+    webpackBuildWorker: true,
+    // 优化启动性能
+    serverComponentsExternalPackages: ['sharp'],
+  },
+  // 减少 webpack 缓存问题
+  webpack: (config, { dev, isServer }) => {
+    if (dev) {
+      // 开发环境下禁用某些缓存
+      config.cache = false;
+    }
+    return config;
   },
   // 图片优化
   images: {

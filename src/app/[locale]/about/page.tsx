@@ -146,19 +146,25 @@ export default function AboutPage() {
                 <li className="flex items-start">
                   <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
                   <span className="text-gray-700">
-                    {global.language === 'chinese' ? '专业培训的服务团队' : global.language === 'english' ? 'Professionally trained service team' : 'プロフェッショナルに訓練されたサービスチーム'}
+                    {global.language === 'chinese' ? '汇聚全球顶级 AI 大模型' : global.language === 'english' ? 'Integrate top global AI models' : '世界トップAIモデルを統合'}
                   </span>
                 </li>
                 <li className="flex items-start">
                   <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
                   <span className="text-gray-700">
-                    {global.language === 'chinese' ? '24小时客户服务' : global.language === 'english' ? '24-hour customer service' : '24時間カスタマーサービス'}
+                    {global.language === 'chinese' ? '聚焦行业场景，做更有效的创作' : global.language === 'english' ? 'Focus on industry scenarios for more effective creation' : '業界シーンに焦点を当て、より効果的な創作'}
                   </span>
                 </li>
                 <li className="flex items-start">
                   <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
                   <span className="text-gray-700">
-                    {global.language === 'chinese' ? '灵活的服务时间' : global.language === 'english' ? 'Flexible service hours' : '柔軟なサービス時間'}
+                    {global.language === 'chinese' ? '支持批量内容产出和导出' : global.language === 'english' ? 'Support batch content production and export' : 'バッチコンテンツ生産とエクスポートをサポート'}
+                  </span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                  <span className="text-gray-700">
+                    {global.language === 'chinese' ? '支持行业需求定制' : global.language === 'english' ? 'Support industry-specific customization' : '業界ニーズに応じたカスタマイズをサポート'}
                   </span>
                 </li>
                 <li className="flex items-start">
@@ -184,10 +190,10 @@ export default function AboutPage() {
                 </div>
                 <p className="text-sm text-gray-600 text-center">
                   {global.language === 'chinese' 
-                    ? '扫描二维码，获取更多AI文案创作技巧' 
+                    ? '扫描二维码，获取站点邀约账号' 
                     : global.language === 'english'
-                    ? 'Scan QR code for more AI copywriting tips'
-                    : 'QRコードをスキャンして、より多くのAIコピーライティングのコツを取得'
+                    ? 'Scan QR code to get site invitation account'
+                    : 'QRコードをスキャンして、サイト招待アカウントを取得'
                   }
                 </p>
               </div>

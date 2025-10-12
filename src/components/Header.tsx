@@ -148,12 +148,18 @@ export function Header({ className }: HeaderProps) {
           {/* Logo区域 - 完全左对齐，无左侧留白 */}
           <div className="flex items-center pl-2 sm:pl-4 lg:pl-8">
             <div className="flex items-center">
-              <img
-                src="/logo.png"
-                alt="AI Writing Assistant Logo"
-                style={{ height: '40px', width: 'auto' }}
-                className="object-contain"
-              />
+              <button
+                onClick={() => handleNavigation('/')}
+                className="flex items-center hover:opacity-80 transition-opacity duration-200 cursor-pointer"
+                title="返回首页"
+              >
+                <img
+                  src="/logo.png"
+                  alt="AI Writing Assistant Logo"
+                  style={{ height: '40px', width: 'auto' }}
+                  className="object-contain"
+                />
+              </button>
               <span
                 className="ml-3 px-3 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25 border border-blue-400/20 backdrop-blur-sm transition-all duration-300 ease-out hover:scale-105 hover:shadow-xl hover:shadow-blue-500/30 hover:from-blue-600 hover:to-purple-700"
                 style={{ 

@@ -186,13 +186,19 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-8">
+      {/* 背景装饰 */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-indigo-400/20 to-pink-400/20 rounded-full blur-3xl"></div>
+      </div>
+      
+      <div className="relative max-w-6xl mx-auto px-4 space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-3">
             {t('profile')}
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 text-lg">
             {t('profileDescription')}
           </p>
         </div>
@@ -221,54 +227,53 @@ export default function ProfilePage() {
         )}
 
         {/* Quick Actions */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('quickActions')}</CardTitle>
+        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-xl">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-2xl font-bold text-gray-800 flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <span>{t('quickActions')}</span>
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <Button
                 onClick={() => router.push('/')}
                 variant="outline"
-                className="h-20 flex flex-col items-center justify-center space-y-2 hover:bg-blue-50 hover:border-blue-300 transition-colors group"
+                className="h-24 flex flex-col items-center justify-center space-y-3 hover:border-blue-300 transition-all duration-300 group shadow-md hover:shadow-lg relative overflow-hidden bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700"
               >
-                <svg className="w-6 h-6 text-blue-600 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                </svg>
-                <span className="text-sm font-medium text-gray-700 group-hover:text-gray-700">{t('aiCreation')}</span>
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-400/30 to-indigo-600/40 group-hover:from-blue-400/40 group-hover:to-indigo-600/50 transition-all duration-300"></div>
+                <span className="text-lg font-bold text-white drop-shadow-2xl relative z-10 text-center px-2">{t('aiCreation')}</span>
               </Button>
               
               <Button
                 onClick={() => router.push('/ai-image-generation')}
                 variant="outline"
-                className="h-20 flex flex-col items-center justify-center space-y-2 hover:bg-pink-50 hover:border-pink-300 transition-colors group"
+                className="h-24 flex flex-col items-center justify-center space-y-3 hover:border-pink-300 transition-all duration-300 group shadow-md hover:shadow-lg relative overflow-hidden bg-gradient-to-br from-pink-500 via-rose-600 to-red-700"
               >
-                <svg className="w-6 h-6 text-pink-600 group-hover:text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <span className="text-sm font-medium text-gray-700 group-hover:text-gray-700">AI 出图</span>
+                <div className="absolute inset-0 bg-gradient-to-br from-pink-400/30 to-red-600/40 group-hover:from-pink-400/40 group-hover:to-red-600/50 transition-all duration-300"></div>
+                <span className="text-lg font-bold text-white drop-shadow-2xl relative z-10 text-center px-2">AI 出图</span>
               </Button>
               
               <Button
                 onClick={() => router.push('/credits')}
                 variant="outline"
-                className="h-20 flex flex-col items-center justify-center space-y-2 hover:bg-green-50 hover:border-green-300 transition-colors group"
+                className="h-24 flex flex-col items-center justify-center space-y-3 hover:border-green-300 transition-all duration-300 group shadow-md hover:shadow-lg relative overflow-hidden bg-gradient-to-br from-green-500 via-emerald-600 to-teal-700"
               >
-                <svg className="w-6 h-6 text-green-600 group-hover:text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                </svg>
-                <span className="text-sm font-medium text-gray-700 group-hover:text-gray-700">{t('manageCredits')}</span>
+                <div className="absolute inset-0 bg-gradient-to-br from-green-400/30 to-teal-600/40 group-hover:from-green-400/40 group-hover:to-teal-600/50 transition-all duration-300"></div>
+                <span className="text-lg font-bold text-white drop-shadow-2xl relative z-10 text-center px-2">{t('manageCredits')}</span>
               </Button>
               
               <Button
                 onClick={() => router.push('/credits/history')}
                 variant="outline"
-                className="h-20 flex flex-col items-center justify-center space-y-2 hover:bg-purple-50 hover:border-purple-300 transition-colors group"
+                className="h-24 flex flex-col items-center justify-center space-y-3 hover:border-purple-300 transition-all duration-300 group shadow-md hover:shadow-lg relative overflow-hidden bg-gradient-to-br from-purple-500 via-violet-600 to-indigo-700"
               >
-                <svg className="w-6 h-6 text-purple-600 group-hover:text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                <span className="text-sm font-medium text-gray-700 group-hover:text-gray-700">{t('rechargeHistory')}</span>
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-400/30 to-indigo-600/40 group-hover:from-purple-400/40 group-hover:to-indigo-600/50 transition-all duration-300"></div>
+                <span className="text-lg font-bold text-white drop-shadow-2xl relative z-10 text-center px-2">{t('rechargeHistory')}</span>
               </Button>
             </div>
           </CardContent>

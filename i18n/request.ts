@@ -4,16 +4,18 @@ import { getRequestConfig } from 'next-intl/server';
 // Can be imported from a shared config
 const locales = ['en', 'zh', 'ja'];
 
-export default getRequestConfig(async ({ locale }) => {
+export default getRequestConfig(async ({ requestLocale }) => {
+  // This typically corresponds to the `[locale]` segment
+  let locale = await requestLocale;
+
   // Validate that the incoming `locale` parameter is valid
-  if (!locales.includes(locale as any)) {
+  if (!locale || !locales.includes(locale as any)) {
     // Default to 'zh' if locale is not valid
-    return {
-      messages: (await import(`../messages/zh.json`)).default,
-    };
+    locale = 'zh';
   }
 
   return {
+    locale,
     messages: (await import(`../messages/${locale}.json`)).default,
   };
 });
