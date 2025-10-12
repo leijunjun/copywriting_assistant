@@ -69,11 +69,11 @@ export function CreditBalance({ balance, onRecharge, showWarning, className }: C
 
   const getBalanceStatus = (balance: number) => {
     if (balance < 20) {
-      return { status: 'low', color: 'destructive', icon: '⚠️' };
+      return { status: 'low', color: 'destructive' };
     } else if (balance < 100) {
-      return { status: 'medium', color: 'warning', icon: '⚡' };
+      return { status: 'medium', color: 'warning' };
     } else {
-      return { status: 'high', color: 'success', icon: '✅' };
+      return { status: 'high', color: 'success' };
     }
   };
 
@@ -115,10 +115,9 @@ export function CreditBalance({ balance, onRecharge, showWarning, className }: C
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <CreditIcon className="h-5 w-5" />
           <span>{t('currentBalance')}</span>
           <Badge variant={balanceStatus.color as any}>
-            {balanceStatus.icon} {balanceStatus.status.toUpperCase()}
+            {balanceStatus.status.toUpperCase()}
           </Badge>
         </CardTitle>
       </CardHeader>
@@ -135,7 +134,6 @@ export function CreditBalance({ balance, onRecharge, showWarning, className }: C
         {showWarning && currentBalance < 20 && (
           <div className="bg-warning/10 border border-warning/20 rounded-lg p-3">
             <div className="flex items-center space-x-2">
-              <span className="text-warning">⚠️</span>
               <p className="text-sm text-warning">
                 {t('lowBalanceWarning')}
               </p>

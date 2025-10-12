@@ -36,11 +36,11 @@ export function LowCreditWarning({
 
   const getWarningLevel = (balance: number) => {
     if (balance < 5) {
-      return { level: 'critical', color: 'destructive', icon: '🚨' };
+      return { level: 'critical', color: 'destructive' };
     } else if (balance < 10) {
-      return { level: 'high', color: 'destructive', icon: '⚠️' };
+      return { level: 'high', color: 'destructive' };
     } else {
-      return { level: 'medium', color: 'warning', icon: '⚡' };
+      return { level: 'medium', color: 'warning' };
     }
   };
 
@@ -72,7 +72,6 @@ export function LowCreditWarning({
     <Alert className={`border-${warningLevel.color} bg-${warningLevel.color}/5 ${className}`}>
       <WarningIcon className="h-4 w-4" />
       <AlertTitle className="flex items-center space-x-2">
-        <span>{warningLevel.icon}</span>
         <span>{t('lowBalanceAlert')}</span>
         <Badge variant={warningLevel.color as any}>
           {warningLevel.level.toUpperCase()}

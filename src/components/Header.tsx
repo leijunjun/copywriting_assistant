@@ -146,7 +146,7 @@ export function Header({ className }: HeaderProps) {
       <div className="w-full">
         <div className="flex items-center justify-between h-16">
           {/* Logo区域 - 完全左对齐，无左侧留白 */}
-          <div className="flex items-center pl-4 sm:pl-6 lg:pl-8">
+          <div className="flex items-center pl-2 sm:pl-4 lg:pl-8">
             <div className="flex items-center">
               <img
                 src="/logo.png"
@@ -217,14 +217,14 @@ export function Header({ className }: HeaderProps) {
           </nav>
 
           {/* 个人信息区域 - 右对齐 */}
-          <div className="flex items-center space-x-4 pr-4 sm:pr-6 lg:pr-8">
+          <div className="flex items-center space-x-2 sm:space-x-4 pr-2 sm:pr-4 lg:pr-8">
             {/* 语种切换按钮 */}
             <LanguagePopover />
             
             {isAuthenticated && user && credits ? (
               <>
-                {/* 积分显示 - 融合样式 */}
-                <div className={`flex items-center space-x-2 rounded-lg px-3 py-1.5 transition-all duration-300 ${
+                {/* 积分显示 - 融合样式 - 手机端隐藏 */}
+                <div className={`hidden sm:flex items-center space-x-2 rounded-lg px-3 py-1.5 transition-all duration-300 ${
                   getCreditStatus(credits.balance).color === 'default' 
                     ? 'bg-gray-100 text-gray-700' 
                     : getCreditStatus(credits.balance).color === 'destructive'
