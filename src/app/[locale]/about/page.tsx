@@ -25,7 +25,7 @@ export default function AboutPage() {
           </h1>
           <p className="text-xl text-gray-600">
             {global.language === 'chinese' 
-              ? '了解我们的使命和愿景' 
+              ? '用AI智能提升行业竞争力' 
               : global.language === 'english'
               ? 'Learn about our mission and vision'
               : '私たちのミッションとビジョンについて'
@@ -58,7 +58,7 @@ export default function AboutPage() {
             {/* Stat 2 */}
             <div className="text-center">
               <div className="bg-gradient-to-r from-green-500 to-teal-600 text-white text-4xl font-bold rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                全
+                强
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
                 {global.language === 'chinese' ? '融合10+顶级大模型' : global.language === 'english' ? 'Top Global AI Models' : '国内外トップAIモデル'}
@@ -71,26 +71,26 @@ export default function AboutPage() {
             {/* Stat 3 */}
             <div className="text-center">
               <div className="bg-gradient-to-r from-orange-500 to-red-600 text-white text-4xl font-bold rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                懂
+                专
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
                 {global.language === 'chinese' ? '行业话术' : global.language === 'english' ? 'Industry Expertise' : '業界専門用語'}
               </h3>
               <p className="text-gray-600">
-                {global.language === 'chinese' ? '懂AI更多业务场景' : global.language === 'english' ? 'Understand more AI business scenarios' : 'より多くのAIビジネスシーンを理解'}
+                {global.language === 'chinese' ? '懂AI更懂行业场景' : global.language === 'english' ? 'Understand more AI business scenarios' : 'より多くのAIビジネスシーンを理解'}
               </p>
             </div>
 
             {/* Stat 4 */}
             <div className="text-center">
               <div className="bg-gradient-to-r from-purple-500 to-pink-600 text-white text-4xl font-bold rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                灵
+                快
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                {global.language === 'chinese' ? '无限扩展' : global.language === 'english' ? 'Unlimited Expansion' : '無制限拡張'}
+                {global.language === 'chinese' ? '支持批量' : global.language === 'english' ? 'Unlimited Expansion' : '無制限拡張'}
               </h3>
               <p className="text-gray-600">
-                {global.language === 'chinese' ? '支持自定义智能体' : global.language === 'english' ? 'Support custom intelligent agents' : 'カスタムインテリジェントエージェントをサポート'}
+                {global.language === 'chinese' ? '批量产出批量导出' : global.language === 'english' ? 'Support custom intelligent agents' : 'カスタムインテリジェントエージェントをサポート'}
               </p>
             </div>
           </div>

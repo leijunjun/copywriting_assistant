@@ -11,6 +11,8 @@ import { Badge } from '@/components/ui/badge';
 import { Loader2, Download, Image as ImageIcon, Sparkles } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { useAuth } from '@/lib/auth/auth-context';
+import { useAuthCheck } from '@/hooks/useAuthCheck';
+import { LoginReminderModal } from '@/components/ui/login-reminder-modal';
 
 // 风格选项
 const STYLE_OPTIONS = [
@@ -37,6 +39,7 @@ export default function AIImageGenerationPage() {
   const router = useRouter();
   const { authState } = useAuth();
   const { isAuthenticated, credits } = authState;
+  const { withAuthCheck, showLoginModal, setShowLoginModal } = useAuthCheck();
 
   const [formData, setFormData] = useState({
     background: '',
@@ -51,17 +54,6 @@ export default function AIImageGenerationPage() {
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // 检查用户是否已登录
-  useEffect(() => {
-    if (!isAuthenticated) {
-      toast({
-        title: "需要登录",
-        description: "请先登录后再使用AI出图功能",
-        variant: "destructive"
-      });
-      router.push('/auth/login');
-    }
-  }, [isAuthenticated, router]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -71,24 +63,6 @@ export default function AIImageGenerationPage() {
   };
 
   const handleGenerate = async () => {
-    if (!isAuthenticated) {
-      toast({
-        title: "需要登录",
-        description: "请先登录后再使用AI出图功能",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (!credits || credits.balance < 50) {
-      toast({
-        title: "积分不足",
-        description: "生成图片需要50积分，请先充值",
-        variant: "destructive"
-      });
-      return;
-    }
-
     // 验证必填字段
     if (!formData.background || !formData.subject || !formData.mainTitle) {
       toast({
@@ -99,50 +73,62 @@ export default function AIImageGenerationPage() {
       return;
     }
 
-    setIsGenerating(true);
-
-    try {
-      const response = await fetch('/api/generateImage', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          background: formData.background,
-          subject: formData.subject,
-          mainTitle: formData.mainTitle,
-          subtitle: formData.subtitle,
-          style: formData.style || 'realistic',
-          size: formData.size || '1:1'
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('生成失败');
-      }
-
-      const data = await response.json();
-      
-      if (data.success && data.images) {
-        setGeneratedImages(data.images);
-        setCurrentImageIndex(0);
+    // 使用withAuthCheck包装生成逻辑
+    withAuthCheck(async () => {
+      if (!credits || credits.balance < 50) {
         toast({
-          title: "生成成功",
-          description: "图片已生成完成",
+          title: "积分不足",
+          description: "生成图片需要50积分，请先充值",
+          variant: "destructive"
         });
-      } else {
-        throw new Error(data.message || '生成失败');
+        return;
       }
-    } catch (error) {
-      console.error('生成图片失败:', error);
-      toast({
-        title: "生成失败",
-        description: "请稍后重试或联系客服",
-        variant: "destructive"
-      });
-    } finally {
-      setIsGenerating(false);
-    }
+
+      setIsGenerating(true);
+
+      try {
+        const response = await fetch('/api/generateImage', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            background: formData.background,
+            subject: formData.subject,
+            mainTitle: formData.mainTitle,
+            subtitle: formData.subtitle,
+            style: formData.style || 'realistic',
+            size: formData.size || '1:1'
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('生成失败');
+        }
+
+        const data = await response.json();
+        
+        if (data.success && data.images) {
+          setGeneratedImages(data.images);
+          setCurrentImageIndex(0);
+          toast({
+            title: "生成成功",
+            description: "图片已生成完成",
+          });
+        } else {
+          throw new Error(data.message || '生成失败');
+        }
+      } catch (error) {
+        console.error('生成图片失败:', error);
+        toast({
+          title: "生成失败",
+          description: "请稍后重试或联系客服",
+          variant: "destructive"
+        });
+      } finally {
+        setIsGenerating(false);
+      }
+    }, window.location.pathname + window.location.search);
   };
 
   const handleDownload = (imageUrl: string) => {
@@ -341,7 +327,7 @@ export default function AIImageGenerationPage() {
                 <div className="pt-4">
                   <Button
                     onClick={handleGenerate}
-                    disabled={isGenerating || !isAuthenticated}
+                    disabled={isGenerating}
                     className="w-full h-14 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300"
                   >
                     {isGenerating ? (
@@ -365,6 +351,12 @@ export default function AIImageGenerationPage() {
           </div>
         </div>
       </div>
+      
+      {/* 登录提醒弹窗 */}
+      <LoginReminderModal 
+        open={showLoginModal} 
+        onOpenChange={setShowLoginModal} 
+      />
     </div>
   );
 }

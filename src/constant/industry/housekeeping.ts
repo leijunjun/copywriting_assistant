@@ -201,10 +201,12 @@ export const housekeepingPresets: IndustryPresets = {
   // 抖音短视频脚本工具
   'TikTok-post-generation': {
     promotionGoal: [
-      { chinese: "引流到店", english: "Drive traffic to store", japanese: "店舗への誘導" },
-      { chinese: "推广新品", english: "Promote new products", japanese: "新商品のプロモーション" },
-      { chinese: "打造人设", english: "Build personal brand", japanese: "個人ブランドの構築" },
-      { chinese: "促销活动", english: "Promotional activities", japanese: "プロモーション活動" },
+      { chinese: "获客引流", english: "Attract customers and generate leads", japanese: "顧客を獲得し集客する" },
+      { chinese: "建立专业信任", english: "Establish professional trust", japanese: "専門的な信頼を築く" },
+      { chinese: "打造人设", english: "Build personal brand", japanese: "パーソナルブランドを構築する" },
+      { chinese: "激发客户需求", english: "Stimulate customer demand", japanese: "顧客のニーズを喚起する" },
+      { chinese: "提升服务溢价", english: "Enhance service premium", japanese: "サービスの付加価値を高める" },
+      { chinese: "辅助招聘", english: "Assist in recruitment", japanese: "採用をサポートする" },
     ],
     customerGroup: [
       { chinese: "双职工家庭", english: "Dual-income families", japanese: "共働き家族" },
@@ -238,7 +240,6 @@ export const housekeepingPresets: IndustryPresets = {
       { chinese: "不使用'最好'、'第一'等绝对化用语", english: "Avoid absolute terms like 'best' or 'first'", japanese: "'最高''第一'などの絶対的表現は使用しない" },
       { chinese: "不夸大服务效果", english: "Don't exaggerate service effects", japanese: "サービス効果を誇大表現しない" },
       { chinese: "不承诺100%满意", english: "Don't promise 100% satisfaction", japanese: "100%満足を約束しない" },
-      { chinese: "不使用'包治百病'等医疗词汇", english: "Don't use medical terms like 'cure all'", japanese: "'万能薬'などの医療用語は使用しない" },
       { chinese: "不贬低竞争对手", english: "Don't disparage competitors", japanese: "競合他社を貶めない" },
       { chinese: "不夸大个人能力", english: "Don't exaggerate personal abilities", japanese: "個人能力を誇大表現しない" },
       { chinese: "不使用'顶级'、'极品'等词汇", english: "Avoid terms like 'top-tier' or 'premium'", japanese: "'最高級''極品'などの用語は使用しない" },

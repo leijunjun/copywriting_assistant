@@ -176,11 +176,6 @@ export function UserProfile({ user, onLogout, className }: UserProfileProps) {
         {/* 账户统计 */}
         <div className="grid grid-cols-2 gap-4">
           <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200 hover:shadow-md transition-all duration-300 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
             <p className="text-sm font-semibold text-blue-700 mb-1">{t('joinDate')}</p>
             <p className="text-lg font-bold text-blue-900">
               {formatDate(user.created_at)}
@@ -188,11 +183,6 @@ export function UserProfile({ user, onLogout, className }: UserProfileProps) {
           </div>
           
           <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl border border-purple-200 hover:shadow-md transition-all duration-300 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
             <p className="text-sm font-semibold text-purple-700 mb-1">{t('lastActive')}</p>
             <p className="text-lg font-bold text-purple-900">
               {formatDate(user.updated_at)}
