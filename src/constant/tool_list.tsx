@@ -298,16 +298,19 @@ export const toolList: IToolList = {
       resultType: 'text',
       title: 'TikTok-post-generation',
       submitButton: 'Generate',
-      name: { chinese: '抖音图文生成', english: 'TikTok post generation', japanese: 'TikTok投稿生成' },
+      name: { chinese: '抖音短视频脚本', english: 'TikTok video script', japanese: 'TikTok動画脚本' },
       classify: { chinese: '公域推广', english: 'Public Domain Promotion', japanese: 'パブリックドメイン促進' },
       url: '/douyin.webp',
       describe: {
-        chinese: '生成一个抖音平台风格的图文内容',
-        english: 'Generate a TikTok-style post.',
-        japanese: 'TikTokプラットフォーム風の投稿を生成する'
+        chinese: '生成抖音平台爆款风格的短视频脚本',
+        english: 'Generate viral TikTok-style video scripts.',
+        japanese: 'TikTokプラットフォームのバズる動画脚本を生成する'
       },
       from: {
-        content: { type: 'Textarea', isBig: true, },
+        promotionGoal: { type: 'Input' },
+        customerGroup: { type: 'Input' },
+        productHighlights: { type: 'Input' },
+        restrictions: { type: 'Input' },
         tone: { type: 'Select', list: SOCIAL_MEDIA_STYLE },
       }
     },

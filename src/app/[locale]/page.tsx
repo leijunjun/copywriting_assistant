@@ -28,8 +28,8 @@ export async function generateMetadata(
 
   const info = {
     zh: {
-      title: "AI 文案助手",
-      description: "文案创作的得力助手，让创意和效率并驾齐驱",
+      title: "一推火AI文秘 | 批量写稿，一键配图 ｜更懂门店业务的智能创作助手",
+      description: "还在为门店文案和作图发愁？每天发朋友圈、做短视频脚本，耗时又没效果？「一推火AI文秘」 ——专为门店打造的智能创作助手！不用学、不用教，输入关键词，马上出爆款内容！",
       image: "/writing_zh.jpg",
     },
     en: {

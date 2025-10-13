@@ -1,5 +1,5 @@
 "use client";
-import React, { memo, useMemo, useCallback, lazy, Suspense } from "react";
+import React, { memo, useMemo, useCallback } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "../ui/use-toast";
 import { useEffect, useState } from "react";
@@ -22,8 +22,8 @@ import { useAuth } from "@/lib/auth/auth-context";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { HomePageSkeleton, LoadingIndicator, ToolCardSkeleton } from "../ui/loading-skeleton";
 
-// 懒加载旋转文字组件
-const GradientRotatingText = lazy(() => import("../ui/rotating-text").then(module => ({ default: module.GradientRotatingText })));
+// 直接导入旋转文字组件
+import { GradientRotatingText } from "../ui/rotating-text";
 
 // 优化的工具卡片组件
 const ToolCard = memo(({ item, global, router, isTikTok }: { 
@@ -637,35 +637,29 @@ export default function Home() {
             }`}>
               {/* 主标题 - 旋转文字动画 */}
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">
-                <Suspense fallback={
-                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary-100 to-primary-200 bg-clip-text text-transparent">
-                    {HOME_TITLE[global.language]}
-                  </div>
-                }>
-                  <GradientRotatingText
-                    words={global.language === 'chinese' ? [
-                      HOME_TITLE[global.language],
-                      "智能文案生成",
-                      "AI 精准配图", 
-                      "AI文秘，最佳创作伴侣"
-                    ] : global.language === 'english' ? [
-                      HOME_TITLE[global.language],
-                      "Smart Content Generation",
-                      "AI Precision Image Generation",
-                      "AI Secretary, Your Best Creative Partner"
-                    ] : [
-                      HOME_TITLE[global.language],
-                      "スマートコンテンツ生成",
-                      "AI精密画像生成",
-                      "AI秘書、最高の創作パートナー"
-                    ]}
-                    className="text-2xl sm:text-3xl md:text-4xl font-bold"
-                    duration={2500}
-                    delay={200}
-                    gradientFrom="from-primary-100"
-                    gradientTo="to-primary-200"
-                  />
-                </Suspense>
+                <GradientRotatingText
+                  words={global.language === 'chinese' ? [
+                    HOME_TITLE[global.language],
+                    "智能文案生成",
+                    "AI 精准配图", 
+                    "AI文秘，最佳创作伴侣"
+                  ] : global.language === 'english' ? [
+                    HOME_TITLE[global.language],
+                    "Smart Content Generation",
+                    "AI Precision Image Generation",
+                    "AI Secretary, Your Best Creative Partner"
+                  ] : [
+                    HOME_TITLE[global.language],
+                    "スマートコンテンツ生成",
+                    "AI精密画像生成",
+                    "AI秘書、最高の創作パートナー"
+                  ]}
+                  className="text-2xl sm:text-3xl md:text-4xl font-bold"
+                  duration={2500}
+                  delay={200}
+                  gradientFrom="from-primary-100"
+                  gradientTo="to-primary-200"
+                />
               </h1>
               
               {/* 搜索框 */}

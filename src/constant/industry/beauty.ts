@@ -219,34 +219,55 @@ export const beautyPresets: IndustryPresets = {
     ]
   },
   
-  // 抖音图文生成工具
+  // 抖音短视频脚本工具
   'TikTok-post-generation': {
-    content: [
-      { 
-        chinese: "医美医生的一天：从面诊到方案设计，每一个决定都关乎客户的安全与美丽", 
-        english: "A day in the life of a medical aesthetic doctor: From consultation to treatment planning, every decision concerns client safety and beauty", 
-        japanese: "医療美容医師の一日：面談から治療計画まで、すべての決定がお客様の安全と美しさに関わります" 
-      },
-      { 
-        chinese: "医美科普小课堂：什么是微整形？安全变美的正确打开方式", 
-        english: "Medical beauty science class: What is micro-plastic surgery? The correct way to safely enhance beauty", 
-        japanese: "医療美容科学教室：マイクロ整形とは？安全な美しさの正しい方法" 
-      },
-      { 
-        chinese: "玻尿酸注射全过程：从术前评估到术后护理，专业医生手把手教你安全变美", 
-        english: "Complete process of hyaluronic acid injection: From pre-operative assessment to post-operative care, professional doctor guides you through safe beauty enhancement", 
-        japanese: "ヒアルロン酸注射全過程：術前評価から術後ケアまで、プロ医師が安全な美しさの手順を指導" 
-      },
-      { 
-        chinese: "热玛吉治疗揭秘：无创紧肤的黑科技，让你重获年轻肌肤", 
-        english: "Thermage treatment revealed: Non-invasive skin tightening black technology, helping you regain youthful skin", 
-        japanese: "サーモージ治療の秘密：非侵襲的肌引き締めのブラックテクノロジー、若々しい肌を取り戻す" 
-      },
-      { 
-        chinese: "激光美肤效果对比：专业设备+精准操作=完美肌肤，前后对比太惊艳", 
-        english: "Laser skin treatment before/after comparison: Professional equipment + precise operation = perfect skin, the contrast is amazing", 
-        japanese: "レーザー美肌効果比較：プロ機器+精密操作=完璧な肌、ビフォーアフターの対比が驚き" 
-      },
+    promotionGoal: [
+      { chinese: "引流到店", english: "Drive traffic to store", japanese: "店舗への誘導" },
+      { chinese: "推广新品", english: "Promote new products", japanese: "新商品のプロモーション" },
+      { chinese: "打造人设", english: "Build personal brand", japanese: "個人ブランドの構築" },
+      { chinese: "促销活动", english: "Promotional activities", japanese: "プロモーション活動" },
+    ],
+    customerGroup: [
+      { chinese: "25-35岁轻熟女性", english: "25-35 year old young mature women", japanese: "25-35歳の軽熟女性" },
+      { chinese: "抗衰需求客户", english: "Anti-aging clients", japanese: "アンチエイジング需要のお客様" },
+      { chinese: "微整形咨询者", english: "Micro-plastic surgery consultants", japanese: "マイクロ整形相談者" },
+      { chinese: "职场精英女性", english: "Professional elite women", japanese: "職場エリート女性" },
+      { chinese: "产后恢复妈妈", english: "Postpartum recovery mothers", japanese: "産後回復ママ" },
+      { chinese: "追求完美女性", english: "Perfection-seeking women", japanese: "完璧を求める女性" },
+      { chinese: "高收入女性", english: "High-income women", japanese: "高収入女性" },
+      { chinese: "时尚达人", english: "Fashion enthusiasts", japanese: "ファッション愛好家" },
+      { chinese: "医美新手", english: "Medical beauty beginners", japanese: "医療美容初心者" },
+      { chinese: "成熟女性", english: "Mature women", japanese: "成熟女性" },
+      { chinese: "学生群体", english: "Student groups", japanese: "学生グループ" },
+      { chinese: "中年女性", english: "Middle-aged women", japanese: "中年女性" },
+    ],
+    productHighlights: [
+      { chinese: "正规资质", english: "Official qualifications", japanese: "正規資格" },
+      { chinese: "进口设备", english: "Imported equipment", japanese: "輸入機器" },
+      { chinese: "专业医师", english: "Professional doctors", japanese: "プロ医師" },
+      { chinese: "安全无痛", english: "Safe and painless", japanese: "安全で無痛" },
+      { chinese: "国际认证", english: "International certification", japanese: "国際認証" },
+      { chinese: "先进技术", english: "Advanced technology", japanese: "先進技術" },
+      { chinese: "个性化方案", english: "Personalized plans", japanese: "個別化プラン" },
+      { chinese: "术后保障", english: "Post-operative guarantee", japanese: "術後保障" },
+      { chinese: "隐私保护", english: "Privacy protection", japanese: "プライバシー保護" },
+      { chinese: "效果持久", english: "Long-lasting results", japanese: "持続的な効果" },
+      { chinese: "自然效果", english: "Natural results", japanese: "自然な効果" },
+      { chinese: "专业团队", english: "Professional team", japanese: "プロフェッショナルチーム" },
+    ],
+    restrictions: [
+      { chinese: "不承诺疗效", english: "Don't promise therapeutic effects", japanese: "治療効果を約束しない" },
+      { chinese: "不使用'包治'等词汇", english: "Don't use terms like 'cure all'", japanese: "'万能薬'などの用語は使用しない" },
+      { chinese: "不夸大效果", english: "Don't exaggerate effects", japanese: "効果を誇大表現しない" },
+      { chinese: "不使用前后对比", english: "Don't use before/after comparisons", japanese: "ビフォーアフター比較は使用しない" },
+      { chinese: "不承诺具体时间", english: "Don't promise specific timeframes", japanese: "具体的な時間を約束しない" },
+      { chinese: "不使用'永久'等词汇", english: "Don't use terms like 'permanent'", japanese: "'永久'などの用語は使用しない" },
+      { chinese: "不贬低其他机构", english: "Don't disparage other institutions", japanese: "他の機関を貶めない" },
+      { chinese: "不夸大个人能力", english: "Don't exaggerate personal abilities", japanese: "個人能力を誇大表現しない" },
+      { chinese: "不使用'100%'等绝对词汇", english: "Don't use absolute terms like '100%'", japanese: "'100%'などの絶対的用語は使用しない" },
+      { chinese: "不承诺具体数据", english: "Don't promise specific data", japanese: "具体的なデータを約束しない" },
+      { chinese: "不使用'唯一'等排他性词汇", english: "Don't use exclusive terms like 'only'", japanese: "'唯一'などの排他性用語は使用しない" },
+      { chinese: "不夸大技术优势", english: "Don't exaggerate technical advantages", japanese: "技術優位性を誇大表現しない" },
     ]
   },
   

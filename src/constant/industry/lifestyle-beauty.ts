@@ -131,19 +131,55 @@ export const lifestyleBeautyPresets: IndustryPresets = {
     ]
   },
   
-  // 抖音图文生成工具
+  // 抖音短视频脚本工具
   'TikTok-post-generation': {
-    content: [
-      { 
-        chinese: "美容师的一天：从清洁到护理，每一个步骤都关乎客户的美丽", 
-        english: "A day in the life of a beautician: From cleansing to care, every step concerns client beauty", 
-        japanese: "美容師の一日：クレンジングからケアまで、すべてのステップがお客様の美しさに関わります" 
-      },
-      { 
-        chinese: "护肤小课堂：如何正确选择护肤品？了解自己的肌肤类型是关键", 
-        english: "Skincare class: How to correctly choose skincare products? Understanding your skin type is key", 
-        japanese: "スキンケア教室：スキンケア製品を正しく選ぶには？自分の肌タイプを理解することが鍵です" 
-      },
+    promotionGoal: [
+      { chinese: "引流到店", english: "Drive traffic to store", japanese: "店舗への誘導" },
+      { chinese: "推广新品", english: "Promote new products", japanese: "新商品のプロモーション" },
+      { chinese: "打造人设", english: "Build personal brand", japanese: "個人ブランドの構築" },
+      { chinese: "促销活动", english: "Promotional activities", japanese: "プロモーション活動" },
+    ],
+    customerGroup: [
+      { chinese: "护肤爱好者", english: "Skincare enthusiasts", japanese: "スキンケア愛好家" },
+      { chinese: "25-40岁女性", english: "25-40 year old women", japanese: "25-40歳女性" },
+      { chinese: "学生党", english: "Students", japanese: "学生" },
+      { chinese: "职场丽人", english: "Working beauties", japanese: "働く美人" },
+      { chinese: "新手妈妈", english: "New mothers", japanese: "新米ママ" },
+      { chinese: "追求自然美", english: "Natural beauty seekers", japanese: "自然美を求める人" },
+      { chinese: "敏感肌人群", english: "Sensitive skin people", japanese: "敏感肌の人々" },
+      { chinese: "抗初老需求", english: "Anti-aging beginners", japanese: "アンチエイジング初心者" },
+      { chinese: "油性肌肤", english: "Oily skin people", japanese: "脂性肌の人" },
+      { chinese: "干性肌肤", english: "Dry skin people", japanese: "乾燥肌の人" },
+      { chinese: "混合肌肤", english: "Combination skin people", japanese: "混合肌の人" },
+      { chinese: "问题肌肤", english: "Problem skin people", japanese: "問題肌の人" },
+    ],
+    productHighlights: [
+      { chinese: "天然成分", english: "Natural ingredients", japanese: "天然成分" },
+      { chinese: "温和配方", english: "Gentle formula", japanese: "マイルドな処方" },
+      { chinese: "性价比高", english: "High cost-performance", japanese: "コスパが良い" },
+      { chinese: "效果显著", english: "Significant effects", japanese: "効果が顕著" },
+      { chinese: "无添加", english: "No additives", japanese: "無添加" },
+      { chinese: "专业认证", english: "Professional certification", japanese: "プロフェッショナル認証" },
+      { chinese: "安全可靠", english: "Safe and reliable", japanese: "安全で信頼できる" },
+      { chinese: "适合敏感肌", english: "Suitable for sensitive skin", japanese: "敏感肌に適している" },
+      { chinese: "持久保湿", english: "Long-lasting hydration", japanese: "持続的な保湿" },
+      { chinese: "深层清洁", english: "Deep cleansing", japanese: "深層クレンジング" },
+      { chinese: "抗衰老", english: "Anti-aging", japanese: "アンチエイジング" },
+      { chinese: "提亮肤色", english: "Brightening", japanese: "肌色明るくする" },
+    ],
+    restrictions: [
+      { chinese: "不宣称医疗功效", english: "Don't claim medical effects", japanese: "医療効果を主張しない" },
+      { chinese: "不使用'速效'等词汇", english: "Don't use terms like 'instant effect'", japanese: "'速効'などの用語は使用しない" },
+      { chinese: "不夸大产品效果", english: "Don't exaggerate product effects", japanese: "製品効果を誇大表現しない" },
+      { chinese: "不承诺具体时间", english: "Don't promise specific timeframes", japanese: "具体的な時間を約束しない" },
+      { chinese: "不使用'最好'等绝对词汇", english: "Don't use absolute terms like 'best'", japanese: "'最高'などの絶対的用語は使用しない" },
+      { chinese: "不贬低其他品牌", english: "Don't disparage other brands", japanese: "他のブランドを貶めない" },
+      { chinese: "不夸大成分功效", english: "Don't exaggerate ingredient effects", japanese: "成分効果を誇大表現しない" },
+      { chinese: "不使用'永久'等词汇", english: "Don't use terms like 'permanent'", japanese: "'永久'などの用語は使用しない" },
+      { chinese: "不承诺100%有效", english: "Don't promise 100% effectiveness", japanese: "100%有効を約束しない" },
+      { chinese: "不使用'唯一'等排他性词汇", english: "Don't use exclusive terms like 'only'", japanese: "'唯一'などの排他性用語は使用しない" },
+      { chinese: "不夸大使用范围", english: "Don't exaggerate usage scope", japanese: "使用範囲を誇大表現しない" },
+      { chinese: "不承诺具体数据", english: "Don't promise specific data", japanese: "具体的なデータを約束しない" },
     ]
   },
   

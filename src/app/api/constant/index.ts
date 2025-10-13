@@ -11,6 +11,7 @@ interface IToolParameter {
     commentWhichYouWillReply: string, momentsContent: string, replyTone: string,
     activityTheme: string, activityPurpose: string, activityVenue: string, festivalType: string,
     role: string, background: string, purpose: string,
+    promotionGoal: string, customerGroup: string, productHighlights: string, restrictions: string,
 }
 
 export const toolParameter: { [key: string]: (params: IToolParameter) => Array<{ role: string, content: string }> } = {
@@ -350,7 +351,7 @@ ${params.content}
         return [
             {
                 role: 'user',
-                content: `Generate a 抖音图文 platform style post in your own words based on the requirements.
+                content: `Generate a 抖音短视频脚本 platform style video script in your own words based on the requirements.
 Language: ${params.language}
 Format: Plain text without explanations and notes
 Tone: ${params.tone}
@@ -359,6 +360,34 @@ Input draft:
 
 ${params.content}
 `
+            }
+        ]
+    },
+
+    'TikTok-post-generation': (params: Pick<IToolParameter, 'promotionGoal' | 'customerGroup' | 'productHighlights' | 'restrictions' | 'language' | 'tone'>) => {
+        return [
+            {
+                role: 'user',
+                content: `根据以下信息生成一个抖音爆款短视频脚本，要求按照指定结构输出。
+
+宣传目标：${params.promotionGoal}
+客群：${params.customerGroup}
+所在行业：${params.industry} // 从客户所在行业信息中自动读取
+产品/服务亮点：${params.productHighlights}
+限制及禁忌：${params.restrictions}
+语气：${params.tone}
+语言：${params.language}
+
+要求：
+- 使用抖音平台的语言风格和表达方式（网感、口语化、有节奏感）
+- 内容要符合角色设定和背景情况，要有细节体现
+- 严格按照以下结构输出：
+  * 黄金3秒：强钩子开场（决定是否被划走）
+  * 核心支撑：围绕核心卖点展开，抛出2-3个爆点设计，每 5-8 秒一个信息爆点
+  * 白金结尾：强引导转化，明确告诉用户下一步做什么
+- 格式：纯文本，无需解释和注释
+
+请直接生成抖音短视频脚本：`
             }
         ]
     },
@@ -846,6 +875,177 @@ ${params.activityPurpose}
 - 格式：纯文本，段落分明，无需解释和注释
 
 请直接生成微信图文内容：`
+            }
+        ]
+    },
+
+    // 添加缺失的工具名称映射
+    'xiaohongshu-post-generation': (params: Pick<IToolParameter, 'role' | 'background' | 'purpose' | 'language' | 'tone'>) => {
+        return [
+            {
+                role: 'user',
+                content: `Generate a 小红书 platform style post in your own words based on the requirements.
+Language: ${params.language}
+Format: Plain text without explanations and notes
+Tone: ${params.tone}
+
+Role: ${params.role}
+Background: ${params.background}
+Purpose: ${params.purpose}
+
+Input draft:
+
+${(params as any).content || ''}
+`
+            }
+        ]
+    },
+
+    'weibo-post-generation': (params: Pick<IToolParameter, 'content' | 'language' | 'tone'>) => {
+        return [
+            {
+                role: 'user',
+                content: `Generate a 微博 platform style post in your own words based on the requirements.
+Language: ${params.language}
+Format: Plain text without explanations and notes
+Tone: ${params.tone}
+
+Input draft:
+
+${params.content}
+`
+            }
+        ]
+    },
+
+    'article-title-generation': (params: Pick<IToolParameter, 'content' | 'language' | 'tone'>) => {
+        return [
+            {
+                role: 'user',
+                content: `Generate an article title based on the requirements.
+Language: ${params.language}
+Format: Plain text without explanations and notes
+Tone: ${params.tone}
+
+Input draft:
+
+${params.content}
+`
+            }
+        ]
+    },
+
+    'comment-generation': (params: Pick<IToolParameter, 'postContent' | 'yourThoughts' | 'tone' | 'language'>) => {
+        return [
+            {
+                role: 'user',
+                content: `Generate a comment based on the requirements.
+Language: ${params.language}
+Format: Plain text without explanations and notes
+Tone: ${params.tone}
+
+Post content: ${params.postContent}
+Your thoughts: ${params.yourThoughts}
+`
+            }
+        ]
+    },
+
+    'email-generation': (params: Pick<IToolParameter, 'emailTopic' | 'tone' | 'language'>) => {
+        return [
+            {
+                role: 'user',
+                content: `Generate an email based on the requirements.
+Language: ${params.language}
+Format: Plain text without explanations and notes
+Tone: ${params.tone}
+
+Email topic: ${params.emailTopic}
+`
+            }
+        ]
+    },
+
+    'email-reply-generation': (params: Pick<IToolParameter, 'emailContext' | 'requestForReply' | 'tone' | 'language'>) => {
+        return [
+            {
+                role: 'user',
+                content: `Generate an email reply based on the requirements.
+Language: ${params.language}
+Format: Plain text without explanations and notes
+Tone: ${params.tone}
+
+Email context: ${params.emailContext}
+Request for reply: ${params.requestForReply}
+`
+            }
+        ]
+    },
+
+    'comment-reply-generation': (params: Pick<IToolParameter, 'commentWhichYouWillReply' | 'postContent' | 'yourThoughts' | 'tone' | 'language'>) => {
+        return [
+            {
+                role: 'user',
+                content: `Generate a comment reply based on the requirements.
+Language: ${params.language}
+Format: Plain text without explanations and notes
+Tone: ${params.tone}
+
+Comment to reply: ${params.commentWhichYouWillReply}
+Post content: ${params.postContent}
+Your thoughts: ${params.yourThoughts}
+`
+            }
+        ]
+    },
+
+    'daily-report-generation': (params: Pick<IToolParameter, 'content' | 'language' | 'tone'>) => {
+        return [
+            {
+                role: 'user',
+                content: `Generate a daily report based on the requirements.
+Language: ${params.language}
+Format: Plain text without explanations and notes
+Tone: ${params.tone}
+
+Input draft:
+
+${params.content}
+`
+            }
+        ]
+    },
+
+    'weekly-report-generation': (params: Pick<IToolParameter, 'content' | 'language' | 'tone'>) => {
+        return [
+            {
+                role: 'user',
+                content: `Generate a weekly report based on the requirements.
+Language: ${params.language}
+Format: Plain text without explanations and notes
+Tone: ${params.tone}
+
+Input draft:
+
+${params.content}
+`
+            }
+        ]
+    },
+
+    'monthly-report-generation': (params: Pick<IToolParameter, 'content' | 'language' | 'tone'>) => {
+        return [
+            {
+                role: 'user',
+                content: `Generate a monthly report based on the requirements.
+Language: ${params.language}
+Format: Plain text without explanations and notes
+Tone: ${params.tone}
+
+Input draft:
+
+${params.content}
+`
             }
         ]
     },

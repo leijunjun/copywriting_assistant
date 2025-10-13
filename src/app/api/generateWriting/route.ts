@@ -7,6 +7,7 @@ import { deductCredits } from '@/lib/credits/transactions';
 import { logger } from '@/lib/utils/logger';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { toolList } from '@/constant/tool_list';
+import { convertToAppError } from '@/lib/utils/error';
 
 export async function POST(request: Request) {
   try {
@@ -21,11 +22,14 @@ export async function POST(request: Request) {
     // Get current user for credit checking
     const supabase = createServerSupabaseClient();
     if (!supabase) {
+      logger.error('Database connection failed', undefined, undefined, { tool_name });
       return NextResponse.json({ error: 'Database connection failed' }, { status: 500 });
     }
 
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) {
+      const appError = convertToAppError(authError || new Error('User not found'), { tool_name });
+      logger.error('User authentication failed', appError, undefined, { tool_name });
       return NextResponse.json({ error: 'User not authenticated' }, { status: 401 });
     }
 
@@ -103,9 +107,17 @@ export async function POST(request: Request) {
     } else {
       // 使用预设的toolParameter
       if (!toolParameter[tool_name]) {
-        throw new Error(`Tool parameter not found for: ${tool_name}`);
+        logger.error('Tool parameter not found', undefined, undefined, { tool_name, availableTools: Object.keys(toolParameter) });
+        return NextResponse.json({ error: `Tool parameter not found for: ${tool_name}` }, { status: 400 });
       }
-      messages = toolParameter[tool_name]({ ...params });
+      
+      try {
+        messages = toolParameter[tool_name]({ ...params });
+      } catch (error) {
+        const appError = convertToAppError(error, { tool_name, params });
+        logger.error('Error generating tool parameters', appError, undefined, { tool_name, params });
+        return NextResponse.json({ error: 'Failed to generate tool parameters' }, { status: 500 });
+      }
     }
 
     const myHeaders = {
@@ -119,13 +131,34 @@ export async function POST(request: Request) {
     const fetchUrl = `${process.env.NEXT_PUBLIC_API_URL}/v1/chat/completions`;
     
     try {
+      logger.api('Making API request to external service', { 
+        url: fetchUrl, 
+        tool_name, 
+        userId: user.id 
+      });
+      
       const response = await fetch(fetchUrl, {
         method: 'POST',
         headers: myHeaders,
         body: raw,
       });
 
-      if (response.ok && response.body !== null) {
+      if (!response.ok) {
+        const errorText = await response.text();
+        logger.error('External API request failed', undefined, undefined, {
+          status: response.status,
+          statusText: response.statusText,
+          errorText,
+          tool_name,
+          userId: user.id
+        });
+        return NextResponse.json({ 
+          error: 'External API request failed', 
+          details: errorText 
+        }, { status: response.status });
+      }
+
+      if (response.body !== null) {
         const readableStream = new ReadableStream({
           async start(controller) {
             try {
@@ -167,7 +200,11 @@ export async function POST(request: Request) {
                         });
                       }
                     } catch (deductionError) {
-                      logger.error('Error during credit deduction after content generation', deductionError, undefined, {
+                      const appError = convertToAppError(deductionError, {
+                        userId: user.id,
+                        amount: creditDeductionRate
+                      });
+                      logger.error('Error during credit deduction after content generation', appError, undefined, {
                         userId: user.id,
                         amount: creditDeductionRate
                       });
@@ -198,6 +235,8 @@ export async function POST(request: Request) {
               }
               controller.close();
             } catch (error) {
+              const appError = convertToAppError(error, { tool_name, userId: user.id });
+              logger.error('Error in stream processing', appError, undefined, { tool_name, userId: user.id });
               controller.error(error);
             }
           }
@@ -211,22 +250,34 @@ export async function POST(request: Request) {
           }
         });
       } else {
-        const resJson = await response.json();
-        return NextResponse.json({ ...resJson }, { status: 400 });
+        logger.error('Response body is null', undefined, undefined, { tool_name, userId: user.id });
+        return NextResponse.json({ error: 'Response body is null' }, { status: 500 });
       }
     } catch (error: any) {
       logger.error('Unexpected error in content generation', error, undefined, {
         tool_name,
-        userId: user?.id
+        userId: user?.id,
+        errorMessage: error.message,
+        errorStack: error.stack
       });
-      return NextResponse.json({ error: 'An error occurred', err_code: 500 }, { status: 500 });
+      return NextResponse.json({ 
+        error: 'An error occurred during content generation', 
+        err_code: 500,
+        details: error.message 
+      }, { status: 500 });
     }
   } catch (error: any) {
     logger.error('Unexpected error in content generation', error, undefined, {
       tool_name: 'unknown',
-      userId: 'unknown'
+      userId: 'unknown',
+      errorMessage: error.message,
+      errorStack: error.stack
     });
-    return NextResponse.json({ error: 'An error occurred', err_code: 500 }, { status: 500 });
+    return NextResponse.json({ 
+      error: 'An error occurred during content generation', 
+      err_code: 500,
+      details: error.message 
+    }, { status: 500 });
   }
 }
 

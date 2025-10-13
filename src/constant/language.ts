@@ -141,6 +141,10 @@ export const FROM_LABEL: { [key: string]: Language } = {
   'activityPurpose': { chinese: '活动目的', english: 'Activity Purpose', japanese: '活動目的' },
   'activityVenue': { chinese: '活动场所', english: 'Activity Venue', japanese: '活動場所' },
   'festivalType': { chinese: '节日类型', english: 'Festival Type', japanese: '祭りの種類' },
+  'promotionGoal': { chinese: '宣传目标', english: 'Promotion Goal', japanese: 'プロモーション目標' },
+  'customerGroup': { chinese: '客群', english: 'Customer Group', japanese: '顧客層' },
+  'productHighlights': { chinese: '产品/服务亮点', english: 'Product/Service Highlights', japanese: '製品・サービスの強み' },
+  'restrictions': { chinese: '限制及禁忌', english: 'Restrictions & Prohibitions', japanese: '制限・禁止事項' },
 }
 
 // 料理能力表词汇 Vocabulary of cooking ability table

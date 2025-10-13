@@ -198,14 +198,55 @@ export const housekeepingPresets: IndustryPresets = {
     ]
   },
   
-  // 抖音图文生成工具
+  // 抖音短视频脚本工具
   'TikTok-post-generation': {
-    content: [
-      { 
-        chinese: "月嫂的一天：从早到晚的专业照护，让新手妈妈安心坐月子", 
-        english: "A day in the life of a maternity matron: Professional care from morning to night, giving new mothers peace of mind during confinement", 
-        japanese: "産後ケアの一日：朝から晩までプロのケアで、新米ママが安心して産褥期を過ごせるように" 
-      },
+    promotionGoal: [
+      { chinese: "引流到店", english: "Drive traffic to store", japanese: "店舗への誘導" },
+      { chinese: "推广新品", english: "Promote new products", japanese: "新商品のプロモーション" },
+      { chinese: "打造人设", english: "Build personal brand", japanese: "個人ブランドの構築" },
+      { chinese: "促销活动", english: "Promotional activities", japanese: "プロモーション活動" },
+    ],
+    customerGroup: [
+      { chinese: "双职工家庭", english: "Dual-income families", japanese: "共働き家族" },
+      { chinese: "新手父母", english: "New parents", japanese: "新米両親" },
+      { chinese: "空巢老人", english: "Empty nesters", japanese: "空の巣症候群の高齢者" },
+      { chinese: "忙碌白领", english: "Busy white-collar workers", japanese: "忙しいホワイトカラー" },
+      { chinese: "产后妈妈", english: "Postpartum mothers", japanese: "産後ママ" },
+      { chinese: "家有老人", english: "Families with elderly", japanese: "高齢者がいる家族" },
+      { chinese: "职场女性", english: "Working women", japanese: "働く女性" },
+      { chinese: "年轻夫妻", english: "Young couples", japanese: "若い夫婦" },
+      { chinese: "单亲家庭", english: "Single-parent families", japanese: "シングルマザー・ファーザー家族" },
+      { chinese: "多子女家庭", english: "Large families", japanese: "多子家族" },
+      { chinese: "高收入家庭", english: "High-income families", japanese: "高収入家族" },
+      { chinese: "中产家庭", english: "Middle-class families", japanese: "中産階級家族" },
+    ],
+    productHighlights: [
+      { chinese: "专业认证", english: "Professional certification", japanese: "プロフェッショナル認証" },
+      { chinese: "多年经验", english: "Years of experience", japanese: "豊富な経験" },
+      { chinese: "客户好评", english: "Customer praise", japanese: "お客様の高評価" },
+      { chinese: "价格实惠", english: "Affordable prices", japanese: "手頃な価格" },
+      { chinese: "服务贴心", english: "Thoughtful service", japanese: "心のこもったサービス" },
+      { chinese: "24小时服务", english: "24-hour service", japanese: "24時間サービス" },
+      { chinese: "专业培训", english: "Professional training", japanese: "プロフェッショナル研修" },
+      { chinese: "保险保障", english: "Insurance coverage", japanese: "保険保障" },
+      { chinese: "背景调查", english: "Background checks", japanese: "身元調査" },
+      { chinese: "定期回访", english: "Regular follow-up", japanese: "定期フォローアップ" },
+      { chinese: "灵活时间", english: "Flexible scheduling", japanese: "柔軟なスケジュール" },
+      { chinese: "口碑推荐", english: "Word-of-mouth recommendation", japanese: "口コミ推薦" },
+    ],
+    restrictions: [
+      { chinese: "不使用'最好'、'第一'等绝对化用语", english: "Avoid absolute terms like 'best' or 'first'", japanese: "'最高''第一'などの絶対的表現は使用しない" },
+      { chinese: "不夸大服务效果", english: "Don't exaggerate service effects", japanese: "サービス効果を誇大表現しない" },
+      { chinese: "不承诺100%满意", english: "Don't promise 100% satisfaction", japanese: "100%満足を約束しない" },
+      { chinese: "不使用'包治百病'等医疗词汇", english: "Don't use medical terms like 'cure all'", japanese: "'万能薬'などの医療用語は使用しない" },
+      { chinese: "不贬低竞争对手", english: "Don't disparage competitors", japanese: "競合他社を貶めない" },
+      { chinese: "不夸大个人能力", english: "Don't exaggerate personal abilities", japanese: "個人能力を誇大表現しない" },
+      { chinese: "不使用'顶级'、'极品'等词汇", english: "Avoid terms like 'top-tier' or 'premium'", japanese: "'最高級''極品'などの用語は使用しない" },
+      { chinese: "不承诺具体时间效果", english: "Don't promise specific time effects", japanese: "具体的な時間効果を約束しない" },
+      { chinese: "不使用'唯一'、'独家'等排他性词汇", english: "Don't use exclusive terms like 'only' or 'exclusive'", japanese: "'唯一''独占'などの排他性用語は使用しない" },
+      { chinese: "不夸大服务范围", english: "Don't exaggerate service scope", japanese: "サービス範囲を誇大表現しない" },
+      { chinese: "不使用'完美'、'无缺'等绝对词汇", english: "Don't use absolute terms like 'perfect' or 'flawless'", japanese: "'完璧''無欠'などの絶対的用語は使用しない" },
+      { chinese: "不承诺具体数据效果", english: "Don't promise specific data results", japanese: "具体的なデータ効果を約束しない" },
     ]
   },
   

@@ -115,7 +115,7 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
       const data = {
         params,
         prompt: dataSource?.prompt ? `${dataSource?.prompt}\n${params.content}` : '',
-        tool_name: dataSource?.name.english,
+        tool_name: dataSource?.title,
       }
 
       const id = dayjs().unix();

@@ -153,14 +153,20 @@ export default function ToolFrom(props: IProps) {
 
   const onPresetSelect = (value: string) => {
     if (value) {
-      form.setValue('content', value);
-      setPresetOpen({});
+      // 使用 setTimeout 避免在渲染过程中调用 setState
+      setTimeout(() => {
+        form.setValue('content', value);
+        setPresetOpen({});
+      }, 0);
     }
   }
 
   const onRoleTemplateSelect = (value: string) => {
     if (value) {
-      form.setValue('role', value);
+      // 使用 setTimeout 避免在渲染过程中调用 setState
+      setTimeout(() => {
+        form.setValue('role', value);
+      }, 0);
     }
   }
 
@@ -325,6 +331,9 @@ export default function ToolFrom(props: IProps) {
 
   // 检查是否为小红书帖子生成工具
   const isXiaohongshuTool = dataSource.title === 'xiaohongshu-post-generation';
+  
+  // 检查是否为抖音短视频脚本工具
+  const isTikTokTool = dataSource.title === 'TikTok-post-generation';
 
   return (
     <>
@@ -417,6 +426,135 @@ export default function ToolFrom(props: IProps) {
             />
             
             {/* 4. 语气选择 */}
+            <FormField
+              disabled={isLoading}
+              control={form.control}
+              name="tone"
+              render={({ field }: any) => (
+                <FormItem className="px-3 pb-3">
+                  <FormLabel className="font-bold text-black">{FROM_LABEL.tone[language]}</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange} value={field.value} disabled={isLoading}>
+                      {onRenderingSelect(dataSource.from.tone?.list || [], onReminderInformation('Select', 'tone'))}
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </>
+        ) : isTikTokTool ? (
+          // 抖音短视频脚本工具的特殊布局
+          <>
+            {/* 1. 宣传目标输入 */}
+            <FormField
+              disabled={isLoading}
+              control={form.control}
+              name="promotionGoal"
+              render={({ field }: any) => (
+                <FormItem className="px-3 pb-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <FormLabel className="font-bold text-black">{FROM_LABEL.promotionGoal[language]}</FormLabel>
+                    {/* 宣传目标预设选择器 */}
+                    <div className="w-48">
+                      {onRenderingSearchableSelect(getIndustryPresetData('promotionGoal'), FROM_LABEL.preset[language], (value) => {
+                        form.setValue('promotionGoal', value);
+                        form.trigger('promotionGoal');
+                      }, 'promotionGoal')}
+                    </div>
+                  </div>
+                  <FormControl>
+                    <Input 
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* 2. 客群输入 */}
+            <FormField
+              disabled={isLoading}
+              control={form.control}
+              name="customerGroup"
+              render={({ field }: any) => (
+                <FormItem className="px-3 pb-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <FormLabel className="font-bold text-black">{FROM_LABEL.customerGroup[language]}</FormLabel>
+                    {/* 客群预设选择器 */}
+                    <div className="w-48">
+                      {onRenderingSearchableSelect(getIndustryPresetData('customerGroup'), FROM_LABEL.preset[language], (value) => {
+                        form.setValue('customerGroup', value);
+                        form.trigger('customerGroup');
+                      }, 'customerGroup')}
+                    </div>
+                  </div>
+                  <FormControl>
+                    <Input 
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* 3. 产品/服务亮点输入 */}
+            <FormField
+              disabled={isLoading}
+              control={form.control}
+              name="productHighlights"
+              render={({ field }: any) => (
+                <FormItem className="px-3 pb-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <FormLabel className="font-bold text-black">{FROM_LABEL.productHighlights[language]}</FormLabel>
+                    {/* 产品/服务亮点预设选择器 */}
+                    <div className="w-48">
+                      {onRenderingSearchableSelect(getIndustryPresetData('productHighlights'), FROM_LABEL.preset[language], (value) => {
+                        form.setValue('productHighlights', value);
+                        form.trigger('productHighlights');
+                      }, 'productHighlights')}
+                    </div>
+                  </div>
+                  <FormControl>
+                    <Input 
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* 4. 限制及禁忌输入 */}
+            <FormField
+              disabled={isLoading}
+              control={form.control}
+              name="restrictions"
+              render={({ field }: any) => (
+                <FormItem className="px-3 pb-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <FormLabel className="font-bold text-black">{FROM_LABEL.restrictions[language]}</FormLabel>
+                    {/* 限制及禁忌预设选择器 */}
+                    <div className="w-48">
+                      {onRenderingSearchableSelect(getIndustryPresetData('restrictions'), FROM_LABEL.preset[language], (value) => {
+                        form.setValue('restrictions', value);
+                        form.trigger('restrictions');
+                      }, 'restrictions')}
+                    </div>
+                  </div>
+                  <FormControl>
+                    <Input 
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* 5. 语气选择 */}
             <FormField
               disabled={isLoading}
               control={form.control}
