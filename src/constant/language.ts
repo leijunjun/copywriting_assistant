@@ -145,6 +145,11 @@ export const FROM_LABEL: { [key: string]: Language } = {
   'customerGroup': { chinese: '客群', english: 'Customer Group', japanese: '顧客層' },
   'productHighlights': { chinese: '产品/服务亮点', english: 'Product/Service Highlights', japanese: '製品・サービスの強み' },
   'restrictions': { chinese: '限制及禁忌', english: 'Restrictions & Prohibitions', japanese: '制限・禁止事項' },
+  'articlePurpose': { chinese: '软文目的', english: 'Article Purpose', japanese: '記事の目的' },
+  'customerPainPoints': { chinese: '客户痛点和需求', english: 'Customer Pain Points', japanese: '顧客の痛みとニーズ' },
+  'conversionAction': { chinese: '期待转化动作', english: 'Expected Conversion Action', japanese: '期待される転換アクション' },
+  'additionalContent': { chinese: '补充内容', english: 'Additional Content', japanese: '追加コンテンツ' },
+  'articleStyle': { chinese: '风格', english: 'Article Style', japanese: '記事スタイル' },
 }
 
 // 料理能力表词汇 Vocabulary of cooking ability table
@@ -407,6 +412,31 @@ export const DIETARY_FREQUENCY: Array<Language> = [
   { chinese: '一日三餐', english: 'Three meals a day', japanese: '1日3食' },
   { chinese: '每天 5 小餐', english: '5 small meals per day', japanese: '毎日5時間の食事' },
   { chinese: '间歇性禁食', english: 'Intermittent Fasting', japanese: '間欠的断食' },
+]
+
+// 微信图文软文目的选项 WeChat Article Purpose Options
+export const WECHAT_ARTICLE_PURPOSE: Array<Language> = [
+  { chinese: '品牌曝光', english: 'Brand Exposure', japanese: 'ブランド露出' },
+  { chinese: '引流到店', english: 'Drive Traffic to Store', japanese: '店舗への誘導' },
+  { chinese: '促销转化', english: 'Promotional Conversion', japanese: 'プロモーション転換' },
+  { chinese: '会员招募', english: 'Member Recruitment', japanese: 'メンバー募集' },
+]
+
+// 微信图文期待转化动作选项 WeChat Article Conversion Action Options
+export const WECHAT_ARTICLE_CONVERSION: Array<Language> = [
+  { chinese: '扫码加微信', english: 'Scan QR Code to Add WeChat', japanese: 'QRコードをスキャンしてWeChat追加' },
+  { chinese: '预约体验', english: 'Book Experience', japanese: '体験予約' },
+  { chinese: '购买套餐', english: 'Purchase Package', japanese: 'パッケージ購入' },
+]
+
+// 微信图文风格选项 WeChat Article Style Options
+export const WECHAT_ARTICLE_STYLE: Array<Language> = [
+  { chinese: '故事型', english: 'Story-based', japanese: 'ストーリー型' },
+  { chinese: '干货型', english: 'Practical Tips', japanese: '実用型' },
+  { chinese: '探店体验型', english: 'Store Visit Experience', japanese: '店舗体験型' },
+  { chinese: '节日/热点借势型', english: 'Trending Topic', japanese: 'トレンド便乗型' },
+  { chinese: '创始人/员工故事型', english: 'Founder/Employee Story', japanese: '創業者・従業員ストーリー型' },
+  { chinese: '对比测评型', english: 'Comparison Review', japanese: '比較レビュー型' },
 ]
 
 // 性别 Gender

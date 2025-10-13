@@ -185,16 +185,46 @@ export const lifestyleBeautyPresets: IndustryPresets = {
   
   // 微信图文工具
   'weixin-generation': {
-    content: [
+    customerPainPoints: [
       { 
-        chinese: "美丽从日常开始，专业美容师为您打造健康肌肤", 
-        english: "Beauty starts from daily life, professional beautician creates healthy skin for you", 
-        japanese: "美しさは日常生活から始まる、プロ美容師が健康的な肌を創り出します" 
+        chinese: "皮肤问题反复，找不到根本解决方案", 
+        english: "Skin problems recur, can't find fundamental solutions", 
+        japanese: "肌トラブルが繰り返し、根本的な解決策が見つからない" 
       },
       { 
-        chinese: "生活美容：让美丽成为生活的一部分，从内而外散发自然光彩", 
-        english: "Lifestyle beauty: Make beauty part of life, radiate natural brilliance from within", 
-        japanese: "生活美容：美しさを生活の一部に、内から外へ自然な輝きを放つ" 
+        chinese: "不了解产品成分和效果", 
+        english: "Don't understand product ingredients and effects", 
+        japanese: "製品の成分と効果がわからない" 
+      },
+      { 
+        chinese: "担心美容项目不适合自己", 
+        english: "Worried that beauty treatments may not suit them", 
+        japanese: "美容施術が自分に合わない心配" 
+      },
+      { 
+        chinese: "价格高但效果不明显", 
+        english: "High prices but unclear effects", 
+        japanese: "価格が高いが効果が不明確" 
+      },
+      { 
+        chinese: "不知道如何选择正规美容机构", 
+        english: "Don't know how to choose legitimate beauty institutions", 
+        japanese: "正規の美容機関の選び方がわからない" 
+      },
+      { 
+        chinese: "担心美容师专业水平", 
+        english: "Worried about beautician's professional level", 
+        japanese: "美容師の専門レベルが心配" 
+      },
+      { 
+        chinese: "害怕被推销不适合的产品", 
+        english: "Afraid of being sold unsuitable products", 
+        japanese: "自分に合わない製品を売り込まれる心配" 
+      },
+      { 
+        chinese: "不知道如何制定适合自己的美容计划", 
+        english: "Don't know how to create a beauty plan that suits them", 
+        japanese: "自分に合った美容プランの立て方がわからない" 
       },
     ]
   },

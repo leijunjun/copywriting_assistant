@@ -12,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { CLEAR_CONTENT_BUTTON, FROM_LABEL, LANGUAGE_LIST, OUTPUT_LANGUAGE, PLEASE_ENTER, PLEASE_SELECT, SUBMIT_BUTTON, ROLE_TEMPLATES } from "@/constant/language";
+import { CLEAR_CONTENT_BUTTON, FROM_LABEL, LANGUAGE_LIST, OUTPUT_LANGUAGE, PLEASE_ENTER, PLEASE_SELECT, SUBMIT_BUTTON, ROLE_TEMPLATES, WECHAT_ARTICLE_PURPOSE, WECHAT_ARTICLE_CONVERSION } from "@/constant/language";
 import { useCreditDeductionRate } from '@/hooks/useCreditDeductionRate';
 import { useAuthCheck } from '@/hooks/useAuthCheck';
 import { useIndustryPresets } from '@/hooks/useIndustryPresets';
@@ -69,8 +69,8 @@ export default function ToolFrom(props: IProps) {
       let shouldClose = true;
       
       // Check if click is inside any preset dropdown
-      Object.values(presetRefs.current).forEach(ref => {
-        if (ref && ref.contains(target)) {
+      Object.values(presetRefs.current || {}).forEach(ref => {
+        if (ref && ref.contains && ref.contains(target)) {
           shouldClose = false;
         }
       });
@@ -242,10 +242,10 @@ export default function ToolFrom(props: IProps) {
           role="combobox"
           aria-expanded={presetOpen[fieldKey] || false}
           className="w-full justify-between"
-          onClick={(e) => {
+          onClick={(e: React.MouseEvent) => {
             e.preventDefault();
             e.stopPropagation();
-            setPresetOpen(prev => ({
+            setPresetOpen((prev: {[key: string]: boolean}) => ({
               ...prev,
               [fieldKey]: !prev[fieldKey]
             }));
@@ -266,8 +266,8 @@ export default function ToolFrom(props: IProps) {
                 className="w-full p-2 border rounded-md mb-2"
                 value={currentSearchQuery}
                 onClick={(e) => e.stopPropagation()}
-                onChange={(e) => {
-                  setSearchQuery(prev => ({
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setSearchQuery((prev: {[key: string]: string}) => ({
                     ...prev,
                     [fieldKey]: e.target.value
                   }));
@@ -284,11 +284,11 @@ export default function ToolFrom(props: IProps) {
                       e.preventDefault();
                       e.stopPropagation();
                       onSelect(item[language]);
-                      setPresetOpen(prev => ({
+                      setPresetOpen((prev: {[key: string]: boolean}) => ({
                         ...prev,
                         [fieldKey]: false
                       }));
-                      setSearchQuery(prev => ({
+                      setSearchQuery((prev: {[key: string]: string}) => ({
                         ...prev,
                         [fieldKey]: ''
                       }));
@@ -334,6 +334,9 @@ export default function ToolFrom(props: IProps) {
   
   // 检查是否为抖音短视频脚本工具
   const isTikTokTool = dataSource.title === 'TikTok-post-generation';
+  
+  // 检查是否为微信图文工具
+  const isWeChatTool = dataSource.title === 'weixin-generation';
 
   return (
     <>
@@ -565,6 +568,146 @@ export default function ToolFrom(props: IProps) {
                   <FormControl>
                     <Select onValueChange={field.onChange} value={field.value} disabled={isLoading}>
                       {onRenderingSelect(dataSource.from.tone?.list || [], onReminderInformation('Select', 'tone'))}
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </>
+        ) : isWeChatTool ? (
+          // 微信图文工具的特殊布局
+          <>
+            {/* 1. 软文目的输入 */}
+            <FormField
+              disabled={isLoading}
+              control={form.control}
+              name="articlePurpose"
+              render={({ field }: any) => (
+                <FormItem className="px-3 pb-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <FormLabel className="font-bold text-black">{FROM_LABEL.articlePurpose[language]}</FormLabel>
+                    {/* 软文目的预设选择器 */}
+                    <div className="w-48">
+                      {onRenderingSearchableSelect(WECHAT_ARTICLE_PURPOSE, FROM_LABEL.preset[language], (value) => {
+                        form.setValue('articlePurpose', value);
+                        form.trigger('articlePurpose');
+                      }, 'articlePurpose')}
+                    </div>
+                  </div>
+                  <FormControl>
+                    <Input 
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* 2. 核心产品/服务亮点输入 */}
+            <FormField
+              disabled={isLoading}
+              control={form.control}
+              name="productHighlights"
+              render={({ field }: any) => (
+                <FormItem className="px-3 pb-3">
+                  <FormLabel className="font-bold text-black">{FROM_LABEL.productHighlights[language]}</FormLabel>
+                  <FormControl>
+                    <Input 
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* 3. 客户痛点和需求输入 */}
+            <FormField
+              disabled={isLoading}
+              control={form.control}
+              name="customerPainPoints"
+              render={({ field }: any) => (
+                <FormItem className="px-3 pb-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <FormLabel className="font-bold text-black">{FROM_LABEL.customerPainPoints[language]}</FormLabel>
+                    {/* 客户痛点预设选择器 */}
+                    <div className="w-48">
+                      {onRenderingSearchableSelect(getIndustryPresetData('customerPainPoints'), FROM_LABEL.preset[language], (value) => {
+                        form.setValue('customerPainPoints', value);
+                        form.trigger('customerPainPoints');
+                      }, 'customerPainPoints')}
+                    </div>
+                  </div>
+                  <FormControl>
+                    <Input 
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* 4. 期待转化动作输入 */}
+            <FormField
+              disabled={isLoading}
+              control={form.control}
+              name="conversionAction"
+              render={({ field }: any) => (
+                <FormItem className="px-3 pb-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <FormLabel className="font-bold text-black">{FROM_LABEL.conversionAction[language]}</FormLabel>
+                    {/* 转化动作预设选择器 */}
+                    <div className="w-48">
+                      {onRenderingSearchableSelect(WECHAT_ARTICLE_CONVERSION, FROM_LABEL.preset[language], (value) => {
+                        form.setValue('conversionAction', value);
+                        form.trigger('conversionAction');
+                      }, 'conversionAction')}
+                    </div>
+                  </div>
+                  <FormControl>
+                    <Input 
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* 5. 补充内容输入 */}
+            <FormField
+              disabled={isLoading}
+              control={form.control}
+              name="additionalContent"
+              render={({ field }: any) => (
+                <FormItem className="px-3 pb-3">
+                  <FormLabel className="font-bold text-black">{FROM_LABEL.additionalContent[language]}</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      className="min-h-20" 
+                      placeholder="输入特殊要求或字数限制（比如：500字左右）"
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* 6. 风格选择 */}
+            <FormField
+              disabled={isLoading}
+              control={form.control}
+              name="articleStyle"
+              render={({ field }: any) => (
+                <FormItem className="px-3 pb-3">
+                  <FormLabel className="font-bold text-black">{FROM_LABEL.articleStyle[language]}</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange} value={field.value} disabled={isLoading}>
+                      {onRenderingSelect(dataSource.from.articleStyle?.list || [], onReminderInformation('Select', 'articleStyle'))}
                     </Select>
                   </FormControl>
                   <FormMessage />

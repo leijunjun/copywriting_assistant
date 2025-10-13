@@ -1,4 +1,4 @@
-import { ACTIVITY_VENUE, ARTICLE_STYLE, ARTICLE_TYPE, BIO_STYLE, constTITLE_TARGET_USER_TYPE, COOKING_ABILITY, DIETARY_FREQUENCY, EMAIL_TONE, FESTIVAL_TYPE, GAME_TYPE, GENDER, GRAMMAR_CHECK_TYPE, QA_STYLE, REWRITE_THE_TONE, SEO_DESCRIPTION_GENERATION, SEO_TARGET_USER_TYPE, SOCIAL_MEDIA_STYLE, TRAINING_LEVEL, TRAINING_METHODS, TRAINING_OBJECTIVES, VIDEO_TARGET_USER_TYPE, XIAOHONGSHU_PRESET_CONTENT, YEARS_OF_WORK_EXPERIENCE } from "./language";
+import { ACTIVITY_VENUE, ARTICLE_STYLE, ARTICLE_TYPE, BIO_STYLE, constTITLE_TARGET_USER_TYPE, COOKING_ABILITY, DIETARY_FREQUENCY, EMAIL_TONE, FESTIVAL_TYPE, GAME_TYPE, GENDER, GRAMMAR_CHECK_TYPE, QA_STYLE, REWRITE_THE_TONE, SEO_DESCRIPTION_GENERATION, SEO_TARGET_USER_TYPE, SOCIAL_MEDIA_STYLE, TRAINING_LEVEL, TRAINING_METHODS, TRAINING_OBJECTIVES, VIDEO_TARGET_USER_TYPE, WECHAT_ARTICLE_STYLE, XIAOHONGSHU_PRESET_CONTENT, YEARS_OF_WORK_EXPERIENCE } from "./language";
 
 export interface Language { chinese: string; english: string; japanese: string }
 export interface IFrom { [key: string]: { type: 'Input' | 'Select' | 'Textarea', list?: Language[], isBig?: boolean } }
@@ -289,8 +289,12 @@ export const toolList: IToolList = {
         japanese: 'WeChatモーメンツの魅力的な画像付き投稿を生成する'
       },
       from: {
-        content: { type: 'Textarea', isBig: true, },
-        tone: { type: 'Select', list: SOCIAL_MEDIA_STYLE },
+        articlePurpose: { type: 'Input' },
+        productHighlights: { type: 'Input' },
+        customerPainPoints: { type: 'Input' },
+        conversionAction: { type: 'Input' },
+        additionalContent: { type: 'Textarea' },
+        articleStyle: { type: 'Select', list: WECHAT_ARTICLE_STYLE },
       }
     },
     {

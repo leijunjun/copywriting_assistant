@@ -12,6 +12,8 @@ interface IToolParameter {
     activityTheme: string, activityPurpose: string, activityVenue: string, festivalType: string,
     role: string, background: string, purpose: string,
     promotionGoal: string, customerGroup: string, productHighlights: string, restrictions: string,
+    articlePurpose: string, customerPainPoints: string, conversionAction: string, 
+    additionalContent: string, articleStyle: string,
 }
 
 export const toolParameter: { [key: string]: (params: IToolParameter) => Array<{ role: string, content: string }> } = {
@@ -315,6 +317,7 @@ ${params.content}
 
 角色：${params.role}
 背景：${params.background}
+行业：${params.industry}
 目的需求：${params.purpose}
 语气：${displayTone}
 语言：${params.language}
@@ -372,7 +375,7 @@ ${params.content}
 
 宣传目标：${params.promotionGoal}
 客群：${params.customerGroup}
-所在行业：${params.industry} // 从客户所在行业信息中自动读取
+所在行业：根据用户行业信息自动识别
 产品/服务亮点：${params.productHighlights}
 限制及禁忌：${params.restrictions}
 语气：${params.tone}
@@ -855,24 +858,52 @@ ${params.activityPurpose}
         ]
     },
 
-    'weixin-generation': (params: Pick<IToolParameter, 'role' | 'topic' | 'content' | 'tone' | 'language'>) => {
+    'weixin-generation': (params: Pick<IToolParameter, 'articlePurpose' | 'productHighlights' | 'customerPainPoints' | 'conversionAction' | 'additionalContent' | 'articleStyle' | 'language'>) => {
+        // 风格映射 - 将英文值转为中文
+        const styleMapping: { [key: string]: string } = {
+            'Story-based': '故事型',
+            'Practical Tips': '干货型',
+            'Store Visit Experience': '探店体验型',
+            'Trending Topic': '节日/热点借势型',
+            'Founder/Employee Story': '创始人/员工故事型',
+            'Comparison Review': '对比测评型'
+        };
+        
+        const displayStyle = styleMapping[params.articleStyle] || params.articleStyle;
+        
+        // 风格对应的结构指引
+        const styleGuidelines: { [key: string]: string } = {
+            '故事型': '真实顾客故事 → 痛点放大 → 解决方案 → 自然带出门店',
+            '干货型': '提出问题 → 专业解析 → 解决方案 → 门店服务作为"最优解"',
+            '探店体验型': '编辑/博主亲身体验 → 全流程记录 → 优缺点客观评价 → 推荐理由',
+            '节日/热点借势型': '结合主要节日、换季、开学等节点 → 关联用户需求 → 推出限定服务',
+            '创始人/员工故事型': '讲述老板/员工的初心、坚持、专业背景 → 寻求共鸣',
+            '对比测评型': '数据+配图+同行多维度对比+表格'
+        };
+        
+        const structureGuide = styleGuidelines[displayStyle] || '';
+        
         return [
             {
                 role: 'user',
-                content: `根据以下信息生成一个微信公众号图文内容，要求内容专业、有吸引力，适合微信平台传播。
+                content: `根据以下信息生成一篇微信公众号软文，要求内容专业、有吸引力，适合微信平台传播。
 
-角色：${params.role}
-文章主题：${params.topic}
-特殊内容需求：${params.content}
-语气：${params.tone}
+软文目的：${params.articlePurpose}
+核心产品/服务亮点：${params.productHighlights}
+客户痛点和需求：${params.customerPainPoints}
+期待转化动作：${params.conversionAction}
+${params.additionalContent ? `补充内容：${params.additionalContent}` : ''}
+风格：${displayStyle}
 语言：${params.language}
 
 要求：
-- 使用微信公众号的语言风格和表达方式（专业、权威、有温度）
-- 内容结构清晰，有逻辑性
-- 适合微信平台传播，具有分享价值
-- 语言要符合角色设定和语气要求
-- 格式：纯文本，段落分明，无需解释和注释
+- 使用微信公众号的关键写作原则：开头黄金100字：必须抓住注意力（用问题、冲突、金句）；避免硬广感：广告信息占比不超过全文30%，重在"提供价值"；适配阅读场景：用户多在通勤、睡前碎片化阅读，段落短、配图精、重点加粗；
+- 根据选择的风格"${displayStyle}"，参考以下结构进行创作：${structureGuide}
+- 内容要紧扣软文目的，突出产品/服务亮点
+- 深入挖掘客户痛点，提供有价值的解决方案
+- 在文章结尾自然引导用户进行转化动作："${params.conversionAction}"
+- 内容结构清晰，有逻辑性，具有分享价值
+- 格式：纯文本，有爆款标题，段落分明，字数控制在3000字以内，无需解释和注释
 
 请直接生成微信图文内容：`
             }

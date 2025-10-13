@@ -273,31 +273,46 @@ export const beautyPresets: IndustryPresets = {
   
   // 微信图文工具
   'weixin-generation': {
-    content: [
+    customerPainPoints: [
       { 
-        chinese: "医美安全从专业开始，资深医美医生为您制定科学变美方案", 
-        english: "Medical beauty safety starts with professionalism, senior medical aesthetic doctor creates scientific beauty enhancement plan for you", 
-        japanese: "医療美容安全はプロフェッショナリズムから始まる、ベテラン医療美容医師が科学的な美しさプランを作成します" 
+        chinese: "担心手术安全和风险", 
+        english: "Worried about surgical safety and risks", 
+        japanese: "手術の安全性とリスクが心配" 
       },
       { 
-        chinese: "医美科普：理性变美，科学选择，让美丽更安全持久", 
-        english: "Medical beauty science: Rational beauty enhancement, scientific choices, making beauty safer and longer-lasting", 
-        japanese: "医療美容科学：合理的な美しさ、科学的選択、美しさをより安全で持続的に" 
+        chinese: "不知道如何选择适合自己的项目", 
+        english: "Don't know how to choose the right procedure for themselves", 
+        japanese: "自分に合った施術の選び方がわからない" 
       },
       { 
-        chinese: "注射美容全解析：玻尿酸vs肉毒素，不同需求选择不同方案", 
-        english: "Complete analysis of injectable beauty: Hyaluronic acid vs Botulinum toxin, different needs require different solutions", 
-        japanese: "注射美容全解析：ヒアルロン酸vsボツリヌストキシン、異なるニーズに異なるソリューション" 
+        chinese: "害怕效果不理想或出现副作用", 
+        english: "Afraid of unsatisfactory results or side effects", 
+        japanese: "効果が期待通りでない、副作用が心配" 
       },
       { 
-        chinese: "激光美肤技术详解：从原理到效果，科学认识激光治疗", 
-        english: "Detailed explanation of laser skin treatment technology: From principles to effects, scientific understanding of laser therapy", 
-        japanese: "レーザー美肌技術詳解：原理から効果まで、レーザー治療の科学的理解" 
+        chinese: "价格昂贵，怕花冤枉钱", 
+        english: "Expensive prices, afraid of wasting money", 
+        japanese: "価格が高く、無駄遣いが心配" 
       },
       { 
-        chinese: "热玛吉vs超声刀：两种紧肤技术的区别与选择指南", 
-        english: "Thermage vs Ultrasound therapy: Differences between two skin tightening technologies and selection guide", 
-        japanese: "サーモージvs超音波治療：2つの肌引き締め技術の違いと選択ガイド" 
+        chinese: "术后恢复期长，影响工作生活", 
+        english: "Long recovery period affects work and life", 
+        japanese: "術後の回復期間が長く、仕事や生活に影響" 
+      },
+      { 
+        chinese: "不知道如何选择正规医美机构", 
+        english: "Don't know how to choose legitimate medical aesthetic institutions", 
+        japanese: "正規の医療美容機関の選び方がわからない" 
+      },
+      { 
+        chinese: "担心医生资质和经验", 
+        english: "Worried about doctor qualifications and experience", 
+        japanese: "医師の資格と経験が心配" 
+      },
+      { 
+        chinese: "害怕被过度营销和诱导消费", 
+        english: "Afraid of being over-marketed and induced to consume", 
+        japanese: "過度なマーケティングや消費誘導が心配" 
       },
     ]
   },

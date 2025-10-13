@@ -253,11 +253,46 @@ export const housekeepingPresets: IndustryPresets = {
   
   // 微信图文工具
   'weixin-generation': {
-    content: [
+    customerPainPoints: [
       { 
-        chinese: "家政服务不只是清洁，更是为家庭带来温馨和舒适", 
-        english: "Housekeeping service is not just cleaning, but bringing warmth and comfort to families", 
-        japanese: "家事代行サービスは清掃だけでなく、家庭に温かさと快適さをもたらすもの" 
+        chinese: "找不到可靠专业的保姆/月嫂", 
+        english: "Can't find reliable and professional nannies/maternity matrons", 
+        japanese: "信頼できるプロのベビーシッター・産後ケアが見つからない" 
+      },
+      { 
+        chinese: "担心服务质量和安全问题", 
+        english: "Worried about service quality and safety issues", 
+        japanese: "サービス品質と安全面の心配" 
+      },
+      { 
+        chinese: "价格不透明，怕被坑", 
+        english: "Unclear pricing, afraid of being overcharged", 
+        japanese: "価格が不明確で、騙される心配" 
+      },
+      { 
+        chinese: "阿姨流动性大，频繁更换", 
+        english: "High turnover rate of nannies, frequent changes", 
+        japanese: "家政婦の離職率が高く、頻繁に交代" 
+      },
+      { 
+        chinese: "沟通困难，需求理解不到位", 
+        english: "Communication difficulties, needs not well understood", 
+        japanese: "コミュニケーションが困難で、ニーズが理解されない" 
+      },
+      { 
+        chinese: "不知道如何选择合适的家政服务", 
+        english: "Don't know how to choose the right housekeeping service", 
+        japanese: "適切な家事代行サービスの選び方がわからない" 
+      },
+      { 
+        chinese: "担心家政人员背景和资质", 
+        english: "Worried about the background and qualifications of housekeeping staff", 
+        japanese: "家政婦の経歴と資格が心配" 
+      },
+      { 
+        chinese: "服务时间不灵活，无法满足需求", 
+        english: "Inflexible service hours, unable to meet needs", 
+        japanese: "サービス時間が柔軟でなく、ニーズを満たせない" 
       },
     ]
   },
