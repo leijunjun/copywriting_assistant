@@ -95,7 +95,18 @@ export async function POST(request: Request) {
     // Note: Credits will be deducted AFTER successful content generation
 
     // Proceed with content generation
-    const messages = prompt ? [{ role: 'user', content: prompt }] : toolParameter[tool_name]({ ...params });
+    let messages;
+    
+    if (prompt && prompt.trim() !== '') {
+      // 使用自定义prompt
+      messages = [{ role: 'user', content: prompt }];
+    } else {
+      // 使用预设的toolParameter
+      if (!toolParameter[tool_name]) {
+        throw new Error(`Tool parameter not found for: ${tool_name}`);
+      }
+      messages = toolParameter[tool_name]({ ...params });
+    }
 
     const myHeaders = {
       "Accept": "application/json",

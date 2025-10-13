@@ -152,6 +152,7 @@ export default function RegisterPage() {
                     <SelectItem value="general">{t('general')}</SelectItem>
                     <SelectItem value="housekeeping">{t('housekeeping')}</SelectItem>
                     <SelectItem value="beauty">{t('beauty')}</SelectItem>
+                    <SelectItem value="lifestyle-beauty">{t('lifestyle-beauty')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

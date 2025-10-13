@@ -26,6 +26,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { COPY_ERROR, COPY_SUCCESSFUL, DELETE_RECORD_CANCEL, DELETE_RECORD_CONTINUE, DELETE_RECORD_MESSAGE, HEADER_TITLE, LANGUAGE_LIBRARY, SUBMIT_BUTTON, SUCCESSFULLY_GENERATED, BREADCRUMB } from "@/constant/language";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useAuth } from '@/lib/auth/auth-context';
+import { InsufficientCreditsModal } from '@/components/credits/InsufficientCreditsModal';
 
 interface IGenerateRecords { id: number; toolId: string | number; output: string; createdAt: string; }
 
@@ -42,6 +43,7 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
   const [readDataLoad, setrReadDataLoad] = useState(true);
   const [dataSource, setDataSource] = useState<ITool & { prompt?: string }>();
   const [generateRecords, setGenerateRecords] = useState<IGenerateRecords[]>([]);
+  const [showInsufficientCreditsModal, setShowInsufficientCreditsModal] = useState(false);
 
   const showBrand = process.env.NEXT_PUBLIC_SHOW_BRAND === "true";
 
@@ -71,8 +73,18 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
       } else {
         setLocalStorage('recentlyUsedData', JSON.stringify([{ id: dataSource.id, classify: dataSource.classify }]))
       }
+      
+      // 检查积分余额
+      checkCreditBalance();
     }
   }, [dataSource])
+
+  // 检查积分余额
+  const checkCreditBalance = () => {
+    if (authState.credits && authState.credits.balance < 5) {
+      setShowInsufficientCreditsModal(true);
+    }
+  };
 
   useEffect(() => {
     if (params.id) {
@@ -397,7 +409,8 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
       
       const industryNames = {
         housekeeping: { chinese: '家政专用', english: 'Housekeeping', japanese: '家事代行専用' },
-        beauty: { chinese: '美业专用', english: 'Beauty', japanese: '美容業専用' }
+        beauty: { chinese: '医疗美容专用', english: 'Medical Beauty', japanese: '医療美容専用' },
+        'lifestyle-beauty': { chinese: '生活美容专用', english: 'Lifestyle Beauty', japanese: '生活美容専用' }
       };
       
       return industryNames[user.industry as keyof typeof industryNames];
@@ -406,67 +419,46 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
     const industryTag = getIndustryTag();
     const toolName = dataSource.name[global.language];
 
-    const breadcrumbItems = [
-      {
-        label: BREADCRUMB.home[global.language],
-        href: '/',
-        clickable: true
-      },
-      {
-        label: dataSource.classify?.[global.language] || BREADCRUMB.category[global.language],
-        href: `/?category=${dataSource.classify?.english}`,
-        clickable: true
-      },
-      {
-        label: toolName,
-        href: '#',
-        clickable: false,
-        industryTag: industryTag
-      }
-    ];
-
     return (
       <nav className="flex items-center space-x-1 text-sm mb-4">
-        {breadcrumbItems.map((item, index) => (
-          <div key={index} className="flex items-center">
-            {index > 0 && (
-              <svg className="w-4 h-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            )}
-            {item.clickable ? (
-              <button
-                onClick={() => router.push(item.href)}
-                className="text-text-200 hover:text-primary-100 hover:bg-primary-300/20 px-2 py-1 rounded-md transition-all duration-200 font-medium"
-              >
-                {item.label}
-              </button>
-            ) : (
-              <div className="flex items-center gap-2">
-                <span className="text-text-100 font-semibold px-2 py-1 bg-primary-300/20 rounded-md">
-                  {item.label}
-                </span>
-                {item.industryTag && (() => {
-                  const getIndustryTagStyle = () => {
-                    if (user?.industry === 'housekeeping') {
-                      return 'bg-gradient-to-r from-green-500 to-emerald-600';
-                    } else if (user?.industry === 'beauty') {
-                      return 'bg-gradient-to-r from-pink-500 to-rose-600';
-                    }
-                    return 'bg-gradient-to-r from-blue-500 to-purple-600';
-                  };
-                  
-                  return (
-                    <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium ${getIndustryTagStyle()} text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-white/20`}>
-                      <div className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
-                      <span className="font-semibold">{item.industryTag[global.language]}</span>
-                    </span>
-                  );
-                })()}
-              </div>
-            )}
-          </div>
-        ))}
+        {/* 首页链接 */}
+        <button
+          onClick={() => router.push('/')}
+          className="text-text-200 hover:text-primary-100 hover:bg-primary-300/20 px-2 py-1 rounded-md transition-all duration-200 font-medium"
+        >
+          {BREADCRUMB.home[global.language]}
+        </button>
+        
+        {/* 分隔符 */}
+        <svg className="w-4 h-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+        
+        {/* 工具名称和行业标签 */}
+        <div className="flex items-center gap-2">
+          <span className="text-text-100 font-semibold px-2 py-1 bg-primary-300/20 rounded-md">
+            {toolName}
+          </span>
+          {industryTag && (() => {
+            const getIndustryTagStyle = () => {
+              if (user?.industry === 'housekeeping') {
+                return 'bg-gradient-to-r from-green-500 to-emerald-600';
+              } else if (user?.industry === 'beauty') {
+                return 'bg-gradient-to-r from-pink-500 to-rose-600';
+              } else if (user?.industry === 'lifestyle-beauty') {
+                return 'bg-gradient-to-r from-purple-500 to-violet-600';
+              }
+              return 'bg-gradient-to-r from-blue-500 to-purple-600';
+            };
+            
+            return (
+              <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium ${getIndustryTagStyle()} text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-white/20`}>
+                <div className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
+                <span className="font-semibold">{industryTag[global.language]}</span>
+              </span>
+            );
+          })()}
+        </div>
       </nav>
     );
   };
@@ -686,6 +678,14 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
             />
           </div> : <></>
       }
+      
+      {/* 积分不足弹框 */}
+      <InsufficientCreditsModal
+        isOpen={showInsufficientCreditsModal}
+        onClose={() => setShowInsufficientCreditsModal(false)}
+        currentBalance={authState.credits?.balance || 0}
+        requiredCredits={5}
+      />
     </div>
   )
 }

@@ -319,11 +319,11 @@ export const SEO_DESCRIPTION_GENERATION: Array<Language> = [
 
 // 社交媒体风格词汇  Social media style vocabulary
 export const SOCIAL_MEDIA_STYLE: Array<Language> = [
-  { chinese: '好奇震惊型', english: 'Curiosity and Shock', japanese: '好奇心と驚き' },
-  { chinese: '干货价值型', english: 'Value-packed', japanese: '価値重視' },
-  { chinese: '情感共鸣型', english: 'Emotional Resonance', japanese: '感情共鳴' },
-  { chinese: '热点结合型', english: 'Trending Integration', japanese: 'トレンド連携' },
-  { chinese: '爆款心法', english: 'Viral Formula', japanese: 'バズる秘訣' },
+  { chinese: '情绪共鸣型（主打共情与治愈）', english: 'Emotional Resonance (focus on empathy and healing)', japanese: '感情共鳴型（共感と癒し）' },
+  { chinese: '实用干货型（强调利他与获得感）', english: 'Practical Value (emphasizing altruism and a sense of gain)', japanese: '実用重視型（利他と得感）' },
+  { chinese: '夸张反差型（制造冲突与戏剧感）', english: 'Exaggerated Contrast (creates conflict and drama)', japanese: '誇張対比型（対立とドラマを演出）' },
+  { chinese: '轻松治愈型（营造理想生活氛围）', english: 'Relaxing & Healing (creates an ideal life atmosphere)', japanese: 'リラックス癒し型（理想の生活空間を演出）' },
+  { chinese: '热点借势型（关联热点事件+情绪共振）', english: 'Trending Topic Ride (traffic leverage & emotional resonance)', japanese: 'トレンド便乗型（流行に乗り感情共振）' },
 ]
 
 // 小红书帖子生成预设内容词汇 Xiaohongshu post generation preset content vocabulary

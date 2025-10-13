@@ -296,20 +296,30 @@ ${params.content}
     },
 
     'Xiaohongshu post generation': (params: Pick<IToolParameter, 'role' | 'background' | 'purpose' | 'language' | 'tone'>) => {
+        // Tone映射表 - 将英文tone值转换为中文显示
+        const toneMapping: { [key: string]: string } = {
+            'Emotional Resonance (focus on empathy and healing)': '情绪共鸣型（主打共情与治愈）',
+            'Practical Value (emphasizing altruism and a sense of gain)': '实用干货型（强调利他与获得感）',
+            'Exaggerated Contrast (creates conflict and drama)': '夸张反差型（制造冲突与戏剧感）',
+            'Relaxing & Healing (creates an ideal life atmosphere)': '轻松治愈型（营造理想生活氛围）',
+            'Trending Topic Ride (traffic leverage & emotional resonance)': '热点借势型（关联热点事件+情绪共振）'
+        };
+        
+        const displayTone = toneMapping[params.tone] || params.tone;
+        
         return [
             {
                 role: 'user',
-                content: `根据以下信息生成一个小红书平台风格的帖子，穿插匹配的符号增加氛围感，结尾提炼4-6个标签。
+                content: `根据以下信息生成一个小红书平台风格的帖子，口气追求网感。
 
 角色：${params.role}
 背景：${params.background}
 目的需求：${params.purpose}
-语气：${params.tone}
+语气：${displayTone}
 语言：${params.language}
-
 要求：
-- 使用小红书平台的语言风格和表达方式（亲切口语化/故事化/情绪价值）
-- 穿插合适的emoji和符号增加氛围感
+- 使用小红书平台的语言风格和表达方式（亲切口语化/故事感/有态度）
+- 穿插合适的emoji和感叹号增加氛围感
 - 内容要符合角色设定和背景情况，要有细节体现
 - 结尾添加4-6个相关标签
 - 格式：纯文本，短段落、视觉化，无需解释和注释

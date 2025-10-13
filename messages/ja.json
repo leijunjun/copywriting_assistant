@@ -41,7 +41,8 @@
     "selectIndustry": "業界を選択してください",
     "general": "一般",
     "housekeeping": "家事代行",
-    "beauty": "美容業"
+    "beauty": "医療美容",
+    "lifestyle-beauty": "生活美容"
   },
   "credits": {
     "balance": "クレジット残高",
@@ -147,7 +148,8 @@
     "industry": "業界",
     "general": "一般",
     "housekeeping": "家事代行",
-    "beauty": "美容業",
+    "beauty": "医療美容",
+    "lifestyle-beauty": "生活美容",
     "credits": "クレジット",
     "profile": "プロフィール",
     "logout": "ログアウト",
@@ -219,7 +221,15 @@
     "pricing3": "1000クレジット = 1200円（300円お得）",
     "rechargeNotImplemented": "チャージ機能はまだ利用できません",
     "creditsNotFound": "クレジット情報が見つかりません",
-    "login": "ログイン"
+    "login": "ログイン",
+    "insufficientCreditsTitle": "クレジット不足",
+    "insufficientCreditsMessage": "現在の残高は {current} クレジットですが、このツールを使用するには {required} クレジットが必要です。",
+    "insufficientCreditsWarning": "クレジット残高不足",
+    "insufficientCreditsSuggestion": "このツールを使用する前にアカウントをチャージするか、ホームページに戻って他の機能を選択してください。",
+    "requiredCredits": "必要クレジット",
+    "shortfall": "クレジット不足分",
+    "goHome": "ホームに戻る",
+    "rechargeNow": "今すぐチャージ"
   },
   "navigation": {
     "home": "ホーム",

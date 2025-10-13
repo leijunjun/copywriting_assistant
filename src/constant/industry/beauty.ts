@@ -1,8 +1,9 @@
 /**
- * Beauty Industry Presets
+ * Medical Beauty Industry Presets
  * 
- * This file contains presets specifically for beauty industry users.
+ * This file contains presets specifically for medical beauty industry users.
  * Includes role templates, background scenarios, and purpose goals for various tools.
+ * Focus on medical aesthetics, cosmetic procedures, and professional medical beauty services.
  */
 
 // 多语言内容接口
@@ -26,45 +27,120 @@ export const beautyPresets: IndustryPresets = {
   // 小红书帖子生成工具
   'xiaohongshu-post-generation': {
     role: [
-      { chinese: "美容师", english: "Beautician", japanese: "美容師" },
-      { chinese: "美甲师", english: "Nail Technician", japanese: "ネイリスト" },
-      { chinese: "化妆师", english: "Makeup Artist", japanese: "メイクアップアーティスト" },
-      { chinese: "发型师", english: "Hair Stylist", japanese: "ヘアスタイリスト" },
-      { chinese: "美睫师", english: "Eyelash Technician", japanese: "まつ毛エクステンション師" },
-      { chinese: "纹绣师", english: "Microblading Artist", japanese: "マイクロブレーディングアーティスト" },
+      { chinese: "医美医生（执业医师）", english: "Medical Aesthetic Doctor (Licensed Physician)", japanese: "医療美容医師（認定医師）" },
+      { chinese: "医疗美容顾问", english: "Medical Beauty Consultant", japanese: "医療美容コンサルタント" },
+      { chinese: "护理师", english: "Nurse", japanese: "看護師" },
+      { chinese: "店长", english: "Store Manager", japanese: "店長" },
+      { chinese: "运营专员", english: "Operations Specialist", japanese: "運営専門員" },
+      { chinese: "前台", english: "Receptionist", japanese: "受付" },
     ],
     background: [
       { 
-        chinese: "专业美容师，拥有8年美容护肤经验，擅长问题肌肤修复和抗衰老护理", 
-        english: "Professional beautician with 8 years of skincare experience, specializing in problem skin repair and anti-aging care", 
-        japanese: "プロ美容師、8年のスキンケア経験、問題肌修復とアンチエイジングケアに特化" 
+        chinese: "资深医美医生，拥有10年临床经验，专精面部年轻化、皮肤修复和微整形技术，累计完成5000+成功案例", 
+        english: "Senior medical aesthetic doctor with 10 years of clinical experience, specializing in facial rejuvenation, skin repair and micro-plastic surgery, with 5000+ successful cases", 
+        japanese: "ベテラン医療美容医師、10年の臨床経験、顔の若返り、肌修復、マイクロ整形技術に特化、5000件以上の成功事例" 
       },
       { 
-        chinese: "资深美甲师，精通各种美甲技法，从基础护理到艺术创作样样精通", 
-        english: "Senior nail technician, proficient in various nail techniques, from basic care to artistic creation", 
-        japanese: "ベテランネイリスト、様々なネイル技法に精通、基本ケアからアート創作まで" 
+        chinese: "专业医疗美容顾问，熟悉各类医美项目，擅长为不同年龄层客户制定个性化变美方案，帮助客户科学理性选择医美项目", 
+        english: "Professional medical beauty consultant, familiar with various medical aesthetic procedures, expert in creating personalized beauty plans for different age groups, helping clients make scientific and rational choices", 
+        japanese: "プロ医療美容コンサルタント、様々な医療美容プロジェクトに精通、異なる年齢層の顧客に個別化された美しさプランを提供、科学的で合理的な選択をサポート" 
       },
       { 
-        chinese: "专业化妆师，为众多明星和新娘提供化妆服务，擅长各种场合妆容设计", 
-        english: "Professional makeup artist, providing makeup services for many celebrities and brides, specializing in various occasion makeup designs", 
-        japanese: "プロメイクアップアーティスト、多くのセレブや花嫁にメイクサービス提供、様々な場面のメイクデザインに特化" 
+        chinese: "资深护理师，拥有8年医美护理经验，精通术后护理、皮肤管理、客户服务，确保每位客户获得安全专业的护理体验", 
+        english: "Senior nurse with 8 years of medical beauty nursing experience, proficient in post-operative care, skin management, and customer service, ensuring safe and professional care for every client", 
+        japanese: "ベテラン看護師、8年の医療美容看護経験、術後ケア、肌管理、顧客サービスに精通、すべての顧客に安全でプロフェッショナルなケア体験を提供" 
+      },
+      { 
+        chinese: "医美机构店长，管理经验丰富，深谙医美行业发展趋势，擅长团队管理和客户关系维护，致力于为客户提供高品质医美服务", 
+        english: "Medical beauty clinic manager with rich management experience, deeply understanding industry development trends, expert in team management and customer relationship maintenance, committed to providing high-quality medical beauty services", 
+        japanese: "医療美容クリニック店長、豊富な管理経験、業界発展トレンドを深く理解、チーム管理と顧客関係維持に精通、高品質な医療美容サービス提供に専念" 
+      },
+      { 
+        chinese: "注射美容专家，精通玻尿酸、肉毒素等注射技术，拥有国际认证资质，擅长面部轮廓塑形和抗衰老治疗，累计注射案例3000+", 
+        english: "Injectable beauty expert, proficient in hyaluronic acid, botulinum toxin and other injection techniques, with international certification, expert in facial contouring and anti-aging treatments, with 3000+ injection cases", 
+        japanese: "注射美容専門家、ヒアルロン酸、ボツリヌストキシンなどの注射技術に精通、国際認証資格保有、顔の輪郭形成とアンチエイジング治療に特化、3000件以上の注射事例" 
+      },
+      { 
+        chinese: "激光美肤专家，掌握各种激光设备操作，专精色斑、痘印、毛孔粗大等肌肤问题治疗，帮助客户重获光滑细腻肌肤", 
+        english: "Laser skin treatment expert, mastering various laser device operations, specializing in treating skin problems like pigmentation, acne scars, and enlarged pores, helping clients regain smooth and delicate skin", 
+        japanese: "レーザー美肌専門家、様々なレーザー機器操作をマスター、シミ、ニキビ跡、毛穴の開きなどの肌問題治療に特化、お客様に滑らかで繊細な肌を取り戻していただく" 
+      },
+      { 
+        chinese: "热玛吉治疗师，拥有5年紧肤技术经验，熟练掌握热玛吉、超声刀等无创紧肤设备，帮助客户实现面部年轻化", 
+        english: "Thermage therapist with 5 years of skin tightening experience, proficient in non-invasive skin tightening devices like Thermage and ultrasound therapy, helping clients achieve facial rejuvenation", 
+        japanese: "サーモージセラピスト、5年の肌引き締め技術経験、サーモージ、超音波治療などの非侵襲的肌引き締め機器に精通、お客様に顔の若返りを実現" 
+      },
+      { 
+        chinese: "医美运营专员，深谙医美市场趋势，擅长内容营销和客户教育，通过专业科普帮助客户建立正确的医美认知", 
+        english: "Medical beauty operations specialist, deeply understanding market trends, expert in content marketing and customer education, helping clients establish correct medical beauty awareness through professional science popularization", 
+        japanese: "医療美容運営専門員、市場トレンドを深く理解、コンテンツマーケティングと顧客教育に精通、プロの科学普及でお客様に正しい医療美容認知を構築" 
+      },
+      { 
+        chinese: "医美前台接待，拥有3年客户服务经验，熟悉各类医美项目流程，擅长客户咨询和预约管理，为客户提供贴心专业的服务体验", 
+        english: "Medical beauty receptionist with 3 years of customer service experience, familiar with various medical beauty project processes, expert in customer consultation and appointment management, providing caring and professional service experience for clients", 
+        japanese: "医療美容受付、3年の顧客サービス経験、様々な医療美容プロジェクトプロセスに精通、顧客相談と予約管理に特化、お客様に心のこもったプロサービス体験を提供" 
       },
     ],
     purpose: [
       { 
-        chinese: "展示美容技能和服务案例，吸引客户预约美容服务", 
-        english: "Showcase beauty skills and service cases, attract customers to book beauty services", 
-        japanese: "美容スキルとサービス事例を紹介、お客様に美容サービスの予約を促す" 
+        chinese: "分享医美科普知识，帮助客户了解安全变美的正确方式，建立专业权威形象", 
+        english: "Share medical beauty science knowledge, help clients understand the correct way to safely enhance beauty, build professional authority image", 
+        japanese: "医療美容科学知識を共有、お客様に安全な美しさの正しい方法を理解してもらい、プロフェッショナルな権威イメージを構築" 
       },
       { 
-        chinese: "分享美容知识和护肤技巧，建立专业形象", 
-        english: "Share beauty knowledge and skincare tips, build professional image", 
-        japanese: "美容知識とスキンケアのコツを共有、プロフェッショナルなイメージを構築" 
+        chinese: "展示真实案例效果，通过前后对比和客户反馈，证明医美项目的安全性和有效性", 
+        english: "Showcase real case effects, demonstrate the safety and effectiveness of medical aesthetic procedures through before/after comparisons and customer feedback", 
+        japanese: "実際の事例効果を紹介、ビフォーアフター比較と顧客フィードバックを通じて医療美容プロジェクトの安全性と有効性を証明" 
       },
       { 
-        chinese: "推广美容院服务，通过案例展示技术实力", 
-        english: "Promote beauty salon services, showcase technical strength through cases", 
-        japanese: "美容院サービスの普及、事例を通じて技術力をアピール" 
+        chinese: "科普医美项目适应症和禁忌症，帮助客户理性选择，避免盲目跟风", 
+        english: "Educate about medical aesthetic procedure indications and contraindications, help clients make rational choices and avoid blind following trends", 
+        japanese: "医療美容プロジェクトの適応症と禁忌症を科学普及、お客様の合理的な選択をサポート、盲目的な流行追従を回避" 
+      },
+      { 
+        chinese: "分享术后护理知识和注意事项，确保客户获得最佳恢复效果", 
+        english: "Share post-operative care knowledge and precautions, ensure clients achieve optimal recovery results", 
+        japanese: "術後ケア知識と注意事項を共有、お客様に最適な回復効果を確保" 
+      },
+      { 
+        chinese: "推广注射美容项目，介绍玻尿酸、肉毒素等产品的安全性和效果，吸引潜在客户咨询", 
+        english: "Promote injectable beauty procedures, introduce the safety and effectiveness of products like hyaluronic acid and botulinum toxin, attract potential clients for consultation", 
+        japanese: "注射美容プロジェクトを推進、ヒアルロン酸、ボツリヌストキシンなどの製品の安全性と効果を紹介、潜在顧客の相談を誘引" 
+      },
+      { 
+        chinese: "宣传激光美肤技术，展示专业设备和治疗效果，建立技术优势形象", 
+        english: "Promote laser skin treatment technology, showcase professional equipment and treatment effects, build technical advantage image", 
+        japanese: "レーザー美肌技術を宣伝、プロ機器と治療効果を展示、技術優位性イメージを構築" 
+      },
+      { 
+        chinese: "介绍热玛吉、超声刀等紧肤技术，强调无创无痛的优势，吸引追求安全变美的客户", 
+        english: "Introduce skin tightening technologies like Thermage and ultrasound therapy, emphasize non-invasive and painless advantages, attract clients pursuing safe beauty enhancement", 
+        japanese: "サーモージ、超音波治療などの肌引き締め技術を紹介、非侵襲で無痛の利点を強調、安全な美しさを求める顧客を誘引" 
+      },
+      { 
+        chinese: "分享医美行业趋势和新技术，展示机构的专业性和前瞻性，提升品牌影响力", 
+        english: "Share medical beauty industry trends and new technologies, showcase institutional professionalism and foresight, enhance brand influence", 
+        japanese: "医療美容業界トレンドと新技術を共有、機関のプロフェッショナリズムと先見性を展示、ブランド影響力を向上" 
+      },
+      { 
+        chinese: "解答客户常见疑问，消除医美恐惧心理，建立信任关系，促进转化", 
+        english: "Answer common customer questions, eliminate medical beauty fears, build trust relationships, promote conversion", 
+        japanese: "お客様のよくある疑問に回答、医療美容への恐怖心理を解消、信頼関係を構築、転換を促進" 
+      },
+      { 
+        chinese: "展示医美机构的专业资质和认证，强调安全性和合规性，增强客户信心", 
+        english: "Showcase medical beauty institution's professional qualifications and certifications, emphasize safety and compliance, enhance customer confidence", 
+        japanese: "医療美容機関のプロ資格と認証を展示、安全性とコンプライアンスを強調、顧客信頼を強化" 
+      },
+      { 
+        chinese: "分享客户成功变美的故事，通过真实案例建立情感连接，激发潜在客户的变美欲望", 
+        english: "Share customer success stories of beauty transformation, build emotional connections through real cases, inspire potential clients' desire for beauty enhancement", 
+        japanese: "お客様の成功した美しさ変身ストーリーを共有、実際の事例で感情的なつながりを構築、潜在顧客の美しさへの欲望を刺激" 
+      },
+      { 
+        chinese: "推广限时优惠活动，通过价格优势吸引客户到店咨询，提高转化率", 
+        english: "Promote limited-time promotional activities, attract customers to visit for consultation through price advantages, improve conversion rates", 
+        japanese: "期間限定キャンペーンを推進、価格優位性でお客様の来店相談を誘引、転換率を向上" 
       },
     ]
   },
@@ -73,14 +149,19 @@ export const beautyPresets: IndustryPresets = {
   'wechat-moments-reply': {
     content: [
       { 
-        chinese: "看到您的美甲作品：太美了！这就是专业技术的魅力，让每个细节都完美无瑕", 
-        english: "Seeing your nail art: So beautiful! This is the charm of professional skills, making every detail perfect", 
-        japanese: "ネイルアートを見て：とても美しい！これがプロの技術の魅力、すべてのディテールを完璧に" 
+        chinese: "看到您的医美效果分享：太棒了！这就是专业医美技术的魅力，安全变美，效果自然持久", 
+        english: "Seeing your medical beauty results: Amazing! This is the charm of professional medical aesthetic technology, safe beauty enhancement with natural and lasting results", 
+        japanese: "医療美容効果の投稿を見て：素晴らしい！これがプロの医療美容技術の魅力、安全な美しさ、自然で持続的な効果" 
       },
       { 
-        chinese: "客户晒出完美妆容：感谢信任，让您更加美丽自信是我的使命", 
-        english: "Customer showing perfect makeup: Thank you for your trust, making you more beautiful and confident is my mission", 
-        japanese: "お客様の完璧なメイクを投稿：信頼していただきありがとうございます。より美しく自信を持っていただくことが私の使命です" 
+        chinese: "客户分享术后恢复过程：感谢您的信任！看到您恢复得这么好，我们团队都很开心，专业安全是我们不变的承诺", 
+        english: "Customer sharing post-operative recovery process: Thank you for your trust! We're all happy to see your excellent recovery, professional safety is our unwavering commitment", 
+        japanese: "お客様の術後回復過程を共有：信頼していただきありがとうございます！回復が良好で私たちチームも嬉しいです。プロで安全なことが私たちの変わらない約束です" 
+      },
+      { 
+        chinese: "看到您分享的医美科普内容：非常专业！医美需要科学理性对待，感谢您传播正确的医美知识", 
+        english: "Seeing your medical beauty science content: Very professional! Medical aesthetics requires scientific and rational approach, thank you for spreading correct medical beauty knowledge", 
+        japanese: "医療美容科学普及コンテンツを見て：非常にプロフェッショナル！医療美容は科学的で合理的なアプローチが必要、正しい医療美容知識の普及ありがとうございます" 
       },
     ]
   },
@@ -88,11 +169,22 @@ export const beautyPresets: IndustryPresets = {
   // 视频标题生成工具
   'video-title-generator': {
     keywords: [
-      { chinese: "美容护肤", english: "Beauty Skincare", japanese: "美容スキンケア" },
-      { chinese: "美甲艺术", english: "Nail Art", japanese: "ネイルアート" },
-      { chinese: "化妆技巧", english: "Makeup Tips", japanese: "メイクのコツ" },
-      { chinese: "发型设计", english: "Hair Design", japanese: "ヘアデザイン" },
-      { chinese: "美容院", english: "Beauty Salon", japanese: "美容院" },
+      { chinese: "医美科普", english: "Medical Beauty Science", japanese: "医療美容科学" },
+      { chinese: "面部年轻化", english: "Facial Rejuvenation", japanese: "顔の若返り" },
+      { chinese: "微整形", english: "Micro-plastic Surgery", japanese: "マイクロ整形" },
+      { chinese: "皮肤管理", english: "Skin Management", japanese: "肌管理" },
+      { chinese: "医美安全", english: "Medical Beauty Safety", japanese: "医療美容安全" },
+      { chinese: "术后护理", english: "Post-operative Care", japanese: "術後ケア" },
+      { chinese: "抗衰老", english: "Anti-aging", japanese: "アンチエイジング" },
+      { chinese: "医美机构", english: "Medical Beauty Clinic", japanese: "医療美容クリニック" },
+      { chinese: "玻尿酸注射", english: "Hyaluronic Acid Injection", japanese: "ヒアルロン酸注射" },
+      { chinese: "肉毒素", english: "Botulinum Toxin", japanese: "ボツリヌストキシン" },
+      { chinese: "激光美肤", english: "Laser Skin Treatment", japanese: "レーザー美肌" },
+      { chinese: "热玛吉", english: "Thermage", japanese: "サーモージ" },
+      { chinese: "超声刀", english: "Ultrasound Therapy", japanese: "超音波治療" },
+      { chinese: "整形手术", english: "Plastic Surgery", japanese: "整形手術" },
+      { chinese: "注射美容", english: "Injectable Beauty", japanese: "注射美容" },
+      { chinese: "激光治疗", english: "Laser Treatment", japanese: "レーザー治療" },
     ]
   },
   
@@ -100,9 +192,29 @@ export const beautyPresets: IndustryPresets = {
   'weibo-post-generation': {
     content: [
       { 
-        chinese: "今天为新娘打造了梦幻妆容，从底妆到眼妆，每个细节都精心雕琢", 
-        english: "Created a dreamy makeup look for the bride today, from foundation to eye makeup, every detail carefully crafted", 
-        japanese: "今日は花嫁のために夢のようなメイクを施しました。ベースメイクからアイメイクまで、すべてのディテールを丁寧に仕上げました" 
+        chinese: "今天完成了一例面部年轻化项目，通过科学合理的医美方案，帮助客户重获青春自信", 
+        english: "Completed a facial rejuvenation case today, helping client regain youthful confidence through scientific and rational medical aesthetic approach", 
+        japanese: "今日は顔の若返りプロジェクトを完成、科学的で合理的な医療美容アプローチでお客様に若々しい自信を取り戻していただきました" 
+      },
+      { 
+        chinese: "分享医美安全知识：选择正规机构、专业医生、合格产品，安全变美从科学认知开始", 
+        english: "Sharing medical beauty safety knowledge: Choose certified institutions, professional doctors, qualified products, safe beauty enhancement starts with scientific understanding", 
+        japanese: "医療美容安全知識を共有：正規機関、プロ医師、合格製品を選択、安全な美しさは科学的理解から始まります" 
+      },
+      { 
+        chinese: "玻尿酸注射案例分享：通过精准注射技术，为客户打造自然立体的面部轮廓，效果立竿见影", 
+        english: "Hyaluronic acid injection case sharing: Through precise injection techniques, create natural and three-dimensional facial contours for clients with immediate results", 
+        japanese: "ヒアルロン酸注射事例共有：精密な注射技術でお客様に自然で立体的な顔の輪郭を創り出し、即座に効果を実現" 
+      },
+      { 
+        chinese: "热玛吉治疗体验：无创紧肤技术，帮助客户实现面部紧致提升，安全有效的美容选择", 
+        english: "Thermage treatment experience: Non-invasive skin tightening technology, helping clients achieve facial firming and lifting, a safe and effective beauty choice", 
+        japanese: "サーモージ治療体験：非侵襲的肌引き締め技術、お客様に顔の引き締めとリフトアップを実現、安全で効果的な美容選択" 
+      },
+      { 
+        chinese: "激光美肤项目：通过专业激光设备，为客户解决色斑、痘印等肌肤问题，重获光滑肌肤", 
+        english: "Laser skin treatment project: Through professional laser equipment, help clients solve skin problems like pigmentation and acne scars, regain smooth skin", 
+        japanese: "レーザー美肌プロジェクト：プロのレーザー機器でお客様のシミ、ニキビ跡などの肌問題を解決、滑らかな肌を取り戻す" 
       },
     ]
   },
@@ -111,9 +223,29 @@ export const beautyPresets: IndustryPresets = {
   'TikTok-post-generation': {
     content: [
       { 
-        chinese: "美甲师的一天：从设计到完成，每一笔都是艺术创作", 
-        english: "A day in the life of a nail technician: From design to completion, every stroke is an artistic creation", 
-        japanese: "ネイリストの一日：デザインから完成まで、一筆一筆が芸術作品" 
+        chinese: "医美医生的一天：从面诊到方案设计，每一个决定都关乎客户的安全与美丽", 
+        english: "A day in the life of a medical aesthetic doctor: From consultation to treatment planning, every decision concerns client safety and beauty", 
+        japanese: "医療美容医師の一日：面談から治療計画まで、すべての決定がお客様の安全と美しさに関わります" 
+      },
+      { 
+        chinese: "医美科普小课堂：什么是微整形？安全变美的正确打开方式", 
+        english: "Medical beauty science class: What is micro-plastic surgery? The correct way to safely enhance beauty", 
+        japanese: "医療美容科学教室：マイクロ整形とは？安全な美しさの正しい方法" 
+      },
+      { 
+        chinese: "玻尿酸注射全过程：从术前评估到术后护理，专业医生手把手教你安全变美", 
+        english: "Complete process of hyaluronic acid injection: From pre-operative assessment to post-operative care, professional doctor guides you through safe beauty enhancement", 
+        japanese: "ヒアルロン酸注射全過程：術前評価から術後ケアまで、プロ医師が安全な美しさの手順を指導" 
+      },
+      { 
+        chinese: "热玛吉治疗揭秘：无创紧肤的黑科技，让你重获年轻肌肤", 
+        english: "Thermage treatment revealed: Non-invasive skin tightening black technology, helping you regain youthful skin", 
+        japanese: "サーモージ治療の秘密：非侵襲的肌引き締めのブラックテクノロジー、若々しい肌を取り戻す" 
+      },
+      { 
+        chinese: "激光美肤效果对比：专业设备+精准操作=完美肌肤，前后对比太惊艳", 
+        english: "Laser skin treatment before/after comparison: Professional equipment + precise operation = perfect skin, the contrast is amazing", 
+        japanese: "レーザー美肌効果比較：プロ機器+精密操作=完璧な肌、ビフォーアフターの対比が驚き" 
       },
     ]
   },
@@ -122,9 +254,29 @@ export const beautyPresets: IndustryPresets = {
   'weixin-generation': {
     content: [
       { 
-        chinese: "美丽从细节开始，专业美容师为您打造完美形象", 
-        english: "Beauty starts from details, professional beautician creates perfect image for you", 
-        japanese: "美しさは細部から始まる、プロ美容師が完璧なイメージを創り出します" 
+        chinese: "医美安全从专业开始，资深医美医生为您制定科学变美方案", 
+        english: "Medical beauty safety starts with professionalism, senior medical aesthetic doctor creates scientific beauty enhancement plan for you", 
+        japanese: "医療美容安全はプロフェッショナリズムから始まる、ベテラン医療美容医師が科学的な美しさプランを作成します" 
+      },
+      { 
+        chinese: "医美科普：理性变美，科学选择，让美丽更安全持久", 
+        english: "Medical beauty science: Rational beauty enhancement, scientific choices, making beauty safer and longer-lasting", 
+        japanese: "医療美容科学：合理的な美しさ、科学的選択、美しさをより安全で持続的に" 
+      },
+      { 
+        chinese: "注射美容全解析：玻尿酸vs肉毒素，不同需求选择不同方案", 
+        english: "Complete analysis of injectable beauty: Hyaluronic acid vs Botulinum toxin, different needs require different solutions", 
+        japanese: "注射美容全解析：ヒアルロン酸vsボツリヌストキシン、異なるニーズに異なるソリューション" 
+      },
+      { 
+        chinese: "激光美肤技术详解：从原理到效果，科学认识激光治疗", 
+        english: "Detailed explanation of laser skin treatment technology: From principles to effects, scientific understanding of laser therapy", 
+        japanese: "レーザー美肌技術詳解：原理から効果まで、レーザー治療の科学的理解" 
+      },
+      { 
+        chinese: "热玛吉vs超声刀：两种紧肤技术的区别与选择指南", 
+        english: "Thermage vs Ultrasound therapy: Differences between two skin tightening technologies and selection guide", 
+        japanese: "サーモージvs超音波治療：2つの肌引き締め技術の違いと選択ガイド" 
       },
     ]
   },
@@ -133,9 +285,29 @@ export const beautyPresets: IndustryPresets = {
   'email-generation': {
     content: [
       { 
-        chinese: "感谢您选择我们的美容服务，我们将为您提供专业、安全的美容护理", 
-        english: "Thank you for choosing our beauty services, we will provide you with professional and safe beauty care", 
-        japanese: "美容サービスをお選びいただきありがとうございます。プロで安全な美容ケアを提供いたします" 
+        chinese: "感谢您选择我们的医美服务，我们将为您提供专业、安全、科学的医疗美容解决方案", 
+        english: "Thank you for choosing our medical beauty services, we will provide you with professional, safe, and scientific medical aesthetic solutions", 
+        japanese: "医療美容サービスをお選びいただきありがとうございます。プロで安全で科学的な医療美容ソリューションを提供いたします" 
+      },
+      { 
+        chinese: "医美咨询预约确认：您的安全变美之旅即将开始，专业团队全程护航", 
+        english: "Medical beauty consultation appointment confirmation: Your safe beauty enhancement journey is about to begin, professional team provides full support", 
+        japanese: "医療美容相談予約確認：安全な美しさの旅が始まります、プロチームが全行程をサポートします" 
+      },
+      { 
+        chinese: "玻尿酸注射预约确认：专业医生将为您进行详细面诊，制定个性化注射方案", 
+        english: "Hyaluronic acid injection appointment confirmation: Professional doctor will conduct detailed consultation and create personalized injection plan for you", 
+        japanese: "ヒアルロン酸注射予約確認：プロ医師が詳細な面談を行い、個別化された注射プランを作成します" 
+      },
+      { 
+        chinese: "热玛吉治疗预约提醒：无创紧肤技术，让您重获年轻肌肤，请提前做好皮肤准备", 
+        english: "Thermage treatment appointment reminder: Non-invasive skin tightening technology to help you regain youthful skin, please prepare your skin in advance", 
+        japanese: "サーモージ治療予約リマインダー：非侵襲的肌引き締め技術で若々しい肌を取り戻す、事前に肌の準備をお願いします" 
+      },
+      { 
+        chinese: "激光美肤治疗确认：专业激光设备，精准解决肌肤问题，术后护理指导已准备就绪", 
+        english: "Laser skin treatment confirmation: Professional laser equipment for precise skin problem solving, post-treatment care guidance ready", 
+        japanese: "レーザー美肌治療確認：プロレーザー機器で肌問題を精密解決、術後ケア指導準備完了" 
       },
     ]
   },
@@ -144,9 +316,34 @@ export const beautyPresets: IndustryPresets = {
   'comment-reply-generation': {
     content: [
       { 
-        chinese: "感谢您的认可！我们会继续提升技术，为每位客户带来更美的体验", 
-        english: "Thank you for your recognition! We will continue to improve our skills to bring more beautiful experiences to every customer", 
-        japanese: "ご評価いただきありがとうございます！技術を向上させ続け、お客様一人ひとりにより美しい体験を提供いたします" 
+        chinese: "感谢您的信任！我们会继续提升医美技术，为每位客户提供更安全、更有效的变美方案", 
+        english: "Thank you for your trust! We will continue to improve our medical aesthetic techniques to provide safer and more effective beauty enhancement solutions for every client", 
+        japanese: "信頼していただきありがとうございます！医療美容技術を向上させ続け、お客様一人ひとりにより安全で効果的な美しさソリューションを提供いたします" 
+      },
+      { 
+        chinese: "医美安全是我们的首要责任，感谢您选择专业机构，我们会用最严谨的态度对待每一个项目", 
+        english: "Medical beauty safety is our top priority, thank you for choosing a professional institution, we will treat every procedure with the most rigorous attitude", 
+        japanese: "医療美容安全が私たちの最優先事項、プロ機関を選択していただきありがとうございます。すべてのプロジェクトを最も厳格な態度で取り組みます" 
+      },
+      { 
+        chinese: "看到您恢复得这么好，我们团队都很欣慰！专业医美就是要让客户安全变美，效果自然持久", 
+        english: "We're all pleased to see your excellent recovery! Professional medical aesthetics is about helping clients safely enhance beauty with natural and lasting results", 
+        japanese: "回復が良好で私たちチームも安心しています！プロの医療美容はお客様に安全に美しくなっていただき、自然で持続的な効果を提供することです" 
+      },
+      { 
+        chinese: "玻尿酸注射效果确实立竿见影！我们使用进口优质产品，配合专业注射技术，确保安全有效", 
+        english: "Hyaluronic acid injection results are indeed immediate! We use imported high-quality products with professional injection techniques to ensure safety and effectiveness", 
+        japanese: "ヒアルロン酸注射の効果は確かに即座に現れます！輸入高品質製品とプロ注射技術で安全性と有効性を確保" 
+      },
+      { 
+        chinese: "热玛吉治疗无创无痛，效果持久！我们的专业医生会根据您的肌肤状况制定个性化方案", 
+        english: "Thermage treatment is non-invasive and painless with lasting results! Our professional doctors will create personalized plans based on your skin condition", 
+        japanese: "サーモージ治療は非侵襲で無痛、持続的な効果！プロ医師がお客様の肌状態に基づいて個別化プランを作成" 
+      },
+      { 
+        chinese: "激光美肤技术越来越成熟，我们采用最新设备，确保治疗效果的同时保证安全性", 
+        english: "Laser skin treatment technology is becoming more mature, we use the latest equipment to ensure treatment effectiveness while guaranteeing safety", 
+        japanese: "レーザー美肌技術はますます成熟、最新機器を使用して治療効果を確保しながら安全性を保証" 
       },
     ]
   }

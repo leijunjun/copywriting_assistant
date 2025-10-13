@@ -153,7 +153,8 @@ export default function Home() {
     
     const industryNames = {
       housekeeping: { chinese: '家政', english: 'Housekeeping', japanese: '家事代行' },
-      beauty: { chinese: '美业', english: 'Beauty', japanese: '美容業' },
+      beauty: { chinese: '医疗美容', english: 'Medical Beauty', japanese: '医療美容' },
+      'lifestyle-beauty': { chinese: '生活美容', english: 'Lifestyle Beauty', japanese: '生活美容' },
       general: { chinese: '通用', english: 'General', japanese: '一般' }
     };
     

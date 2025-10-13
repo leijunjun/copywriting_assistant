@@ -5,7 +5,7 @@
  */
 
 // 行业类型定义
-export type IndustryType = 'general' | 'housekeeping' | 'beauty';
+export type IndustryType = 'general' | 'housekeeping' | 'beauty' | 'lifestyle-beauty';
 
 // 多语言内容接口
 export interface MultilingualContent {
@@ -28,14 +28,16 @@ export interface IndustryPresets {
 import { generalPresets } from './general';
 import { housekeepingPresets } from './housekeeping';
 import { beautyPresets } from './beauty';
+import { lifestyleBeautyPresets } from './lifestyle-beauty';
 
-export { generalPresets, housekeepingPresets, beautyPresets };
+export { generalPresets, housekeepingPresets, beautyPresets, lifestyleBeautyPresets };
 
 // 行业配置映射
 export const industryConfigMap: Record<IndustryType, IndustryPresets> = {
   general: generalPresets,
   housekeeping: housekeepingPresets,
   beauty: beautyPresets,
+  'lifestyle-beauty': lifestyleBeautyPresets,
 };
 
 // 获取行业预设的工具函数

@@ -41,7 +41,8 @@
     "selectIndustry": "Please select your industry",
     "general": "General",
     "housekeeping": "Housekeeping",
-    "beauty": "Beauty"
+    "beauty": "Medical Beauty",
+    "lifestyle-beauty": "Lifestyle Beauty"
   },
   "credits": {
     "balance": "Credit Balance",
@@ -147,7 +148,8 @@
     "industry": "Industry",
     "general": "General",
     "housekeeping": "Housekeeping",
-    "beauty": "Beauty",
+    "beauty": "Medical Beauty",
+    "lifestyle-beauty": "Lifestyle Beauty",
     "credits": "Credits",
     "profile": "Profile",
     "logout": "Logout",
@@ -219,7 +221,15 @@
     "pricing3": "1000 credits = $12.00 (Save $3.00)",
     "rechargeNotImplemented": "Recharge feature not available yet",
     "creditsNotFound": "Credit information not found",
-    "login": "Login"
+    "login": "Login",
+    "insufficientCreditsTitle": "Insufficient Credits",
+    "insufficientCreditsMessage": "Your current balance is {current} credits, but {required} credits are required to use this tool.",
+    "insufficientCreditsWarning": "Low Credit Balance",
+    "insufficientCreditsSuggestion": "Please recharge your account before using this tool, or return to the homepage to choose other features.",
+    "requiredCredits": "Required Credits",
+    "shortfall": "Credit Shortfall",
+    "goHome": "Go Home",
+    "rechargeNow": "Recharge Now"
   },
   "navigation": {
     "home": "Home",

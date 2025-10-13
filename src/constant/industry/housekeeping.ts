@@ -50,6 +50,41 @@ export const housekeepingPresets: IndustryPresets = {
         english: "Professional nanny with extensive experience in infant and toddler care, specializing in scientific feeding and early education", 
         japanese: "プロのベビーシッター、乳幼児ケアの豊富な経験、科学的な育児と早期教育に特化" 
       },
+      { 
+        chinese: "资深住家保姆，拥有8年住家服务经验，擅长老人照护和慢性病护理，帮助空巢老人安享晚年", 
+        english: "Senior live-in maid with 8 years of residential service experience, specializing in elderly care and chronic disease nursing, helping empty nesters enjoy their golden years", 
+        japanese: "ベテラン住み込みメイド、8年の住み込みサービス経験、高齢者ケアと慢性疾患看護に特化、空の巣症候群の高齢者に安らかな老後を提供" 
+      },
+      { 
+        chinese: "专业整理收纳师，持有国际整理师认证，擅长空间规划和物品分类，帮助客户打造极简生活", 
+        english: "Professional organizing consultant with international organizing certification, specializing in space planning and item categorization, helping clients create minimalist living", 
+        japanese: "プロの整理収納アドバイザー、国際整理士認証保有、空間計画と物品分類に特化、お客様にミニマルライフを提供" 
+      },
+      { 
+        chinese: "资深钟点工，熟悉各类家庭清洁需求，擅长快速高效清洁，为忙碌上班族提供贴心服务", 
+        english: "Senior hourly worker familiar with various household cleaning needs, specializing in quick and efficient cleaning, providing caring service for busy working professionals", 
+        japanese: "ベテラン時間制労働者、様々な家庭清掃ニーズに精通、迅速で効率的な清掃に特化、忙しい働く人々に心のこもったサービスを提供" 
+      },
+      { 
+        chinese: "专业月嫂，拥有10年母婴护理经验，精通产后恢复和新生儿护理，帮助新手妈妈顺利度过产褥期", 
+        english: "Professional maternity matron with 10 years of maternal and infant care experience, proficient in postpartum recovery and newborn care, helping new mothers smoothly through the puerperium", 
+        japanese: "プロ産後ケア、10年の母子ケア経験、産後回復と新生児ケアに精通、新米ママが産褥期をスムーズに過ごせるようサポート" 
+      },
+      { 
+        chinese: "家政服务中介，拥有5年行业经验，熟悉各类家政服务需求，为雇主和家政人员搭建专业匹配平台", 
+        english: "Housekeeping service agency with 5 years of industry experience, familiar with various housekeeping service needs, building professional matching platform for employers and domestic workers", 
+        japanese: "家事代行サービス仲介、5年の業界経験、様々な家事代行サービスニーズに精通、雇用者と家政婦のプロマッチングプラットフォームを構築" 
+      },
+      { 
+        chinese: "专业保洁团队负责人，管理20+保洁员，擅长大型清洁项目和特殊环境清洁，服务过医院、学校等机构", 
+        english: "Professional cleaning team leader managing 20+ cleaners, specializing in large-scale cleaning projects and special environment cleaning, served hospitals, schools and other institutions", 
+        japanese: "プロ清掃チームリーダー、20名以上の清掃員を管理、大規模清掃プロジェクトと特殊環境清掃に特化、病院、学校などの機関にサービス提供" 
+      },
+      { 
+        chinese: "智能家居清洁专家，熟悉各种智能家电操作，擅长科技化清洁方案，为现代家庭提供高效清洁服务", 
+        english: "Smart home cleaning expert familiar with various smart appliance operations, specializing in technology-based cleaning solutions, providing efficient cleaning services for modern families", 
+        japanese: "スマートホーム清掃専門家、様々なスマート家電操作に精通、テクノロジーベースの清掃ソリューションに特化、現代家庭に効率的な清掃サービスを提供" 
+      },
     ],
     purpose: [
       { 
@@ -66,6 +101,61 @@ export const housekeepingPresets: IndustryPresets = {
         chinese: "推广母婴护理服务，分享专业知识和经验", 
         english: "Promote maternal and infant care services, share professional knowledge and experience", 
         japanese: "母子ケアサービスの普及、専門知識と経験の共有" 
+      },
+      { 
+        chinese: "解决空巢老人照护难题，推广专业老人护理服务，让子女安心工作", 
+        english: "Solve elderly care challenges for empty nesters, promote professional elderly care services, giving children peace of mind to work", 
+        japanese: "空の巣症候群の高齢者ケア課題を解決、プロの高齢者ケアサービスを推進、子供たちが安心して働けるように" 
+      },
+      { 
+        chinese: "推广整理收纳服务，帮助现代人摆脱物品焦虑，打造极简生活方式", 
+        english: "Promote organizing and decluttering services, help modern people overcome material anxiety, create minimalist lifestyle", 
+        japanese: "整理収納サービスの推進、現代人の物品不安を解消、ミニマルライフスタイルを創造" 
+      },
+      { 
+        chinese: "为忙碌上班族提供时间管理解决方案，通过专业家政服务释放个人时间", 
+        english: "Provide time management solutions for busy working professionals, free up personal time through professional housekeeping services", 
+        japanese: "忙しい働く人々に時間管理ソリューションを提供、プロ家事代行サービスで個人時間を解放" 
+      },
+      { 
+        chinese: "分享科学育儿知识，帮助新手父母建立正确的育儿观念，减少育儿焦虑", 
+        english: "Share scientific parenting knowledge, help new parents establish correct parenting concepts, reduce parenting anxiety", 
+        japanese: "科学的な育児知識を共有、新米両親に正しい育児概念を構築、育児不安を軽減" 
+      },
+      { 
+        chinese: "推广产后康复服务，关注新妈妈身心健康，帮助她们快速恢复自信", 
+        english: "Promote postpartum recovery services, focus on new mothers' physical and mental health, help them quickly regain confidence", 
+        japanese: "産後回復サービスの推進、新米ママの心身の健康に注目、自信を素早く取り戻すようサポート" 
+      },
+      { 
+        chinese: "展示专业清洁技术，分享环保清洁方法，推广绿色家政理念", 
+        english: "Showcase professional cleaning techniques, share eco-friendly cleaning methods, promote green housekeeping concepts", 
+        japanese: "プロ清掃技術を展示、エコフレンドリーな清掃方法を共有、グリーン家事代行理念を推進" 
+      },
+      { 
+        chinese: "解决家庭矛盾，通过专业服务减少家务负担，促进家庭和谐", 
+        english: "Resolve family conflicts, reduce household burden through professional services, promote family harmony", 
+        japanese: "家庭の矛盾を解決、プロサービスで家事負担を軽減、家庭の調和を促進" 
+      },
+      { 
+        chinese: "推广智能家居清洁，展示科技化家政服务，吸引追求效率的年轻客户", 
+        english: "Promote smart home cleaning, showcase technology-based housekeeping services, attract efficiency-seeking young customers", 
+        japanese: "スマートホーム清掃を推進、テクノロジーベースの家事代行サービスを展示、効率を求める若い顧客を誘引" 
+      },
+      { 
+        chinese: "分享家政行业职业发展机会，吸引更多人加入家政服务行业", 
+        english: "Share career development opportunities in housekeeping industry, attract more people to join the housekeeping service industry", 
+        japanese: "家事代行業界のキャリア発展機会を共有、より多くの人に家事代行サービス業界への参加を促す" 
+      },
+      { 
+        chinese: "推广家政服务标准化，建立行业信任体系，提升整体服务质量", 
+        english: "Promote housekeeping service standardization, establish industry trust system, improve overall service quality", 
+        japanese: "家事代行サービスの標準化を推進、業界信頼システムを構築、全体的なサービス品質を向上" 
+      },
+      { 
+        chinese: "关注家政人员权益，推广职业尊严，改变社会对家政行业的偏见", 
+        english: "Focus on domestic workers' rights, promote professional dignity, change social prejudice against housekeeping industry", 
+        japanese: "家政婦の権益に注目、職業的尊厳を推進、家事代行業界への社会偏見を変える" 
       },
     ]
   },

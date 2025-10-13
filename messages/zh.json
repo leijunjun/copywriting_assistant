@@ -41,7 +41,8 @@
     "selectIndustry": "请选择您的行业",
     "general": "通用",
     "housekeeping": "家政",
-    "beauty": "美业"
+    "beauty": "医疗美容",
+    "lifestyle-beauty": "生活美容"
   },
   "credits": {
     "balance": "积分余额",
@@ -147,7 +148,8 @@
     "industry": "行业",
     "general": "通用",
     "housekeeping": "家政",
-    "beauty": "美业",
+    "beauty": "医疗美容",
+    "lifestyle-beauty": "生活美容",
     "credits": "积分",
     "profile": "个人资料",
     "logout": "退出登录",
@@ -219,7 +221,15 @@
     "pricing3": "1000积分 = 80元（优惠20元）",
     "rechargeNotImplemented": "充值功能暂未开放",
     "creditsNotFound": "未找到积分信息",
-    "login": "登录"
+    "login": "登录",
+    "insufficientCreditsTitle": "积分不足",
+    "insufficientCreditsMessage": "您的当前积分为 {current} 分，但需要 {required} 分才能使用此工具。",
+    "insufficientCreditsWarning": "积分余额不足",
+    "insufficientCreditsSuggestion": "请先充值后再使用此工具，或返回首页选择其他功能。",
+    "requiredCredits": "所需积分",
+    "shortfall": "缺少积分",
+    "goHome": "返回首页",
+    "rechargeNow": "立即充值"
   },
   "navigation": {
     "home": "首页",
