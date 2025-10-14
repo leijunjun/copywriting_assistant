@@ -152,8 +152,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     };
 
+    // 监听同窗口内的localStorage变化
+    const handleLocalStorageChange = (e: CustomEvent) => {
+      if (e.detail?.key === 'user' || e.detail?.key === 'session') {
+        if (e.detail?.newValue === null) {
+          // 用户登出
+          clearAuthState();
+          triggerAuthEvent('logout');
+        } else {
+          // 用户登录或注册
+          refreshAuthState();
+          triggerAuthEvent('login');
+        }
+      }
+    };
+
     window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    window.addEventListener('localStorageChange', handleLocalStorageChange as EventListener);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('localStorageChange', handleLocalStorageChange as EventListener);
+    };
   }, [refreshAuthState, clearAuthState, triggerAuthEvent]);
 
   const contextValue: AuthContextType = {

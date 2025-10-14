@@ -16,6 +16,7 @@ import { CreditBalance } from '@/components/credits/CreditBalance';
 import { LowCreditWarning } from '@/components/credits/LowCreditWarning';
 import { ProfilePageSkeleton, LoadingIndicator, PageLoadingOverlay } from '@/components/ui/loading-skeleton';
 import { logger } from '@/lib/utils/logger';
+import { clearLocalStorageItems } from '@/lib/utils/localStorage';
 
 interface UserData {
   id: string;
@@ -116,13 +117,11 @@ export default function ProfilePage() {
       });
 
       if (response.ok) {
-        // Clear local storage
-        localStorage.removeItem('user');
-        localStorage.removeItem('session');
-        localStorage.removeItem('loginRedirectUrl'); // 清除重定向URL
+        // Clear local storage using utility function that triggers events
+        clearLocalStorageItems(['user', 'session', 'loginRedirectUrl']);
         
-        // 强制刷新页面以确保所有状态都被清除
-        window.location.href = '/auth/login';
+        // 使用router.push而不是强制刷新，让React处理状态更新
+        router.push('/auth/login');
         
         logger.auth('User logged out successfully');
       }

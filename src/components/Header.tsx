@@ -18,6 +18,7 @@ import { CreditIcon, UserIcon, LogOutIcon, SettingsIcon } from '@/components/ui/
 import { LanguagePopover } from '@/components/LanguagePopover';
 import { logger, LogCategory } from '@/lib/utils/logger';
 import { useAuth, useAuthListener } from '@/lib/auth/auth-context';
+import { clearLocalStorageItems } from '@/lib/utils/localStorage';
 
 interface HeaderProps {
   className?: string;
@@ -38,7 +39,7 @@ export function Header({ className }: HeaderProps) {
   const t = useTranslations('Common');
   const router = useRouter();
   const pathname = usePathname();
-  const { authState, refreshAuthState, clearAuthState } = useAuth();
+  const { authState, refreshAuthState, clearAuthState, triggerAuthEvent } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isUpdatingCredits, setIsUpdatingCredits] = useState(false);
@@ -86,16 +87,17 @@ export function Header({ className }: HeaderProps) {
       });
 
       if (response.ok) {
-        // Clear local storage
-        localStorage.removeItem('user');
-        localStorage.removeItem('session');
-        localStorage.removeItem('loginRedirectUrl'); // 清除重定向URL
+        // Clear local storage using utility function that triggers events
+        clearLocalStorageItems(['user', 'session', 'loginRedirectUrl']);
         
         // Clear global auth state
         clearAuthState();
         
-        // 强制刷新页面以确保所有状态都被清除
-        window.location.href = '/auth/login';
+        // 触发logout事件，确保所有组件都能收到通知
+        triggerAuthEvent('logout');
+        
+        // 使用router.push而不是强制刷新，让React处理状态更新
+        router.push('/auth/login');
         
         logger.auth('User logged out from header');
       }
