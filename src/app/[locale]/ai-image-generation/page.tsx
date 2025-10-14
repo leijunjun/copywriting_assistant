@@ -12,6 +12,7 @@ import { Loader2, Download, Image as ImageIcon, Sparkles } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { useAuth } from '@/lib/auth/auth-context';
 import { useAuthCheck } from '@/hooks/useAuthCheck';
+import { useIndustryPresets } from '@/hooks/useIndustryPresets';
 import { LoginReminderModal } from '@/components/ui/login-reminder-modal';
 import { validateFormData, sanitizeFormData, requestRateLimiter } from '@/lib/security/frontend-validation';
 
@@ -20,7 +21,7 @@ const STYLE_OPTIONS = [
   { value: '高级极简', label: '高级极简' },
   { value: '几何向量', label: '几何向量' },
   { value: '剪贴报拼接', label: '剪贴报拼接' },
-  { value: '融合', label: '融合' },
+  { value: '融合（剪贴报+几何）', label: '融合（剪贴报+几何）' },
   { value: '正面特写', label: '正面特写' },
   { value: '时尚杂志', label: '时尚杂志' },
   { value: '转发海报', label: '转发海报' }
@@ -40,6 +41,7 @@ export default function AIImageGenerationPage() {
   const { authState } = useAuth();
   const { isAuthenticated, credits } = authState;
   const { withAuthCheck, showLoginModal, setShowLoginModal } = useAuthCheck();
+  const { getFieldPresets, userIndustry } = useIndustryPresets();
 
   const [formData, setFormData] = useState({
     background: '',
@@ -55,6 +57,17 @@ export default function AIImageGenerationPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [creditCost, setCreditCost] = useState(10); // 临时硬编码，应该从数据库获取
   const [isDownloading, setIsDownloading] = useState(false);
+
+  // 获取角色预设选项
+  const rolePresets = getFieldPresets('xiaohongshu-post-generation', 'role') || [];
+
+  // 处理预设选项点击
+  const handlePresetClick = (presetText: string) => {
+    setFormData(prev => ({
+      ...prev,
+      subject: presetText
+    }));
+  };
 
   // 根据尺寸比例计算预览容器的样式
   const getPreviewContainerStyle = () => {
@@ -394,9 +407,25 @@ export default function AIImageGenerationPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="subject" className="text-sm font-medium text-gray-700">
-                      图片主体 <span className="text-red-500">*</span>
-                    </Label>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="subject" className="text-sm font-medium text-gray-700">
+                        图片主体 <span className="text-red-500">*</span>
+                      </Label>
+                      {rolePresets.length > 0 && (
+                        <Select onValueChange={(value) => handlePresetClick(value)}>
+                          <SelectTrigger className="w-auto h-8 text-xs border-purple-200 focus:border-purple-500 focus:ring-purple-500">
+                            <SelectValue placeholder="选择角色" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {rolePresets.map((preset, index) => (
+                              <SelectItem key={index} value={preset.chinese} className="text-xs">
+                                {preset.chinese}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    </div>
                     <Input
                       id="subject"
                       placeholder="描述图片的主要人物或物体"
