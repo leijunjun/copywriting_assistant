@@ -144,7 +144,7 @@ export default function AIImageGenerationPage() {
     }
 
     // 2. 安全验证：检查请求频率
-    const userId = user?.id || 'anonymous';
+    const userId = authState.user?.id || 'anonymous';
     if (!requestRateLimiter.canMakeRequest(userId, 3, 60000)) { // 1分钟内最多3次请求
       toast({
         title: "请求过于频繁",
