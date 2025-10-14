@@ -13,17 +13,17 @@ import { toast } from '@/components/ui/use-toast';
 import { useAuth } from '@/lib/auth/auth-context';
 import { useAuthCheck } from '@/hooks/useAuthCheck';
 import { LoginReminderModal } from '@/components/ui/login-reminder-modal';
+import { validateFormData, sanitizeFormData, requestRateLimiter } from '@/lib/security/frontend-validation';
 
 // 风格选项
 const STYLE_OPTIONS = [
-  { value: 'realistic', label: '写实风格' },
-  { value: 'cartoon', label: '卡通风格' },
-  { value: 'anime', label: '动漫风格' },
-  { value: 'watercolor', label: '水彩风格' },
-  { value: 'oil-painting', label: '油画风格' },
-  { value: 'sketch', label: '素描风格' },
-  { value: 'minimalist', label: '极简风格' },
-  { value: 'vintage', label: '复古风格' }
+  { value: '高级极简', label: '高级极简' },
+  { value: '几何向量', label: '几何向量' },
+  { value: '剪贴报拼接', label: '剪贴报拼接' },
+  { value: '融合', label: '融合' },
+  { value: '正面特写', label: '正面特写' },
+  { value: '时尚杂志', label: '时尚杂志' },
+  { value: '转发海报', label: '转发海报' }
 ];
 
 // 尺寸选项
@@ -53,7 +53,64 @@ export default function AIImageGenerationPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [creditCost, setCreditCost] = useState(10); // 临时硬编码，应该从数据库获取
+  const [isDownloading, setIsDownloading] = useState(false);
 
+  // 根据尺寸比例计算预览容器的样式
+  const getPreviewContainerStyle = () => {
+    if (!formData.size) return {};
+    
+    const aspectRatios: Record<string, string> = {
+      '1:1': 'aspect-square',
+      '4:3': 'aspect-[4/3]',
+      '3:2': 'aspect-[3/2]',
+      '3:4': 'aspect-[3/4]',
+      '2:3': 'aspect-[2/3]',
+      '16:9': 'aspect-video',
+      '9:16': 'aspect-[9/16]',
+      '21:9': 'aspect-[21/9]'
+    };
+    
+    return {
+      className: aspectRatios[formData.size] || 'aspect-square'
+    };
+  };
+
+  // 获取积分成本
+  useEffect(() => {
+    const fetchCreditCost = async () => {
+      try {
+        console.log('🔄 正在获取积分成本...');
+        // 使用新的简化API
+        const response = await fetch('/api/credits/image-cost');
+        console.log('📡 API响应状态:', response.status);
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log('📊 API返回数据:', data);
+          
+          if (data.success && data.cost) {
+            console.log('✅ 设置积分成本:', data.cost);
+            setCreditCost(data.cost);
+          } else {
+            console.warn('⚠️ API返回数据格式不正确:', data);
+            // 如果API失败，使用硬编码值
+            setCreditCost(10);
+          }
+        } else {
+          console.error('❌ API请求失败:', response.status, response.statusText);
+          // 如果API失败，使用硬编码值
+          setCreditCost(10);
+        }
+      } catch (error) {
+        console.error('❌ 获取积分成本失败:', error);
+        // 如果API失败，使用硬编码值
+        setCreditCost(10);
+      }
+    };
+
+    fetchCreditCost();
+  }, []);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -63,7 +120,7 @@ export default function AIImageGenerationPage() {
   };
 
   const handleGenerate = async () => {
-    // 验证必填字段
+    // 1. 基础验证
     if (!formData.background || !formData.subject || !formData.mainTitle) {
       toast({
         title: "请填写必填信息",
@@ -73,12 +130,37 @@ export default function AIImageGenerationPage() {
       return;
     }
 
+    // 2. 安全验证：检查请求频率
+    const userId = user?.id || 'anonymous';
+    if (!requestRateLimiter.canMakeRequest(userId, 3, 60000)) { // 1分钟内最多3次请求
+      toast({
+        title: "请求过于频繁",
+        description: "请稍后再试，避免频繁请求",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // 3. 表单数据安全验证
+    const formValidation = validateFormData(formData);
+    if (!formValidation.isValid) {
+      toast({
+        title: "输入内容不安全",
+        description: formValidation.error,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // 4. 清理表单数据
+    const sanitizedFormData = sanitizeFormData(formData);
+
     // 使用withAuthCheck包装生成逻辑
     withAuthCheck(async () => {
-      if (!credits || credits.balance < 50) {
+      if (!credits || credits.balance < creditCost) {
         toast({
           title: "积分不足",
-          description: "生成图片需要50积分，请先充值",
+          description: `生成图片需要${creditCost}积分，当前余额${credits?.balance || 0}积分，请先充值`,
           variant: "destructive"
         });
         return;
@@ -93,12 +175,12 @@ export default function AIImageGenerationPage() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            background: formData.background,
-            subject: formData.subject,
-            mainTitle: formData.mainTitle,
-            subtitle: formData.subtitle,
-            style: formData.style || 'realistic',
-            size: formData.size || '1:1'
+            background: sanitizedFormData.background,
+            subject: sanitizedFormData.subject,
+            mainTitle: sanitizedFormData.mainTitle,
+            subtitle: sanitizedFormData.subtitle,
+            style: sanitizedFormData.style || '高级极简',
+            size: sanitizedFormData.size || '1:1'
           }),
         });
 
@@ -131,13 +213,55 @@ export default function AIImageGenerationPage() {
     }, window.location.pathname + window.location.search);
   };
 
-  const handleDownload = (imageUrl: string) => {
-    const link = document.createElement('a');
-    link.href = imageUrl;
-    link.download = `ai-generated-image-${Date.now()}.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = async (imageUrl: string) => {
+    if (isDownloading) return; // 防止重复下载
+    
+    setIsDownloading(true);
+    
+    try {
+      // 显示下载开始提示
+      toast({
+        title: "开始下载",
+        description: "正在准备图片文件...",
+      });
+
+      // 获取图片数据
+      const response = await fetch(imageUrl);
+      if (!response.ok) {
+        throw new Error('Failed to fetch image');
+      }
+      
+      const blob = await response.blob();
+      
+      // 创建下载链接
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `ai-generated-image-${Date.now()}.png`;
+      
+      // 触发下载
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // 清理临时URL
+      window.URL.revokeObjectURL(url);
+      
+      // 显示下载成功提示
+      toast({
+        title: "下载成功",
+        description: "图片已保存到本地",
+      });
+    } catch (error) {
+      console.error('Download failed:', error);
+      toast({
+        title: "下载失败",
+        description: "请稍后重试或联系客服",
+        variant: "destructive"
+      });
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   const currentImage = generatedImages[currentImageIndex];
@@ -151,19 +275,26 @@ export default function AIImageGenerationPage() {
           <div className="space-y-6">
             <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-xl">
               <CardHeader>
-                <CardTitle className="flex items-center text-xl font-bold text-gray-800">
-                  <ImageIcon className="w-6 h-6 mr-2 text-purple-600" />
-                  图片预览
+                <CardTitle className="flex items-center justify-between text-xl font-bold text-gray-800">
+                  <div className="flex items-center">
+                    <ImageIcon className="w-6 h-6 mr-2 text-purple-600" />
+                    图片预览
+                  </div>
+                  {formData.size && (
+                    <Badge variant="outline" className="text-sm">
+                      {formData.size}
+                    </Badge>
+                  )}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="aspect-square bg-gray-100 rounded-xl overflow-hidden border-2 border-gray-200">
+                <div className={`bg-gray-100 rounded-xl overflow-hidden border-2 border-gray-200 ${getPreviewContainerStyle().className || 'aspect-square'}`}>
                   {currentImage ? (
                     <div className="relative w-full h-full">
                       <img 
                         src={currentImage} 
                         alt="Generated image"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain"
                       />
                       {/* 图片上的标题覆盖层 */}
                       <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg p-3 max-w-xs">
@@ -176,6 +307,12 @@ export default function AIImageGenerationPage() {
                           </p>
                         )}
                       </div>
+                    </div>
+                  ) : isGenerating ? (
+                    <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                      <Loader2 className="w-16 h-16 mb-4 animate-spin text-purple-600" />
+                      <p className="text-lg font-medium text-purple-600">AI 思考中...</p>
+                      <p className="text-sm">正在生成您的专属图片</p>
                     </div>
                   ) : (
                     <div className="flex flex-col items-center justify-center h-full text-gray-400">
@@ -208,11 +345,24 @@ export default function AIImageGenerationPage() {
                   <div className="mt-4">
                     <Button
                       onClick={() => handleDownload(currentImage)}
-                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium"
+                      disabled={isDownloading}
+                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <Download className="w-4 h-4 mr-2" />
-                      下载图片
+                      {isDownloading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          下载中...
+                        </>
+                      ) : (
+                        <>
+                          <Download className="w-4 h-4 mr-2" />
+                          下载图片
+                        </>
+                      )}
                     </Button>
+                    <p className="text-xs text-amber-600 mt-2 text-center">
+                      ⚠️ 图片为临时文件，请及时下载保存！
+                    </p>
                   </div>
                 )}
               </CardContent>
@@ -340,7 +490,7 @@ export default function AIImageGenerationPage() {
                         <Sparkles className="w-5 h-5 mr-2" />
                         AI 出图
                         <Badge variant="secondary" className="ml-2 bg-white/20 text-white">
-                          50 积分/张
+                          {creditCost} 积分/张
                         </Badge>
                       </>
                     )}

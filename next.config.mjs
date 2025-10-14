@@ -26,6 +26,21 @@ const nextConfig = {
       // 开发环境下禁用某些缓存
       config.cache = false;
     }
+    
+    // 修复 mini-css-extract-plugin 错误
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+      path: false,
+      os: false,
+    };
+    
+    // 禁用某些优化以避免构建错误
+    config.optimization = {
+      ...config.optimization,
+      splitChunks: false,
+    };
+    
     return config;
   },
   // 图片优化

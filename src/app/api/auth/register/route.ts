@@ -12,6 +12,7 @@ import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { getCreditBalance } from '@/lib/credits/balance';
 import { logger } from '@/lib/utils/logger';
 import { createErrorResponse } from '@/lib/utils/error';
+import { CREDIT_CONFIG } from '@/config/credit-config';
 
 export async function POST(request: NextRequest) {
   try {
@@ -166,7 +167,7 @@ export async function POST(request: NextRequest) {
       .from('user_credits')
       .insert({
         user_id: data.user.id,
-        balance: 100, // Give new users 100 free credits
+        balance: CREDIT_CONFIG.REGISTRATION_BONUS, // Give new users free credits
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       });

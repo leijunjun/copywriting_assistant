@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { toolParameter } from '../constant';
 import { getCurrentUser } from '@/lib/auth/session';
-import { getCreditDeductionRate } from '@/lib/database/system-config';
+import { CREDIT_CONFIG } from '@/config/credit-config';
 import { hasSufficientCredits } from '@/lib/credits/balance';
 import { deductCredits } from '@/lib/credits/transactions';
 import { logger } from '@/lib/utils/logger';
@@ -33,9 +33,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'User not authenticated' }, { status: 401 });
     }
 
-    // Get credit deduction rate from system config
-    const creditDeductionRate = await getCreditDeductionRate();
-    logger.api('Credit deduction rate retrieved', { rate: creditDeductionRate });
+    // Get credit deduction rate from hardcoded config
+    const creditDeductionRate = CREDIT_CONFIG.WRITING_GENERATION.COST;
 
     // Check if user has sufficient credits
     const creditCheck = await hasSufficientCredits(user.id, creditDeductionRate);
