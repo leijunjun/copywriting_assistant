@@ -13,8 +13,9 @@ const STYLE_MAPPINGS: Record<string, string> = {
   '剪贴报拼接': 'collage of multiple images, scrapbook aesthetic',
   '融合（剪贴报+几何）': '扁平设计，向量艺术，大胆颜色，几何形状，信息图风格，无渐变，flat design, 2D vector避免3D效果，collage of multiple images, scrapbook aesthetic',
   '正面特写': '主体正面特写，柔和自然光，高分辨率',
-  '时尚杂志': '高时尚摄影风格，锐利细节，fashion editorial, vogue style模拟杂志感，加入封面大字母',
-  '转发海报': '促销感，mobile-friendly，glow effect，floating tag'
+  '时尚杂志': '高级时尚摄影风格，锐利细节，vogue style模拟杂志感，elegant pose，confident gaze，magazine layout，bold typography overlay，避免杂乱元素',
+  '转发海报': '促销感，mobile-friendly，glow effect，floating tag',
+  '多文列表': '文字列表排版，避免杂乱元素'
 };
 
 // 尺寸映射常量 - 2K分辨率
@@ -121,18 +122,31 @@ async function handleImageGeneration(request: NextRequest) {
     const sizeInPixels = SIZE_MAPPINGS[size] || SIZE_MAPPINGS['1:1'];
 
     // 构建提示词模板
-    let prompt = `行业:${industryName}
+    let prompt;
+    
+    if (style === '多文列表') {
+      // 多文列表风格使用特殊模板
+      prompt = `背景是${background}和${subject}，前景是文字列表“${mainTitle} ${subtitle || ''}`;
+      prompt += `
+行业:${industryName}
+风格:${styleDescription}
+比例:${size}
+分辨率:2K`;
+    } else {
+      // 其他风格使用原有模板
+      prompt = `行业:${industryName}
 背景:${background}
 主体:${subject}
 字魂剑气手书体标题:"${mainTitle}"`;
 
-    if (subtitle) {
-      prompt += `\n小标题:"${subtitle}"`;
-    }
+      if (subtitle) {
+        prompt += `\n小标题:"${subtitle}"`;
+      }
 
-    prompt += `\n风格:${styleDescription}
+      prompt += `\n风格:${styleDescription}
 比例:${size}
 分辨率:2K`;
+    }
 
     logger.api('Generated prompt for image generation', { 
       userId: user.id, 

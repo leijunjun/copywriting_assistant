@@ -8,12 +8,13 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Download, Image as ImageIcon, Sparkles } from 'lucide-react';
+import { Loader2, Download, Image as ImageIcon, Sparkles, HelpCircle } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { useAuth } from '@/lib/auth/auth-context';
 import { useAuthCheck } from '@/hooks/useAuthCheck';
 import { useIndustryPresets } from '@/hooks/useIndustryPresets';
 import { LoginReminderModal } from '@/components/ui/login-reminder-modal';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { validateFormData, sanitizeFormData, requestRateLimiter } from '@/lib/security/frontend-validation';
 
 // 风格选项
@@ -24,7 +25,8 @@ const STYLE_OPTIONS = [
   { value: '融合（剪贴报+几何）', label: '融合（剪贴报+几何）' },
   { value: '正面特写', label: '正面特写' },
   { value: '时尚杂志', label: '时尚杂志' },
-  { value: '转发海报', label: '转发海报' }
+  { value: '转发海报', label: '转发海报' },
+  { value: '多文列表', label: '多文列表' }
 ];
 
 // 尺寸选项
@@ -57,6 +59,7 @@ export default function AIImageGenerationPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [creditCost, setCreditCost] = useState(10); // 临时硬编码，应该从数据库获取
   const [isDownloading, setIsDownloading] = useState(false);
+  const [showStylePreview, setShowStylePreview] = useState(false);
 
   // 获取角色预设选项
   const rolePresets = getFieldPresets('xiaohongshu-post-generation', 'role') || [];
@@ -467,9 +470,37 @@ export default function AIImageGenerationPage() {
                 {/* 第三行：风格和尺寸选择 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium text-gray-700">
-                      风格
-                    </Label>
+                    <div className="flex items-center gap-2">
+                      <Label className="text-sm font-medium text-gray-700">
+                        风格
+                      </Label>
+                      <Dialog open={showStylePreview} onOpenChange={setShowStylePreview}>
+                        <DialogTrigger asChild>
+                          <button
+                            type="button"
+                            className="text-gray-400 hover:text-gray-600 transition-colors"
+                            onClick={() => setShowStylePreview(true)}
+                          >
+                            <HelpCircle className="w-4 h-4" />
+                          </button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                          <DialogHeader>
+                            <DialogTitle>风格效果预览</DialogTitle>
+                          </DialogHeader>
+                          <div className="space-y-4">
+                            <img 
+                              src="/demo.png" 
+                              alt="风格效果预览" 
+                              className="w-full h-auto rounded-lg border"
+                            />
+                            <p className="text-sm text-gray-600 text-center">
+                              图片效果仅供示意参考，具体以 AI 创作为准
+                            </p>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
                     <Select value={formData.style} onValueChange={(value) => handleInputChange('style', value)}>
                       <SelectTrigger className="border-gray-300 focus:border-purple-500 focus:ring-purple-500">
                         <SelectValue placeholder="选择画面风格" />
