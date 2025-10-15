@@ -22,6 +22,7 @@ export default function AdminLoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
 
   const router = useRouter();
 
@@ -42,11 +43,23 @@ export default function AdminLoginPage() {
       const result = await response.json();
 
       if (result.success) {
-        router.push('/zh/admin/dashboard');
+        // 登录成功，显示成功消息
+        console.log('登录成功:', result);
+        setSuccess(true);
+        setError('');
+        
+        // 延迟跳转，让用户看到成功消息
+        setTimeout(() => {
+          // 使用 window.location.href 强制刷新页面并跳转
+          // 这样可以确保中间件重新验证认证状态
+          window.location.href = '/zh/admin/dashboard';
+        }, 1000);
       } else {
         setError(result.error?.message || '登录失败');
+        setSuccess(false);
       }
     } catch (error) {
+      console.error('登录错误:', error);
       setError('网络错误，请重试');
     } finally {
       setLoading(false);
@@ -129,6 +142,12 @@ export default function AdminLoginPage() {
               {error && (
                 <div className="p-3 bg-red-50 border border-red-200 rounded-md">
                   <p className="text-sm text-red-600">{error}</p>
+                </div>
+              )}
+
+              {success && (
+                <div className="p-3 bg-green-50 border border-green-200 rounded-md">
+                  <p className="text-sm text-green-600">登录成功，正在跳转...</p>
                 </div>
               )}
 
