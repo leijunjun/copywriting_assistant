@@ -13,7 +13,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { UserProfile } from '@/components/auth/UserProfile';
 import { CreditBalance } from '@/components/credits/CreditBalance';
-import { LowCreditWarning } from '@/components/credits/LowCreditWarning';
 import { ProfilePageSkeleton, LoadingIndicator, PageLoadingOverlay } from '@/components/ui/loading-skeleton';
 import { logger } from '@/lib/utils/logger';
 import { clearLocalStorageItems } from '@/lib/utils/localStorage';
@@ -26,6 +25,7 @@ interface UserData {
   avatar_url: string;
   created_at: string;
   updated_at: string;
+  last_login_at?: string;
 }
 
 interface CreditData {
@@ -217,13 +217,6 @@ export default function ProfilePage() {
           />
         </div>
 
-        {/* Low Credit Warning */}
-        {credits.balance < 20 && (
-          <LowCreditWarning
-            balance={credits.balance}
-            onRecharge={handleRecharge}
-          />
-        )}
 
         {/* Quick Actions */}
         <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-xl">

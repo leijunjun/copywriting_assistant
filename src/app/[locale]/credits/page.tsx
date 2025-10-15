@@ -12,7 +12,6 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CreditBalance } from '@/components/credits/CreditBalance';
-import { LowCreditWarning } from '@/components/credits/LowCreditWarning';
 import { TransactionHistory } from '@/components/credits/TransactionHistory';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { ErrorMessage } from '@/components/ui/error-message';
@@ -203,40 +202,7 @@ export default function CreditsPage() {
           </div>
         </div>
 
-        {/* Low Credit Warning */}
-        {credits.balance < 20 && (
-          <LowCreditWarning
-            balance={credits.balance}
-            onRecharge={handleRecharge}
-          />
-        )}
 
-        {/* Credit Information */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('creditInformation')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="font-semibold mb-2">{t('howCreditsWork')}</h3>
-                <ul className="text-sm text-gray-600 space-y-1">
-                  <li>• {t('creditUsage1')}</li>
-                  <li>• {t('creditUsage2')}</li>
-                  <li>• {t('creditUsage3')}</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-2">{t('creditPricing')}</h3>
-                <ul className="text-sm text-gray-600 space-y-1">
-                  <li>• {t('pricing1')}</li>
-                  <li>• {t('pricing2')}</li>
-                  <li>• {t('pricing3')}</li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );

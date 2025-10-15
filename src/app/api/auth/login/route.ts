@@ -117,6 +117,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Update last login time
+    const currentTime = new Date().toISOString();
+    const { error: updateError } = await supabaseServer
+      .from('users')
+      .update({ last_login_at: currentTime })
+      .eq('id', data.user.id);
+
+    if (updateError) {
+      logger.error('Failed to update last login time', undefined, 'API', {
+        userId: data.user.id,
+        error: updateError,
+      });
+      // Don't fail the login if this update fails, just log the error
+    } else {
+      // Update the userData with the new login time
+      userData.last_login_at = currentTime;
+    }
+
     // Get user's credit balance
     const creditResult = await getCreditBalance(userData.id);
     

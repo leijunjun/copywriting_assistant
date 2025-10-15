@@ -60,6 +60,7 @@ export type Database = {
           avatar_url: string | null;
           created_at: string;
           updated_at: string;
+          last_login_at: string | null;
         };
         Insert: {
           id?: string;
@@ -76,6 +77,7 @@ export type Database = {
           avatar_url?: string | null;
           created_at?: string;
           updated_at?: string;
+          last_login_at?: string | null;
         };
       };
       user_credits: {

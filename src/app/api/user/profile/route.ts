@@ -71,6 +71,7 @@ export async function GET(request: NextRequest) {
         industry: user.industry,
         created_at: user.created_at,
         updated_at: user.updated_at,
+        last_login_at: user.last_login_at,
       },
       credits: {
         balance: creditResult.balance,

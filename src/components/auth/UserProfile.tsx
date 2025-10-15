@@ -20,6 +20,7 @@ interface UserProfileProps {
     industry?: string;
     created_at: string;
     updated_at: string;
+    last_login_at?: string;
   };
   onLogout: () => void;
   className?: string;
@@ -185,7 +186,7 @@ export function UserProfile({ user, onLogout, className }: UserProfileProps) {
           <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl border border-purple-200 hover:shadow-md transition-all duration-300 group">
             <p className="text-sm font-semibold text-purple-700 mb-1">{t('lastActive')}</p>
             <p className="text-lg font-bold text-purple-900">
-              {formatDate(user.updated_at)}
+              {user.last_login_at ? formatDate(user.last_login_at) : '从未登录'}
             </p>
           </div>
         </div>

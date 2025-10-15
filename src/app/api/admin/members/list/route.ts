@@ -121,14 +121,16 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // 获取所有用户的 industry 信息
+    // 获取所有用户的 industry、注册时间和最后登录时间信息
     const userIds = members?.map(member => member.id) || [];
     let userIndustries: { [key: string]: string } = {};
+    let userCreatedAt: { [key: string]: string } = {};
+    let userLastLoginAt: { [key: string]: string | null } = {};
     
     if (userIds.length > 0) {
       const { data: usersData, error: usersError } = await supabase
         .from('users')
-        .select('id, industry')
+        .select('id, industry, created_at, last_login_at')
         .in('id', userIds);
       
       if (!usersError && usersData) {
@@ -136,17 +138,27 @@ export async function GET(request: NextRequest) {
           acc[user.id] = user.industry || 'general';
           return acc;
         }, {} as { [key: string]: string });
+        
+        userCreatedAt = usersData.reduce((acc, user) => {
+          acc[user.id] = user.created_at;
+          return acc;
+        }, {} as { [key: string]: string });
+        
+        userLastLoginAt = usersData.reduce((acc, user) => {
+          acc[user.id] = user.last_login_at;
+          return acc;
+        }, {} as { [key: string]: string | null });
       }
     }
 
-    // 格式化数据 - 从 user_stats 表获取的数据，手动关联 users 表获取 industry
+    // 格式化数据 - 从 user_stats 表获取的数据，手动关联 users 表获取 industry、注册时间和最后登录时间
     const formattedMembers = members?.map(member => ({
       id: member.id,
       email: member.email,
       nickname: member.nickname,
       industry: userIndustries[member.id] || 'general', // 从手动查询的 users 表获取 industry
-      created_at: member.created_at,
-      last_login_at: member.last_login,
+      created_at: userCreatedAt[member.id] || member.created_at, // 使用 users 表的 created_at 作为注册时间
+      last_login_at: userLastLoginAt[member.id] || null, // 统一使用 users 表的 last_login_at 字段
       credits: {
         balance: member.credit_balance || 0,
         updated_at: member.created_at, // user_stats 表可能没有单独的积分更新时间
