@@ -5,7 +5,7 @@ export const LANG = { "en-US": 'english', "zh-CN": 'chinese', "ja-JP": 'japanese
 export const LANG_SHORT: ILangShort = { "en": 'english', "zh": 'chinese', "ja": 'japanese' }
 
 export const CARD_RECENTLY_USED: Language = { chinese: '最近使用', english: 'Recently Used', japanese: '最近使用' };
-export const HEADER_TITLE: Language = { chinese: '一推火 AI 文秘｜批量写稿，一键配图 ｜更懂门店业务的智能创作助手', english: 'AI Writing Assistant', japanese: 'AIライティングアシスタント' };
+export const HEADER_TITLE: Language = { chinese: '一推火 AI 文秘｜ AI批量写稿，一键配图 ｜更懂门店业务的数字员工', english: 'AI Writing Assistant', japanese: 'AIライティングアシスタント' };
 export const INPUT_PLACEHOLDER: Language = { chinese: '查找你想要找的工具', english: 'Find The Tool You Are Looking For', japanese: '探しているツールを見つける' };
 export const SEARCH_HINT: Language = { chinese: '没有符合搜索关键词的工具', english: 'There Are No Tools That Match The Search Keywords', japanese: '検索キーワードに一致するツールがありません' };
 export const DELETE_RECORD_MESSAGE: Language = { chinese: '该记录将永久删除，是否继续？', english: 'This record will be permanently deleted. Do you want to continue?', japanese: 'この記録は永久に削除されます。続行しますか？' }

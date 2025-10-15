@@ -163,22 +163,38 @@ export async function POST(request: NextRequest) {
     logger.api('User profile created', { userId: userData.id });
 
     // Initialize user credits
-    const { error: creditError } = await supabaseServer
+    const { data: creditData, error: creditError } = await supabaseServer
       .from('user_credits')
       .insert({
         user_id: data.user.id,
         balance: CREDIT_CONFIG.REGISTRATION_BONUS, // Give new users free credits
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-      });
+      })
+      .select()
+      .single();
 
     if (creditError) {
       logger.error('Failed to initialize user credits', undefined, 'API', {
         userId: data.user.id,
         error: creditError,
       });
+      
+      // 如果积分初始化失败，返回错误
+      return NextResponse.json(
+        createErrorResponse({
+          code: 'CREDIT_INITIALIZATION_FAILED',
+          message: 'Failed to initialize user credits',
+          type: 'DATABASE',
+          severity: 'HIGH',
+        }),
+        { status: 500 }
+      );
     } else {
-      logger.api('User credits initialized', { userId: data.user.id });
+      logger.api('User credits initialized', { 
+        userId: data.user.id,
+        balance: creditData.balance 
+      });
     }
 
     // Get user's credit balance

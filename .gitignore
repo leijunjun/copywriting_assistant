@@ -38,3 +38,6 @@ next-env.d.ts
 
 #md files
 *.md
+
+#sql file
+*.sql

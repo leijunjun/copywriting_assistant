@@ -642,7 +642,7 @@ export default function Home() {
                     HOME_TITLE[global.language],
                     "智能文案生成",
                     "AI 精准配图", 
-                    "AI文秘，最佳创作伴侣"
+                    "AI 文秘，懂业务更智能的数字员工"
                   ] : global.language === 'english' ? [
                     HOME_TITLE[global.language],
                     "Smart Content Generation",
