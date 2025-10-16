@@ -26,7 +26,8 @@ const STYLE_OPTIONS = [
   { value: '正面特写', label: '正面特写' },
   { value: '时尚杂志', label: '时尚杂志' },
   { value: '转发海报', label: '转发海报' },
-  { value: '多文列表', label: '多文列表' }
+  { value: '多文列表', label: '多文列表' },
+  { value: '网格大文本', label: '网格大文本' }
 ];
 
 // 尺寸选项
@@ -136,17 +137,23 @@ export default function AIImageGenerationPage() {
   };
 
   const handleGenerate = async () => {
-    // 1. 基础验证
-    if (!formData.background || !formData.subject || !formData.mainTitle) {
-      toast({
-        title: "请填写必填信息",
-        description: "图片背景、图片主体和主标题为必填项",
-        variant: "destructive"
-      });
-      return;
-    }
+    // 1. 获取行业预设
+    const backgroundPresets = getFieldPresets('ai-image-generation', 'background') || [];
+    const subjectPresets = getFieldPresets('ai-image-generation', 'subject') || [];
+    const mainTitlePresets = getFieldPresets('ai-image-generation', 'mainTitle') || [];
+    const subtitlePresets = getFieldPresets('ai-image-generation', 'subtitle') || [];
 
-    // 2. 安全验证：检查请求频率
+    // 2. 如果字段为空，使用行业预设
+    const finalFormData = {
+      background: formData.background || (backgroundPresets.length > 0 ? backgroundPresets[0].chinese : '温馨的家庭环境'),
+      subject: formData.subject || (subjectPresets.length > 0 ? subjectPresets[0].chinese : '专业服务人员'),
+      mainTitle: formData.mainTitle || (mainTitlePresets.length > 0 ? mainTitlePresets[0].chinese : '专业服务'),
+      subtitle: formData.subtitle || (subtitlePresets.length > 0 ? subtitlePresets[0].chinese : '用心服务，值得信赖'),
+      style: formData.style || '高级极简',
+      size: formData.size || '1:1'
+    };
+
+    // 3. 安全验证：检查请求频率
     const userId = authState.user?.id || 'anonymous';
     if (!requestRateLimiter.canMakeRequest(userId, 3, 60000)) { // 1分钟内最多3次请求
       toast({
@@ -157,8 +164,8 @@ export default function AIImageGenerationPage() {
       return;
     }
 
-    // 3. 表单数据安全验证
-    const formValidation = validateFormData(formData);
+    // 4. 表单数据安全验证
+    const formValidation = validateFormData(finalFormData);
     if (!formValidation.isValid) {
       toast({
         title: "输入内容不安全",
@@ -168,8 +175,8 @@ export default function AIImageGenerationPage() {
       return;
     }
 
-    // 4. 清理表单数据
-    const sanitizedFormData = sanitizeFormData(formData);
+    // 5. 清理表单数据
+    const sanitizedFormData = sanitizeFormData(finalFormData);
 
     // 使用withAuthCheck包装生成逻辑
     withAuthCheck(async () => {
@@ -398,12 +405,15 @@ export default function AIImageGenerationPage() {
                 {/* 第一行：图片背景和图片主体 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="background" className="text-sm font-medium text-gray-700">
-                      图片背景 <span className="text-red-500">*</span>
-                    </Label>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="background" className="text-sm font-medium text-gray-700">
+                        图片背景
+                      </Label>
+                      <div className="w-20 h-8"></div>
+                    </div>
                     <Input
                       id="background"
-                      placeholder="描述图片的背景环境"
+                      placeholder="所处的环境（例如：办公室）"
                       value={formData.background}
                       onChange={(e) => handleInputChange('background', e.target.value)}
                       className="border-gray-300 focus:border-purple-500 focus:ring-purple-500"
@@ -412,7 +422,7 @@ export default function AIImageGenerationPage() {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <Label htmlFor="subject" className="text-sm font-medium text-gray-700">
-                        图片主体 <span className="text-red-500">*</span>
+                        图片主体
                       </Label>
                       {rolePresets.length > 0 && (
                         <Select onValueChange={(value) => handlePresetClick(value)}>
@@ -431,7 +441,7 @@ export default function AIImageGenerationPage() {
                     </div>
                     <Input
                       id="subject"
-                      placeholder="描述图片的主要人物或物体"
+                      placeholder="图片的主要人物或物体"
                       value={formData.subject}
                       onChange={(e) => handleInputChange('subject', e.target.value)}
                       className="border-gray-300 focus:border-purple-500 focus:ring-purple-500"
@@ -443,11 +453,11 @@ export default function AIImageGenerationPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="mainTitle" className="text-sm font-medium text-gray-700">
-                      主标题 <span className="text-red-500">*</span>
+                      主标题
                     </Label>
                     <Input
                       id="mainTitle"
-                      placeholder="输入主标题文字"
+                      placeholder="建议 4-8字"
                       value={formData.mainTitle}
                       onChange={(e) => handleInputChange('mainTitle', e.target.value)}
                       className="border-gray-300 focus:border-purple-500 focus:ring-purple-500"
@@ -459,7 +469,7 @@ export default function AIImageGenerationPage() {
                     </Label>
                     <Input
                       id="subtitle"
-                      placeholder="输入小标题文字（可选）"
+                      placeholder="主标题解释文字，建议 10-20 字"
                       value={formData.subtitle}
                       onChange={(e) => handleInputChange('subtitle', e.target.value)}
                       className="border-gray-300 focus:border-purple-500 focus:ring-purple-500"
@@ -515,9 +525,11 @@ export default function AIImageGenerationPage() {
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium text-gray-700">
-                      尺寸
-                    </Label>
+                    <div className="flex items-center gap-2">
+                      <Label className="text-sm font-medium text-gray-700">
+                        尺寸
+                      </Label>
+                    </div>
                     <Select value={formData.size} onValueChange={(value) => handleInputChange('size', value)}>
                       <SelectTrigger className="border-gray-300 focus:border-purple-500 focus:ring-purple-500">
                         <SelectValue placeholder="选择宽高比" />

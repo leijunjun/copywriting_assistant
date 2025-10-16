@@ -317,5 +317,49 @@ export const housekeepingPresets: IndustryPresets = {
         japanese: "信頼していただきありがとうございます！質の高い家事代行サービスを継続し、お客様の家をより温かく快適にいたします" 
       },
     ]
+  },
+
+  // AI图片生成工具
+  'ai-image-generation': {
+    background: [
+      { chinese: "温馨的家庭客厅", english: "Warm family living room", japanese: "温かい家庭のリビングルーム" },
+      { chinese: "整洁的厨房环境", english: "Clean kitchen environment", japanese: "きれいなキッチン環境" },
+      { chinese: "舒适的卧室空间", english: "Comfortable bedroom space", japanese: "快適な寝室空間" },
+      { chinese: "专业的家政服务场景", english: "Professional housekeeping service scene", japanese: "プロの家事代行サービスシーン" },
+      { chinese: "母婴护理温馨环境", english: "Warm maternal and infant care environment", japanese: "母子ケアの温かい環境" },
+      { chinese: "老人照护舒适空间", english: "Comfortable elderly care space", japanese: "高齢者ケアの快適な空間" },
+      { chinese: "整理收纳工作现场", english: "Organizing and decluttering workspace", japanese: "整理収納の作業現場" },
+      { chinese: "深度清洁服务场景", english: "Deep cleaning service scene", japanese: "深層清掃サービスシーン" }
+    ],
+    subject: [
+      { chinese: "专业月嫂", english: "Professional maternity matron", japanese: "プロの産後ケア" },
+      { chinese: "资深育儿嫂", english: "Experienced nanny", japanese: "ベテランベビーシッター" },
+      { chinese: "专业保洁员", english: "Professional cleaner", japanese: "プロの清掃員" },
+      { chinese: "住家保姆", english: "Live-in maid", japanese: "住み込みメイド" },
+      { chinese: "钟点工", english: "Hourly worker", japanese: "時間制労働者" },
+      { chinese: "整理收纳师", english: "Organizing consultant", japanese: "整理収納アドバイザー" },
+      { chinese: "老人护理员", english: "Elderly caregiver", japanese: "高齢者ケアワーカー" },
+      { chinese: "家政服务团队", english: "Housekeeping service team", japanese: "家事代行サービスチーム" }
+    ],
+    mainTitle: [
+      { chinese: "专业家政服务", english: "Professional Housekeeping", japanese: "プロ家事代行" },
+      { chinese: "贴心母婴护理", english: "Caring Maternal Care", japanese: "心のこもった母子ケア" },
+      { chinese: "专业保洁服务", english: "Professional Cleaning", japanese: "プロ清掃サービス" },
+      { chinese: "整理收纳专家", english: "Organizing Expert", japanese: "整理収納専門家" },
+      { chinese: "老人照护服务", english: "Elderly Care Service", japanese: "高齢者ケアサービス" },
+      { chinese: "深度清洁专家", english: "Deep Cleaning Expert", japanese: "深層清掃専門家" },
+      { chinese: "专业月嫂服务", english: "Professional Maternity Care", japanese: "プロ産後ケア" },
+      { chinese: "育儿嫂服务", english: "Nanny Service", japanese: "ベビーシッターサービス" }
+    ],
+    subtitle: [
+      { chinese: "让您的家更温馨舒适，专业服务值得信赖", english: "Make your home warmer and more comfortable, professional service you can trust", japanese: "お客様の家をより温かく快適に、信頼できるプロサービス" },
+      { chinese: "专业认证，多年经验，用心服务每一个家庭", english: "Professional certification, years of experience, serving every family with care", japanese: "プロ認証、豊富な経験、心を込めて各家庭にサービス" },
+      { chinese: "24小时贴心服务，让您无后顾之忧", english: "24-hour caring service, giving you peace of mind", japanese: "24時間心のこもったサービス、お客様の心配を解消" },
+      { chinese: "专业团队，标准流程，确保服务质量", english: "Professional team, standard procedures, ensuring service quality", japanese: "プロチーム、標準プロセス、サービス品質を保証" },
+      { chinese: "用心呵护，专业照护，让家人更安心", english: "Caring with heart, professional care, giving families peace of mind", japanese: "心を込めたケア、プロの看護、家族により安心を" },
+      { chinese: "深度清洁，专业工具，让家焕然一新", english: "Deep cleaning, professional tools, making your home brand new", japanese: "深層清掃、プロの道具、家を新品同様に" },
+      { chinese: "科学育儿，专业指导，助力宝宝健康成长", english: "Scientific parenting, professional guidance, helping babies grow healthy", japanese: "科学的育児、プロの指導、赤ちゃんの健康な成長をサポート" },
+      { chinese: "整理收纳，空间规划，打造极简生活", english: "Organizing and decluttering, space planning, creating minimalist living", japanese: "整理収納、空間計画、ミニマルライフを創造" }
+    ]
   }
 };

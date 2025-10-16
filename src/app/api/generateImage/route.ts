@@ -5,18 +5,7 @@ import { deductCredits } from '@/lib/credits/transactions';
 import { logger } from '@/lib/utils/logger';
 import { IMAGE_GENERATION_CREDITS } from '@/config/credit-config';
 import { withSecurity, validateCreditOperation, logCreditOperation } from '@/lib/security/api-middleware';
-
-// 风格映射常量
-const STYLE_MAPPINGS: Record<string, string> = {
-  '高级极简': '极简，干净线条，以白空间为主，柔和自然光，高分辨率，简单构图，minimalist, negative space强调留白，避免杂乱元素',
-  '几何向量': '扁平设计，向量艺术，大胆颜色，几何形状，信息图风格，无渐变，flat design, 2D vector避免3D效果',
-  '剪贴报拼接': 'collage of multiple images, scrapbook aesthetic',
-  '融合（剪贴报+几何）': '扁平设计，向量艺术，大胆颜色，几何形状，信息图风格，无渐变，flat design, 2D vector避免3D效果，collage of multiple images, scrapbook aesthetic',
-  '正面特写': '主体正面特写，柔和自然光，高分辨率',
-  '时尚杂志': '高级时尚摄影风格，锐利细节，vogue style模拟杂志感，elegant pose，confident gaze，magazine layout，bold typography overlay，避免杂乱元素',
-  '转发海报': '促销感，mobile-friendly，glow effect，floating tag',
-  '多文列表': '文字列表排版，避免杂乱元素'
-};
+import { STYLE_PROMPT_BUILDERS } from '@/config/image-prompt-config';
 
 // 尺寸映射常量 - 2K分辨率
 const SIZE_MAPPINGS: Record<string, string> = {
@@ -55,13 +44,7 @@ async function handleImageGeneration(request: NextRequest) {
     const body = await request.json();
     const { background, subject, mainTitle, subtitle, style, size } = body;
 
-    // 验证必填字段
-    if (!background || !subject || !mainTitle) {
-      return NextResponse.json(
-        { success: false, message: '请填写必填信息' },
-        { status: 400 }
-      );
-    }
+    // 字段验证已在前端处理，这里不再进行必填验证
 
     // 使用硬编码配置，确保安全性和一致性
     const creditCost = IMAGE_GENERATION_CREDITS;
@@ -115,38 +98,18 @@ async function handleImageGeneration(request: NextRequest) {
     // 获取用户行业名称
     const industryName = INDUSTRY_NAMES[user.industry || 'general'] || '通用';
 
-    // 获取风格描述
-    const styleDescription = STYLE_MAPPINGS[style] || STYLE_MAPPINGS['高级极简'];
-
     // 获取尺寸像素值
     const sizeInPixels = SIZE_MAPPINGS[size] || SIZE_MAPPINGS['1:1'];
 
-    // 构建提示词模板
-    let prompt;
-    
-    if (style === '多文列表') {
-      // 多文列表风格使用特殊模板
-      prompt = `背景是${background}和${subject}，前景是文字列表“${mainTitle} ${subtitle || ''}`;
-      prompt += `
-行业:${industryName}
-风格:${styleDescription}
-比例:${size}
-分辨率:2K`;
-    } else {
-      // 其他风格使用原有模板
-      prompt = `行业:${industryName}
-背景:${background}
-主体:${subject}
-字魂剑气手书体标题:"${mainTitle}"`;
-
-      if (subtitle) {
-        prompt += `\n小标题:"${subtitle}"`;
-      }
-
-      prompt += `\n风格:${styleDescription}
-比例:${size}
-分辨率:2K`;
-    }
+    // 使用新的配置函数构建提示词
+    const promptBuilder = STYLE_PROMPT_BUILDERS[style] || STYLE_PROMPT_BUILDERS['高级极简'];
+    const prompt = promptBuilder({
+      background,
+      subject,
+      mainTitle,
+      subtitle,
+      size
+    });
 
     logger.api('Generated prompt for image generation', { 
       userId: user.id, 
