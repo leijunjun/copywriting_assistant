@@ -1169,8 +1169,8 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
         
         let blurX = region.x * scaleX;
         let blurY = region.y * scaleY;
-        let blurWidth = region.width * scaleX;
-        let blurHeight = region.height * scaleY;
+        const blurWidth = region.width * scaleX;
+        const blurHeight = region.height * scaleY;
         
         // 如果有裁剪，需要调整位置
         if (completedCrop) {
@@ -1235,8 +1235,8 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
               
               let imgX = imageOverlay.x * scaleX;
               let imgY = imageOverlay.y * scaleY;
-              let imgWidth = imageOverlay.width * scaleX;
-              let imgHeight = imageOverlay.height * scaleY;
+              const imgWidth = imageOverlay.width * scaleX;
+              const imgHeight = imageOverlay.height * scaleY;
               
               // 如果有裁剪，需要调整位置
               if (completedCrop) {
@@ -1360,8 +1360,8 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
               // 计算图片在画布中的实际位置
               let imgX = imageOverlay.x;
               let imgY = imageOverlay.y;
-              let imgWidth = imageOverlay.width;
-              let imgHeight = imageOverlay.height;
+              const imgWidth = imageOverlay.width;
+              const imgHeight = imageOverlay.height;
               
               // 调整位置相对于裁剪区域
               imgX = imageOverlay.x - currentCrop.x;
