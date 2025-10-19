@@ -385,10 +385,7 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
     if (isDragging) return 'move';
     if (isResizing) return 'se-resize';
     if (activeTool === 'blur') return 'crosshair';
-    if (activeTool === 'paint') {
-      if (isColorPicking) return 'crosshair';
-      return 'crosshair';
-    }
+    if (activeTool === 'paint') return 'crosshair';
     if (hoverTextId || hoverImageId) return 'pointer';
     return 'default';
   };
@@ -760,13 +757,8 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
     
     // 涂改工具处理
     if (activeTool === 'paint') {
-      if (isColorPicking) {
-        pickColorFromImage(x, y);
-        return;
-      } else {
-        handlePaintStart(e);
-        return;
-      }
+      handlePaintStart(e);
+      return;
     }
     
     // 如果点击在空白区域，取消选择
@@ -2192,26 +2184,6 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
                         </div>
                       </div>
                       
-                      <div className="space-y-3">
-                        <h4 className="font-medium">颜色采集</h4>
-                        <div className="flex items-center gap-3">
-                          <button
-                            onClick={() => setIsColorPicking(!isColorPicking)}
-                            className={`px-4 py-2 rounded text-sm ${
-                              isColorPicking 
-                                ? 'bg-blue-600 text-white' 
-                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                            }`}
-                          >
-                            {isColorPicking ? '点击图片采集颜色' : '采集颜色'}
-                          </button>
-                        </div>
-                        {isColorPicking && (
-                          <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
-                            点击图片上的任意位置来采集颜色
-                          </div>
-                        )}
-                      </div>
                       
                       <div className="flex gap-2">
                         <button
