@@ -57,7 +57,7 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
   const [scale, setScale] = useState(1);
   const [rotate, setRotate] = useState(0);
   const [aspect, setAspect] = useState<number | undefined>(undefined);
-  const [activeTool, setActiveTool] = useState<'crop' | 'text' | 'image'>('text');
+  const [activeTool, setActiveTool] = useState<'crop' | 'text' | 'image' | 'paint'>('text');
   const [textOverlays, setTextOverlays] = useState<TextOverlay[]>([]);
   const [imageOverlays, setImageOverlays] = useState<ImageOverlay[]>([]);
   const [selectedTextId, setSelectedTextId] = useState<string | null>(null);
@@ -86,6 +86,13 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
   const [isBlurring, setIsBlurring] = useState(false);
   const [blurBrushSize, setBlurBrushSize] = useState(20);
   const [blurIntensity, setBlurIntensity] = useState(10);
+  
+  // 涂改工具状态
+  const [paintStrokes, setPaintStrokes] = useState<Array<{x: number, y: number, color: string, size: number}>>([]);
+  const [isPainting, setIsPainting] = useState(false);
+  const [paintBrushSize, setPaintBrushSize] = useState(10);
+  const [paintColor, setPaintColor] = useState('#000000');
+  const [isColorPicking, setIsColorPicking] = useState(false);
   
   // Canvas编辑相关状态
   const [hoverTextId, setHoverTextId] = useState<string | null>(null);
@@ -166,6 +173,80 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
       width: img.naturalWidth * scale,
       height: img.naturalHeight * scale
     };
+  };
+
+  // 从图片采集颜色
+  const pickColorFromImage = (x: number, y: number) => {
+    if (!editCanvasRef.current || !imgRef.current) return;
+    
+    const canvas = editCanvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    // 创建临时Canvas来获取像素数据
+    const tempCanvas = document.createElement('canvas');
+    const tempCtx = tempCanvas.getContext('2d');
+    if (!tempCtx) return;
+    
+    tempCanvas.width = 1;
+    tempCanvas.height = 1;
+    
+    // 绘制图片到临时Canvas
+    tempCtx.drawImage(imgRef.current, 0, 0, 1, 1);
+    
+    // 获取像素数据
+    const imageData = tempCtx.getImageData(0, 0, 1, 1);
+    const r = imageData.data[0];
+    const g = imageData.data[1];
+    const b = imageData.data[2];
+    
+    // 转换为十六进制颜色
+    const hexColor = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+    setPaintColor(hexColor);
+    setIsColorPicking(false);
+  };
+
+  // 涂改工具处理
+  const handlePaintStart = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (activeTool !== 'paint') return;
+    
+    const { x, y } = getCanvasMousePos(e);
+    setIsPainting(true);
+    
+    // 添加涂改笔触
+    const newStroke = {
+      x,
+      y,
+      color: paintColor,
+      size: paintBrushSize
+    };
+    
+    setPaintStrokes([...paintStrokes, newStroke]);
+  };
+
+  const handlePaintMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!isPainting || activeTool !== 'paint') return;
+    
+    const { x, y } = getCanvasMousePos(e);
+    
+    // 添加连续涂改笔触
+    const newStroke = {
+      x,
+      y,
+      color: paintColor,
+      size: paintBrushSize
+    };
+    
+    setPaintStrokes([...paintStrokes, newStroke]);
+  };
+
+  const handlePaintEnd = () => {
+    setIsPainting(false);
+  };
+
+  // 清除所有涂改
+  const clearPaintStrokes = () => {
+    setPaintStrokes([]);
   };
 
   // 加载自定义字体
@@ -304,6 +385,10 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
     if (isDragging) return 'move';
     if (isResizing) return 'se-resize';
     if (activeTool === 'blur') return 'crosshair';
+    if (activeTool === 'paint') {
+      if (isColorPicking) return 'crosshair';
+      return 'crosshair';
+    }
     if (hoverTextId || hoverImageId) return 'pointer';
     return 'default';
   };
@@ -673,6 +758,17 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
       return;
     }
     
+    // 涂改工具处理
+    if (activeTool === 'paint') {
+      if (isColorPicking) {
+        pickColorFromImage(x, y);
+        return;
+      } else {
+        handlePaintStart(e);
+        return;
+      }
+    }
+    
     // 如果点击在空白区域，取消选择
     setSelectedTextId(null);
     setSelectedImageId(null);
@@ -690,6 +786,12 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
     // 模糊工具处理
     if (isBlurring && activeTool === 'blur') {
       handleBlurMove(e);
+      return;
+    }
+    
+    // 涂改工具处理
+    if (isPainting && activeTool === 'paint') {
+      handlePaintMove(e);
       return;
     }
     
@@ -724,6 +826,8 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
       handleResizeEnd();
     } else if (isBlurring) {
       handleBlurEnd();
+    } else if (isPainting) {
+      handlePaintEnd();
     }
   };
 
@@ -888,6 +992,16 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
           region.x, region.y, region.width, region.height,
           region.x, region.y, region.width, region.height
         );
+        ctx.restore();
+      });
+      
+      // 绘制涂改笔触
+      paintStrokes.forEach((stroke: {x: number, y: number, color: string, size: number}) => {
+        ctx.save();
+        ctx.fillStyle = stroke.color;
+        ctx.beginPath();
+        ctx.arc(stroke.x, stroke.y, stroke.size / 2, 0, Math.PI * 2);
+        ctx.fill();
         ctx.restore();
       });
       
@@ -1186,6 +1300,31 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
         ctx.restore();
       });
       
+      // 绘制涂改笔触
+      const scaleX = previewWidth / canvasWidth;
+      const scaleY = previewHeight / canvasHeight;
+      
+      paintStrokes.forEach((stroke: {x: number, y: number, color: string, size: number}) => {
+        ctx.save();
+        ctx.fillStyle = stroke.color;
+        
+        // 计算涂改笔触在画布中的位置，按比例缩放
+        let paintX = stroke.x * scaleX;
+        let paintY = stroke.y * scaleY;
+        const paintSize = stroke.size * Math.min(scaleX, scaleY);
+        
+        // 如果有裁剪，需要调整位置
+        if (completedCrop) {
+          paintX = (stroke.x - completedCrop.x) * scaleX;
+          paintY = (stroke.y - completedCrop.y) * scaleY;
+        }
+        
+        ctx.beginPath();
+        ctx.arc(paintX, paintY, paintSize / 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+      
       // 绘制文字叠加层
       textOverlays.forEach((textOverlay: TextOverlay) => {
         ctx.save();
@@ -1405,7 +1544,7 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
 
   useEffect(() => {
     drawFinalImage();
-  }, [textOverlays, imageOverlays, completedCrop, scale, rotate, blurRegions]);
+  }, [textOverlays, imageOverlays, completedCrop, scale, rotate, blurRegions, paintStrokes]);
 
   // 编辑Canvas重绘优化
   useEffect(() => {
@@ -1428,7 +1567,8 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
     scale,
     rotate,
     activeTool,
-    blurRegions
+    blurRegions,
+    paintStrokes
   ]);
 
   // 实时预览：当裁剪框变化时显示实时预览
@@ -1644,7 +1784,7 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
             {/* 工具切换 */}
             <div className="mb-3">
               <h3 className="text-base font-medium mb-2">工具</h3>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() => setActiveTool('text')}
                   className={`px-3 py-2 text-sm rounded ${activeTool === 'text' ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
@@ -1662,6 +1802,12 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
                   className={`px-3 py-2 text-sm rounded ${activeTool === 'blur' ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
                 >
                   模糊
+                </button>
+                <button
+                  onClick={() => setActiveTool('paint')}
+                  className={`px-3 py-2 text-sm rounded ${activeTool === 'paint' ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
+                >
+                  涂改
                 </button>
               </div>
             </div>
@@ -2005,6 +2151,92 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
                           <h4 className="text-sm font-medium mb-2">模糊区域 ({blurRegions.length})</h4>
                           <div className="text-xs text-gray-600">
                             已添加 {blurRegions.length} 个模糊区域
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* 涂改工具控制面板 */}
+                  {activeTool === 'paint' && (
+                    <div className="space-y-4">
+                      <div>
+                        <h3 className="text-lg font-medium mb-3">涂改工具</h3>
+                        <p className="text-sm text-gray-600 mb-4">
+                          在图片上拖拽鼠标来涂改，支持颜色采集
+                        </p>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium mb-1">画笔大小</label>
+                          <input
+                            type="range"
+                            min="2"
+                            max="50"
+                            value={paintBrushSize}
+                            onChange={(e) => setPaintBrushSize(Number(e.target.value))}
+                            className="w-full"
+                          />
+                          <span className="text-xs text-gray-500">{paintBrushSize}px</span>
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium mb-1">涂改颜色</label>
+                          <input
+                            type="color"
+                            value={paintColor}
+                            onChange={(e) => setPaintColor(e.target.value)}
+                            className="w-full h-10 border rounded cursor-pointer"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <h4 className="font-medium">颜色采集</h4>
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => setIsColorPicking(!isColorPicking)}
+                            className={`px-4 py-2 rounded text-sm ${
+                              isColorPicking 
+                                ? 'bg-blue-600 text-white' 
+                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            }`}
+                          >
+                            {isColorPicking ? '点击图片采集颜色' : '采集颜色'}
+                          </button>
+                        </div>
+                        {isColorPicking && (
+                          <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
+                            点击图片上的任意位置来采集颜色
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        <button
+                          onClick={clearPaintStrokes}
+                          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                        >
+                          清除所有涂改
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (paintStrokes.length > 0) {
+                              setPaintStrokes(paintStrokes.slice(0, -1));
+                            }
+                          }}
+                          className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+                        >
+                          撤销上一步
+                        </button>
+                      </div>
+                      
+                      {paintStrokes.length > 0 && (
+                        <div>
+                          <h4 className="text-sm font-medium mb-2">涂改笔触 ({paintStrokes.length})</h4>
+                          <div className="text-xs text-gray-600">
+                            已添加 {paintStrokes.length} 个涂改笔触
                           </div>
                         </div>
                       )}
