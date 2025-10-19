@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Download, Image as ImageIcon, Sparkles, HelpCircle } from 'lucide-react';
+import { Loader2, Download, Image as ImageIcon, Sparkles, HelpCircle, Edit } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { useAuth } from '@/lib/auth/auth-context';
 import { useAuthCheck } from '@/hooks/useAuthCheck';
@@ -16,6 +16,8 @@ import { useIndustryPresets } from '@/hooks/useIndustryPresets';
 import { LoginReminderModal } from '@/components/ui/login-reminder-modal';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { validateFormData, sanitizeFormData, requestRateLimiter } from '@/lib/security/frontend-validation';
+import { ImageEditorModal } from '@/components/image/ImageEditorModal';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 // 风格选项
 const STYLE_OPTIONS = [
@@ -61,6 +63,7 @@ export default function AIImageGenerationPage() {
   const [creditCost, setCreditCost] = useState(10); // 临时硬编码，应该从数据库获取
   const [isDownloading, setIsDownloading] = useState(false);
   const [showStylePreview, setShowStylePreview] = useState(false);
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
 
   // 获取角色预设选项
   const rolePresets = getFieldPresets('xiaohongshu-post-generation', 'role') || [];
@@ -287,6 +290,30 @@ export default function AIImageGenerationPage() {
     }
   };
 
+  const handleEdit = () => {
+    if (!currentImage) {
+      toast({
+        title: "无法编辑",
+        description: "请先生成图片",
+        variant: "destructive"
+      });
+      return;
+    }
+    setIsEditorOpen(true);
+  };
+
+  const handleCloseEditor = () => {
+    setIsEditorOpen(false);
+  };
+
+  const handleSaveEditedImage = (editedImageObject: any, designState: any) => {
+    console.log('图片编辑完成:', editedImageObject);
+    toast({
+      title: "编辑完成",
+      description: "编辑后的图片已保存到本地",
+    });
+  };
+
   const currentImage = generatedImages[currentImageIndex];
 
   return (
@@ -303,15 +330,24 @@ export default function AIImageGenerationPage() {
                     <ImageIcon className="w-6 h-6 mr-2 text-purple-600" />
                     图片预览
                   </div>
-                  {formData.size && (
-                    <Badge variant="outline" className="text-sm">
-                      {formData.size}
-                    </Badge>
-                  )}
+                  <div className="flex items-center space-x-2">
+                    {currentImage && (
+                      <div className="bg-amber-500/90 backdrop-blur-sm rounded-lg px-3 py-1">
+                        <p className="text-sm font-medium text-white">
+                          生成的图片为临时文件，请及时下载
+                        </p>
+                      </div>
+                    )}
+                    {formData.size && (
+                      <Badge variant="outline" className="text-sm">
+                        {formData.size}
+                      </Badge>
+                    )}
+                  </div>
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className={`bg-gray-100 rounded-xl overflow-hidden border-2 border-gray-200 ${getPreviewContainerStyle().className || 'aspect-square'}`}>
+                <div className={`bg-gray-100 rounded-xl overflow-hidden border-2 border-gray-200 ${getPreviewContainerStyle().className || 'aspect-square'} relative`}>
                   {currentImage ? (
                     <div className="relative w-full h-full">
                       <img 
@@ -319,16 +355,34 @@ export default function AIImageGenerationPage() {
                         alt="Generated image"
                         className="w-full h-full object-contain"
                       />
-                      {/* 图片上的标题覆盖层 */}
-                      <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg p-3 max-w-xs">
-                        <h3 className="font-bold text-lg text-gray-800 mb-1">
-                          {formData.mainTitle}
-                        </h3>
-                        {formData.subtitle && (
-                          <p className="text-sm text-gray-600">
-                            {formData.subtitle}
-                          </p>
-                        )}
+                      
+                      
+                      {/* 悬浮在图片上的圆形按钮 */}
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className="flex items-center space-x-6 pointer-events-auto">
+                          {/* 编辑按钮 */}
+                          <Button
+                            onClick={handleEdit}
+                            className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+                            title="编辑图片"
+                          >
+                            <Edit className="w-6 h-6" />
+                          </Button>
+                          
+                          {/* 下载按钮 */}
+                          <Button
+                            onClick={() => handleDownload(currentImage)}
+                            disabled={isDownloading}
+                            className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                            title={isDownloading ? "下载中..." : "下载图片"}
+                          >
+                            {isDownloading ? (
+                              <Loader2 className="w-6 h-6 animate-spin" />
+                            ) : (
+                              <Download className="w-6 h-6" />
+                            )}
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   ) : isGenerating ? (
@@ -363,31 +417,6 @@ export default function AIImageGenerationPage() {
                   </div>
                 )}
 
-                {/* 下载按钮 */}
-                {currentImage && (
-                  <div className="mt-4">
-                    <Button
-                      onClick={() => handleDownload(currentImage)}
-                      disabled={isDownloading}
-                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {isDownloading ? (
-                        <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          下载中...
-                        </>
-                      ) : (
-                        <>
-                          <Download className="w-4 h-4 mr-2" />
-                          下载图片
-                        </>
-                      )}
-                    </Button>
-                    <p className="text-xs text-amber-600 mt-2 text-center">
-                      ⚠️ 图片为临时文件，请及时下载保存！
-                    </p>
-                  </div>
-                )}
               </CardContent>
             </Card>
           </div>
@@ -579,6 +608,17 @@ export default function AIImageGenerationPage() {
         open={showLoginModal} 
         onOpenChange={setShowLoginModal} 
       />
+
+      {/* 图片编辑器模态弹窗 */}
+      {isEditorOpen && currentImage && (
+        <ErrorBoundary>
+          <ImageEditorModal
+            imageUrl={currentImage}
+            onClose={handleCloseEditor}
+            onSave={handleSaveEditedImage}
+          />
+        </ErrorBoundary>
+      )}
     </div>
   );
 }

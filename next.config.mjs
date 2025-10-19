@@ -35,6 +35,31 @@ const nextConfig = {
       os: false,
     };
     
+    // 处理 react-filerobot-image-editor 的模块解析问题
+    config.module.rules.push({
+      test: /\.m?js$/,
+      resolve: {
+        fullySpecified: false,
+      },
+    });
+    
+    // 添加对特定模块的处理 - 简化版本
+    config.module.rules.push({
+      test: /node_modules\/react-filerobot-image-editor/,
+      type: 'javascript/auto',
+    });
+    
+    // 处理模块解析问题
+    config.resolve.extensionAlias = {
+      '.js': ['.js', '.ts', '.tsx'],
+    };
+    
+    // 强制替换 react-konva 版本
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'react-konva': 'react-konva',
+    };
+    
     // 禁用某些优化以避免构建错误
     config.optimization = {
       ...config.optimization,
