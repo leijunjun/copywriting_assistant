@@ -298,7 +298,7 @@ ${params.content}
         ]
     },
 
-    'Xiaohongshu post generation': (params: Pick<IToolParameter, 'role' | 'background' | 'purpose' | 'language' | 'tone'>) => {
+    'Xiaohongshu post generation': (params: Pick<IToolParameter, 'role' | 'background' | 'purpose' | 'language' | 'tone'> & { mimicSample?: string }) => {
         // Tone映射表 - 将英文tone值转换为中文显示
         const toneMapping: { [key: string]: string } = {
             'Emotional Resonance (focus on empathy and healing)': '情绪共鸣型（主打共情与治愈）',
@@ -310,25 +310,23 @@ ${params.content}
         
         const displayTone = toneMapping[params.tone] || params.tone;
         
+        const mimicAppend = (params as any).tone === 'mimic_by_sample' && (params as any).mimicSample
+            ? `\n请参考以下样本进行文风仿写（仅模仿风格，不抄袭内容）：\n样本：${(params as any).mimicSample}\n`
+            : '';
+
         return [
             {
                 role: 'user',
-                content: `根据以下信息生成一个小红书平台风格的帖子，口气追求网感。
+                content: `根据以下信息生成一个小红书平台风格的帖子。
 
 角色：${params.role}
 背景：${params.background}
-行业：${params.industry}
-目的需求：${params.purpose}
+目的：${params.purpose}
 语气：${displayTone}
 语言：${params.language}
-要求：
-- 使用小红书平台的语言风格和表达方式（亲切口语化/故事感/有态度）
-- 穿插合适的emoji和感叹号增加氛围感
-- 内容要符合角色设定和背景情况，要有细节体现
-- 结尾添加4-6个相关标签
-- 格式：纯文本，短段落、视觉化，无需解释和注释
+要求：标题吸睛，带关键词（如“学生党闭眼入”）；字数控制在300–600字，短段落划分，穿插合适的emoji和感叹号增加氛围感；内容符合角色设定和背景情况，真实感强，有细节、有情绪、有实用价值；结尾可引导互动（如“你们有类似经历吗”“求推荐更多好物”），匹配4-6个相关标签；无需解释和注释
 
-请直接生成帖子内容：`
+${mimicAppend}请直接生成帖子内容：`
             }
         ]
     },
@@ -910,24 +908,24 @@ ${params.additionalContent ? `补充内容：${params.additionalContent}` : ''}
         ]
     },
 
-    // 添加缺失的工具名称映射
-    'xiaohongshu-post-generation': (params: Pick<IToolParameter, 'role' | 'background' | 'purpose' | 'language' | 'tone'>) => {
+    // 兼容键：与 'Xiaohongshu post generation' 完全一致
+    'xiaohongshu-post-generation': (params: Pick<IToolParameter, 'role' | 'background' | 'purpose' | 'language' | 'tone'> & { mimicSample?: string }) => {
+        // Tone映射表 - 将英文tone值转换为中文显示
+        const toneMapping: { [key: string]: string } = {
+            'Emotional Resonance (focus on empathy and healing)': '情绪共鸣型（主打共情与治愈）',
+            'Practical Value (emphasizing altruism and a sense of gain)': '实用干货型（强调利他与获得感）',
+            'Exaggerated Contrast (creates conflict and drama)': '夸张反差型（制造冲突与戏剧感）',
+            'Relaxing & Healing (creates an ideal life atmosphere)': '轻松治愈型（营造理想生活氛围）',
+            'Trending Topic Ride (traffic leverage & emotional resonance)': '热点借势型（关联热点事件+情绪共振）'
+        };
+        const displayTone = toneMapping[params.tone] || params.tone;
+        const mimicAppend = (params as any).tone === 'mimic_by_sample' && (params as any).mimicSample
+            ? `\n请参考以下样本进行文风仿写（仅模仿风格，不抄袭内容）：\n样本：${(params as any).mimicSample}\n`
+            : '';
         return [
             {
                 role: 'user',
-                content: `Generate a 小红书 platform style post in your own words based on the requirements.
-Language: ${params.language}
-Format: Plain text without explanations and notes
-Tone: ${params.tone}
-
-Role: ${params.role}
-Background: ${params.background}
-Purpose: ${params.purpose}
-
-Input draft:
-
-${(params as any).content || ''}
-`
+                content: `根据以下信息生成一个小红书平台风格的帖子。\n\n角色：${params.role}\n背景：${params.background}\n目的：${params.purpose}\n语气：${displayTone}\n语言：${params.language}\n要求：\n- 标题吸睛，带关键词（如“学生党闭眼入”“打工人自救指南”）\n- 字数控制在300–600字，短段落划分，穿插合适的emoji和感叹号增加氛围感\n- 内容符合角色设定和背景情况，真实感强，有细节、有情绪、有实用价值\n- 结尾可引导互动（如“你们有类似经历吗？”“求推荐更多好物！”）\n- 匹配 4-6 个相关标签，无需解释和注释\n\n${mimicAppend}请直接生成帖子内容：`
             }
         ]
     },

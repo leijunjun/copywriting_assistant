@@ -108,11 +108,43 @@ export default function ToolFrom(props: IProps) {
     }
     return obj;
   }
-  const formSchema = z.object(onFormSchema())
+  // 基础表单校验（来自配置）
+  let baseSchema = z.object(onFormSchema());
+
+  // 如果是小红书工具，追加“样本仿写”相关的可选字段与条件校验
+  const isXhs = props.dataSource?.title === 'xiaohongshu-post-generation';
+  if (isXhs) {
+    baseSchema = baseSchema.extend({
+      mimicSample: z.string().optional(),
+      tone: z.string()
+    }).superRefine((data, ctx) => {
+      if (data.tone === 'mimic_by_sample') {
+        const value = (data as any).mimicSample || '';
+        if (!value || value.trim().length === 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['mimicSample'],
+            message: '请输入样本'
+          });
+        } else if (value.length > 2000) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.too_big,
+            path: ['mimicSample'],
+            type: 'string',
+            maximum: 2000,
+            inclusive: true,
+            message: '样本最多可输入2000字'
+          });
+        }
+      }
+    });
+  }
+
+  const formSchema = baseSchema
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: onFormSchema(true),
+    defaultValues: { ...onFormSchema(true), ...(isXhs ? { mimicSample: '' } : {}) },
   })
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
@@ -428,22 +460,58 @@ export default function ToolFrom(props: IProps) {
               )}
             />
             
-            {/* 4. 语气选择 */}
+            {/* 4. 语气选择与“样本仿写”扩展 */}
             <FormField
               disabled={isLoading}
               control={form.control}
               name="tone"
-              render={({ field }: any) => (
-                <FormItem className="px-3 pb-3">
-                  <FormLabel className="font-bold text-black">{FROM_LABEL.tone[language]}</FormLabel>
-                  <FormControl>
-                    <Select onValueChange={field.onChange} value={field.value} disabled={isLoading}>
-                      {onRenderingSelect(dataSource.from.tone?.list || [], onReminderInformation('Select', 'tone'))}
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              render={({ field }: any) => {
+                const toneList = dataSource.from.tone?.list || [];
+                const isMimicSelected = field.value === 'mimic_by_sample';
+                return (
+                  <FormItem className="px-3 pb-3">
+                    <FormLabel className="font-bold text-black">{FROM_LABEL.tone[language]}</FormLabel>
+                    <FormControl>
+                      <Select onValueChange={field.onChange} value={field.value} disabled={isLoading}>
+                        {/* 自定义下拉，基于既有列表 + 追加仿写选项 */}
+                        <>
+                          <SelectTrigger>
+                            <SelectValue placeholder={onReminderInformation('Select', 'tone')} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              {toneList.map((item: any) => (
+                                <SelectItem key={item.chinese} value={item.english || ''}>{item[language]}</SelectItem>
+                              ))}
+                              {/* 新增：按照提供的样本进行仿写（仅中文文案） */}
+                              <SelectItem value="mimic_by_sample">按照提供的样本进行仿写</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+
+                    {/* 条件显示：样本 Textarea */}
+                    {isMimicSelected && (
+                      <FormField
+                        disabled={isLoading}
+                        control={form.control}
+                        name="mimicSample"
+                        render={({ field: sampleField }: any) => (
+                          <FormItem className="pt-3">
+                            <FormLabel className="font-bold text-black">样本</FormLabel>
+                            <FormControl>
+                              <Textarea className="min-h-40" maxLength={2000} placeholder="请输入用于仿写的样本文字（最多2000字）" {...sampleField} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    )}
+                  </FormItem>
+                );
+              }}
             />
           </>
         ) : isTikTokTool ? (

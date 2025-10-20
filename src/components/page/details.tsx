@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Loader2 } from 'lucide-react';
 import image from '@/app/public/404.png';
 import ReactMarkdown from 'react-markdown';
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Document, Packer, Paragraph, TextRun, HeadingLevel } from 'docx';
 import { saveAs } from 'file-saver';
 import ToolFrom from '@/components/ToolFrom';
@@ -44,6 +44,10 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
   const [dataSource, setDataSource] = useState<ITool & { prompt?: string }>();
   const [generateRecords, setGenerateRecords] = useState<IGenerateRecords[]>([]);
   const [showInsufficientCreditsModal, setShowInsufficientCreditsModal] = useState(false);
+
+  // 左右列容器引用，用于滚动到顶部
+  const leftColumnRef = useRef<HTMLDivElement | null>(null);
+  const rightColumnRef = useRef<HTMLDivElement | null>(null);
 
   const showBrand = process.env.NEXT_PUBLIC_SHOW_BRAND === "true";
 
@@ -112,11 +116,25 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
   const onRenderingForm = () => {
     const onOk = async (params: any) => {
       setLoad(true);
+      // 点击“生成”后，页面左右滑回顶部
+      try {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (leftColumnRef.current) {
+          leftColumnRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        if (rightColumnRef.current) {
+          rightColumnRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      } catch (e) {
+        // ignore scrolling errors
+      }
       const data = {
         params,
         prompt: dataSource?.prompt ? `${dataSource?.prompt}\n${params.content}` : '',
         tool_name: dataSource?.title,
       }
+
+      
 
       const id = dayjs().unix();
       const newParams = {
@@ -475,13 +493,13 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
           dataSource?.id ?
             <div className="main-container flex flex-col xl:flex-row gap-6 mx-auto mb-9" >
               {/* 左侧：生成内容列表区域 */}
-              <div className="xl:w-1/2 xl:order-1 order-2">
+              <div className="xl:w-1/2 xl:order-1 order-2" ref={leftColumnRef}>
                 {/* 生成记录标题 */}
                 <div className="mb-6 p-6 bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-xl border border-gray-700 shadow-2xl">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
                       <div className="w-3 h-3 bg-cyan-400 rounded-full animate-pulse"></div>
-                      <h3 className="text-xl font-bold text-cyan-400 mb-0">生成记录</h3>
+                      <h3 className="text-xl font-bold text-cyan-400 mb-0">{load ? 'AI 思考中...' : '生成记录'}</h3>
                       <div className="h-px w-16 bg-gradient-to-r from-cyan-400/50 to-transparent"></div>
                     </div>
                     {generateRecords?.length ? (
@@ -602,7 +620,7 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
               </div>
 
               {/* 右侧：工具介绍和表单区域 */}
-              <div className="xl:w-1/2 xl:order-2 order-1">
+              <div className="xl:w-1/2 xl:order-2 order-1" ref={rightColumnRef}>
                 <div className="xl:sticky xl:top-6">
                   <div className='bg-gradient-to-br from-white via-gray-50 to-gray-100 relative shadow-2xl border border-gray-200/50 rounded-2xl backdrop-blur-sm' style={{ borderRadius: 16, }}>
                   <div className="flex items-center justify-between p-6 mb-4" style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
@@ -655,6 +673,7 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
                   <div className="text-left">
                     {dataSource?.id && onRenderingForm()}
                   </div>
+                  
                   <div className='absolute top-4 right-4 flex items-center gap-2'>
                     {dataSource?.prompt && onDelCustomTool()}
                     {dataSource?.prompt && <EditCustomToolForm dataSource={dataSource} disabled={load} />}
