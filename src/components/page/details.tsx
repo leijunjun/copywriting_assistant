@@ -397,70 +397,19 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
     }
   }
 
-  // 面包屑导航组件
-  const renderBreadcrumb = () => {
-    if (!dataSource) return null;
-
-    // 获取行业专用标签
-    const getIndustryTag = () => {
-      if (!user?.industry || user.industry === 'general') {
-        return null;
-      }
-      
-      const industryNames = {
-        housekeeping: { chinese: '家政专用', english: 'Housekeeping', japanese: '家事代行専用' },
-        beauty: { chinese: '医疗美容专用', english: 'Medical Beauty', japanese: '医療美容専用' },
-        'lifestyle-beauty': { chinese: '生活美容专用', english: 'Lifestyle Beauty', japanese: '生活美容専用' }
-      };
-      
-      return industryNames[user.industry as keyof typeof industryNames];
+  // 获取行业专用标签
+  const getIndustryTag = () => {
+    if (!user?.industry || user.industry === 'general') {
+      return null;
+    }
+    
+    const industryNames = {
+      housekeeping: { chinese: '家政专用', english: 'Housekeeping', japanese: '家事代行専用' },
+      beauty: { chinese: '医疗美容专用', english: 'Medical Beauty', japanese: '医療美容専用' },
+      'lifestyle-beauty': { chinese: '生活美容专用', english: 'Lifestyle Beauty', japanese: '生活美容専用' }
     };
-
-    const industryTag = getIndustryTag();
-    const toolName = dataSource.name[global.language];
-
-    return (
-      <nav className="flex items-center space-x-1 text-sm mb-4">
-        {/* 首页链接 */}
-        <button
-          onClick={() => router.push('/')}
-          className="text-text-200 hover:text-primary-100 hover:bg-primary-300/20 px-2 py-1 rounded-md transition-all duration-200 font-medium"
-        >
-          {BREADCRUMB.home[global.language]}
-        </button>
-        
-        {/* 分隔符 */}
-        <svg className="w-4 h-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-        
-        {/* 工具名称和行业标签 */}
-        <div className="flex items-center gap-2">
-          <span className="text-text-100 font-semibold px-2 py-1 bg-primary-300/20 rounded-md">
-            {toolName}
-          </span>
-          {industryTag && (() => {
-            const getIndustryTagStyle = () => {
-              if (user?.industry === 'housekeeping') {
-                return 'bg-gradient-to-r from-green-500 to-emerald-600';
-              } else if (user?.industry === 'beauty') {
-                return 'bg-gradient-to-r from-pink-500 to-rose-600';
-              } else if (user?.industry === 'lifestyle-beauty') {
-                return 'bg-gradient-to-r from-purple-500 to-violet-600';
-              }
-              return 'bg-gradient-to-r from-blue-500 to-purple-600';
-            };
-            
-            return (
-              <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium ${getIndustryTagStyle()} text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-white/20`}>
-                <div className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
-                <span className="font-semibold">{industryTag[global.language]}</span>
-              </span>
-            );
-          })()}
-        </div>
-      </nav>
-    );
+    
+    return industryNames[user.industry as keyof typeof industryNames];
   };
 
   const onRenderingResult = (item: any, key: number) => {
@@ -468,7 +417,7 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
       const rows: any = Papa.parse(csvData, {
         comments: '```',
         skipEmptyLines: true,
-      })
+      });
       if (rows.data.length) {
         const longestSublistIndex = rows.data.reduce((maxIndex: number, sublist: any, index: number, array: any[]) => {
           return sublist.length > array[maxIndex].length ? index : maxIndex;
@@ -515,7 +464,7 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
           </table>
         )
       default:
-        break;
+        return null;
     }
   }
 
@@ -524,144 +473,199 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
       <>
         {
           dataSource?.id ?
-            <div className="main-container flex-col mx-auto mb-9" >
-              <div className='bg-bg-100 relative' style={{ border: '1px solid var(--bg-300)', borderRadius: 10, }}>
-                {/* 面包屑导航 - 移到工具介绍板块内部 */}
-                <div className="px-4 pt-4 pb-2">
-                  {renderBreadcrumb()}
-                </div>
-                
-                {/* 分隔线 */}
-                <div className="mx-4 border-t border-bg-300"></div>
-                
-                <div className="flex p-3 mb-3" style={{ borderBottom: '1px solid var(--bg-300)' }}>
-                  <div style={{ minWidth: 55, maxWidth: 55, height: 55, padding: 5 }} >
-                    <img className="w-full object-cover rounded-md" src={dataSource?.url} />
-                  </div>
-                  <div className="pl-3 text-left">
-                    <div className="font-bold pb-2 text-text-100">{dataSource?.name[global.language]}</div>
-                    <div className="text-xs text-text-200">{dataSource?.describe[global.language]}</div>
-                  </div>
-                </div>
-                {/* Form Tools */}
-                <div className="text-left">
-                  {dataSource?.id && onRenderingForm()}
-                </div>
-                <div className='absolute top-2 right-2 flex items-center gap-3'>
-                  {dataSource?.prompt && onDelCustomTool()}
-                  {dataSource?.prompt && <EditCustomToolForm dataSource={dataSource} disabled={load} />}
-                  <Button variant="outline" size="icon" className=" w-8 h-8" disabled={load} onClick={() => router.push('/')}>
-                    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12.8536 2.85355C13.0488 2.65829 13.0488 2.34171 12.8536 2.14645C12.6583 1.95118 12.3417 1.95118 12.1464 2.14645L7.5 6.79289L2.85355 2.14645C2.65829 1.95118 2.34171 1.95118 2.14645 2.14645C1.95118 2.34171 1.95118 2.65829 2.14645 2.85355L6.79289 7.5L2.14645 12.1464C1.95118 12.3417 1.95118 12.6583 2.14645 12.8536C2.34171 13.0488 2.65829 13.0488 2.85355 12.8536L7.5 8.20711L12.1464 12.8536C12.3417 13.0488 12.6583 13.0488 12.8536 12.8536C13.0488 12.6583 13.0488 12.3417 12.8536 12.1464L8.20711 7.5L12.8536 2.85355Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path>
-                    </svg>
-                  </Button>
-                </div>
-              </div>
-              {/* Historical records */}
-              <div className="mt-3">
-                {
-                  generateRecords?.length ? (
-                    <>
-                      {/* 生成记录标题 */}
-                      <div className="mb-4 flex items-center justify-between">
-                        <h3 className="text-lg font-semibold text-text-100">生成记录</h3>
-                        <div className="flex items-center gap-3">
-                          <Button 
-                            disabled={load} 
-                            type="button" 
-                            variant="outline" 
-                            onClick={() => onExportToWord(generateRecords)}
-                            className="bg-primary-300/20 hover:bg-primary-300/40 border-primary-200 text-primary-100 hover:text-primary-100 font-medium shadow-sm"
-                          >
-                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            导出 {generateRecords.length} 条
-                          </Button>
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button 
-                                variant="outline" 
-                                size="sm" 
-                                className="bg-red-50 hover:bg-red-100 border-red-200 text-red-600 hover:text-red-700"
-                                disabled={load}
+            <div className="main-container flex flex-col xl:flex-row gap-6 mx-auto mb-9" >
+              {/* 左侧：生成内容列表区域 */}
+              <div className="xl:w-1/2 xl:order-1 order-2">
+                {/* 生成记录标题 */}
+                <div className="mb-6 p-6 bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-xl border border-gray-700 shadow-2xl">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 bg-cyan-400 rounded-full animate-pulse"></div>
+                      <h3 className="text-xl font-bold text-cyan-400 mb-0">生成记录</h3>
+                      <div className="h-px w-16 bg-gradient-to-r from-cyan-400/50 to-transparent"></div>
+                    </div>
+                    {generateRecords?.length ? (
+                      <div className="flex items-center gap-3">
+                        <Button 
+                          disabled={load} 
+                          type="button" 
+                          variant="outline" 
+                          onClick={() => onExportToWord(generateRecords)}
+                          className="bg-gradient-to-r from-cyan-600/30 to-blue-600/30 hover:from-cyan-600/40 hover:to-blue-600/40 border-cyan-400/70 text-white hover:text-cyan-100 font-medium shadow-lg hover:shadow-cyan-500/30 transition-all duration-300 text-sm px-4 py-2"
+                        >
+                          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                          导出 {generateRecords.length} 条
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="bg-gradient-to-r from-red-600/30 to-pink-600/30 hover:from-red-600/40 hover:to-pink-600/40 border-red-400/70 text-white hover:text-red-100 font-medium shadow-lg hover:shadow-red-500/30 transition-all duration-300"
+                              disabled={load}
+                            >
+                              清空
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>确认清空</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                确定要清空所有生成记录吗？此操作不可撤销。
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>取消</AlertDialogCancel>
+                              <AlertDialogAction 
+                                onClick={onClearAllRecords}
+                                className="bg-red-600 hover:bg-red-700"
                               >
-                                清空
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>确认清空</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  确定要清空所有生成记录吗？此操作不可撤销。
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>取消</AlertDialogCancel>
-                                <AlertDialogAction 
-                                  onClick={onClearAllRecords}
-                                  className="bg-red-600 hover:bg-red-700"
-                                >
-                                  确认清空
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        </div>
+                                确认清空
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </div>
-                      
-                      {/* 生成内容卡片列表 */}
-                      {generateRecords.map((item) => (
-                        <div key={item?.id} className="p-4 mb-4 bg-white text-gray-800 rounded-xl shadow-md border border-gray-200 hover:shadow-lg hover:border-gray-300 transition-all duration-300">
-                          <div className="text-left">
-                            {onRenderingResult(item, item?.id)}
+                    ) : null}
+                  </div>
+                  {!generateRecords?.length && (
+                    <div className="text-center py-12">
+                      <div className="text-6xl mb-6 opacity-60">⚡</div>
+                      <p className="text-gray-300 text-lg font-medium mb-2">暂无生成记录</p>
+                      <p className="text-gray-500 text-sm">使用右侧表单开始生成内容</p>
+                      <div className="mt-4 w-16 h-1 bg-gradient-to-r from-cyan-400 to-blue-500 mx-auto rounded-full"></div>
+                    </div>
+                  )}
+                </div>
+                
+                {/* 生成内容卡片列表 */}
+                {generateRecords?.length > 0 && (
+                  <div className="space-y-6">
+                    {generateRecords.map((item) => (
+                      <div key={item?.id} className="group relative p-6 bg-gradient-to-br from-gray-900/80 via-gray-800/90 to-black/80 backdrop-blur-sm text-gray-100 rounded-2xl shadow-2xl border border-gray-700/50 hover:border-cyan-500/50 hover:shadow-cyan-500/20 transition-all duration-500 hover:scale-[1.02]">
+                        {/* 科技感装饰边框 */}
+                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-500/10 via-transparent to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent pointer-events-none"></div>
+                        <div className="text-left">
+                          {onRenderingResult(item, item?.id)}
+                        </div>
+                        <div className="flex items-end justify-between mt-6 pt-4 border-t border-gray-600/50">
+                          <div className="flex items-center gap-2 text-gray-400 text-sm">
+                            <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+                            <span>{dayjs(item.createdAt).format('MM-DD HH:mm')}</span>
                           </div>
-                          <div className="flex items-end justify-between mt-4 pt-3 border-t border-gray-200">
-                            <div className="text-gray-500 text-sm">{dayjs(item.createdAt).format('MM-DD HH:mm')}</div>
-                            <div className="flex gap-2">
-                              <Button 
-                                variant="outline" 
-                                size="icon" 
-                                className="bg-blue-500 hover:bg-blue-600 border-blue-500 text-white" 
-                                disabled={load} 
-                                onClick={() => onHandleCopyResult(item?.output)}
-                              >
-                                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M1 9.50006C1 10.3285 1.67157 11.0001 2.5 11.0001H4L4 10.0001H2.5C2.22386 10.0001 2 9.7762 2 9.50006L2 2.50006C2 2.22392 2.22386 2.00006 2.5 2.00006L9.5 2.00006C9.77614 2.00006 10 2.22392 10 2.50006V4.00002H5.5C4.67158 4.00002 4 4.67159 4 5.50002V12.5C4 13.3284 4.67158 14 5.5 14H12.5C13.3284 14 14 13.3284 14 12.5V5.50002C14 4.67159 13.3284 4.00002 12.5 4.00002H11V2.50006C11 1.67163 10.3284 1.00006 9.5 1.00006H2.5C1.67157 1.00006 1 1.67163 1 2.50006V9.50006ZM5 5.50002C5 5.22388 5.22386 5.00002 5.5 5.00002H12.5C12.7761 5.00002 13 5.22388 13 5.50002V12.5C13 12.7762 12.7761 13 12.5 13H5.5C5.22386 13 5 12.7762 5 12.5V5.50002Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path>
-                                </svg>
-                              </Button>
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
+                          <div className="flex gap-3 relative z-10">
+                            <Button 
+                              variant="outline" 
+                              size="icon" 
+                              className="bg-gradient-to-r from-cyan-600/30 to-blue-600/30 hover:from-cyan-600/50 hover:to-blue-600/50 border-cyan-400/70 text-white hover:text-cyan-100 shadow-lg hover:shadow-cyan-500/30 transition-all duration-300 relative z-20" 
+                              disabled={load} 
+                              onClick={() => onHandleCopyResult(item?.output)}
+                            >
+                              <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 9.50006C1 10.3285 1.67157 11.0001 2.5 11.0001H4L4 10.0001H2.5C2.22386 10.0001 2 9.7762 2 9.50006L2 2.50006C2 2.22392 2.22386 2.00006 2.5 2.00006L9.5 2.00006C9.77614 2.00006 10 2.22392 10 2.50006V4.00002H5.5C4.67158 4.00002 4 4.67159 4 5.50002V12.5C4 13.3284 4.67158 14 5.5 14H12.5C13.3284 14 14 13.3284 14 12.5V5.50002C14 4.67159 13.3284 4.00002 12.5 4.00002H11V2.50006C11 1.67163 10.3284 1.00006 9.5 1.00006H2.5C1.67157 1.00006 1 1.67163 1 2.50006V9.50006ZM5 5.50002C5 5.22388 5.22386 5.00002 5.5 5.00002H12.5C12.7761 5.00002 13 5.22388 13 5.50002V12.5C13 12.7762 12.7761 13 12.5 13H5.5C5.22386 13 5 12.7762 5 12.5V5.50002Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path>
+                              </svg>
+                            </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
                                   <Button 
                                     variant="outline" 
                                     size="icon" 
-                                    className="bg-red-600 hover:bg-red-700 border-red-600 text-white" 
+                                    className="bg-gradient-to-r from-red-600/30 to-pink-600/30 hover:from-red-600/50 hover:to-pink-600/50 border-red-400/70 text-white hover:text-red-100 shadow-lg hover:shadow-red-500/30 transition-all duration-300 relative z-20" 
                                     disabled={load}
                                   >
-                                    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path d="M5.5 1C5.22386 1 5 1.22386 5 1.5C5 1.77614 5.22386 2 5.5 2H9.5C9.77614 2 10 1.77614 10 1.5C10 1.22386 9.77614 1 9.5 1H5.5ZM3 3.5C3 3.22386 3.22386 3 3.5 3H5H10H11.5C11.7761 3 12 3.22386 12 3.5C12 3.77614 11.7761 4 11.5 4H11V12C11 12.5523 10.5523 13 10 13H5C4.44772 13 4 12.5523 4 12V4L3.5 4C3.22386 4 3 3.77614 3 3.5ZM5 4H10V12H5V4Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path>
-                                    </svg>
-                                  </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle>{DELETE_RECORD_MESSAGE[global.language]}</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel>{DELETE_RECORD_CANCEL[global.language]}</AlertDialogCancel>
-                                    <AlertDialogAction onClick={() => { ondeleteGenerateRecords(item.id) }}>{DELETE_RECORD_CONTINUE[global.language]}</AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                            </div>
+                                  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5.5 1C5.22386 1 5 1.22386 5 1.5C5 1.77614 5.22386 2 5.5 2H9.5C9.77614 2 10 1.77614 10 1.5C10 1.22386 9.77614 1 9.5 1H5.5ZM3 3.5C3 3.22386 3.22386 3 3.5 3H5H10H11.5C11.7761 3 12 3.22386 12 3.5C12 3.77614 11.7761 4 11.5 4H11V12C11 12.5523 10.5523 13 10 13H5C4.44772 13 4 12.5523 4 12V4L3.5 4C3.22386 4 3 3.77614 3 3.5ZM5 4H10V12H5V4Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path>
+                                  </svg>
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>{DELETE_RECORD_MESSAGE[global.language]}</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>{DELETE_RECORD_CANCEL[global.language]}</AlertDialogCancel>
+                                  <AlertDialogAction onClick={() => { ondeleteGenerateRecords(item.id) }}>{DELETE_RECORD_CONTINUE[global.language]}</AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
                           </div>
                         </div>
-                      ))}
-                    </>
-                  ) : <></>
-                }
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* 右侧：工具介绍和表单区域 */}
+              <div className="xl:w-1/2 xl:order-2 order-1">
+                <div className="xl:sticky xl:top-6">
+                  <div className='bg-gradient-to-br from-white via-gray-50 to-gray-100 relative shadow-2xl border border-gray-200/50 rounded-2xl backdrop-blur-sm' style={{ borderRadius: 16, }}>
+                  <div className="flex items-center justify-between p-6 mb-4" style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
+                    <div className="flex items-center">
+                      <div className="relative" style={{ minWidth: 60, maxWidth: 60, height: 60, padding: 8 }} >
+                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-xl"></div>
+                        <img className="relative w-full h-full object-cover rounded-xl shadow-lg" src={dataSource?.url} />
+                      </div>
+                      <div className="pl-4 text-left flex-1">
+                        <div className="flex items-center gap-3 pb-2">
+                          <div className="font-bold text-gray-800 text-lg">{dataSource?.name[global.language]}</div>
+                          {/* 行业标签紧邻工具名称 */}
+                          {(() => {
+                            const industryTag = getIndustryTag();
+                            if (!industryTag) return null;
+                            
+                            const getIndustryTagStyle = () => {
+                              if (user?.industry === 'housekeeping') {
+                                return 'bg-gradient-to-r from-green-500 to-emerald-600';
+                              } else if (user?.industry === 'beauty') {
+                                return 'bg-gradient-to-r from-pink-500 to-rose-600';
+                              } else if (user?.industry === 'lifestyle-beauty') {
+                                return 'bg-gradient-to-r from-purple-500 to-violet-600';
+                              }
+                              return 'bg-gradient-to-r from-blue-500 to-purple-600';
+                            };
+                            
+                            return (
+                              <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium ${getIndustryTagStyle()} text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-white/20`}>
+                                <div className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
+                                <span className="font-semibold">{industryTag[global.language]}</span>
+                              </span>
+                            );
+                          })()}
+                        </div>
+                        <div className="text-sm text-gray-600 leading-relaxed">{dataSource?.describe[global.language]}</div>
+                      </div>
+                    </div>
+                    
+                    {/* 右侧区域：动图 */}
+                    <div className="w-16 h-16 flex-shrink-0">
+                      <img 
+                        src="/Animation.gif" 
+                        alt="Animation" 
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                  </div>
+                  {/* Form Tools */}
+                  <div className="text-left">
+                    {dataSource?.id && onRenderingForm()}
+                  </div>
+                  <div className='absolute top-4 right-4 flex items-center gap-2'>
+                    {dataSource?.prompt && onDelCustomTool()}
+                    {dataSource?.prompt && <EditCustomToolForm dataSource={dataSource} disabled={load} />}
+                    <Button variant="outline" size="icon" className="w-9 h-9 bg-white/80 hover:bg-white border-gray-200/60 hover:border-gray-300 shadow-lg hover:shadow-xl transition-all duration-300" disabled={load} onClick={() => router.push('/')}>
+                      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12.8536 2.85355C13.0488 2.65829 13.0488 2.34171 12.8536 2.14645C12.6583 1.95118 12.3417 1.95118 12.1464 2.14645L7.5 6.79289L2.85355 2.14645C2.65829 1.95118 2.34171 1.95118 2.14645 2.14645C1.95118 2.34171 1.95118 2.65829 2.14645 2.85355L6.79289 7.5L2.14645 12.1464C1.95118 12.3417 1.95118 12.6583 2.14645 12.8536C2.34171 13.0488 2.65829 13.0488 2.85355 12.8536L7.5 8.20711L12.1464 12.8536C12.3417 13.0488 12.6583 13.0488 12.8536 12.8536C13.0488 12.6583 13.0488 12.3417 12.8536 12.1464L8.20711 7.5L12.8536 2.85355Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path>
+                      </svg>
+                    </Button>
+                  </div>
+                </div>
+                </div>
               </div>
             </div>
             : <></>
