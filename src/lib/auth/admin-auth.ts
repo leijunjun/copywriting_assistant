@@ -6,8 +6,6 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 
 // 管理员session接口
 export interface AdminSession {
@@ -87,14 +85,20 @@ export async function validateAdminCredentials(username: string, password: strin
     return false;
   }
 
-  // 验证密码（支持明文和bcrypt加密）
+  // 验证密码（支持明文和bcrypt加密）。在Edge环境中动态导入bcrypt，避免静态依赖。
   if (adminPassword.startsWith('$2a$') || adminPassword.startsWith('$2b$')) {
-    // 密码已加密，使用bcrypt验证
-    return await bcrypt.compare(password, adminPassword);
-  } else {
-    // 明文密码，直接比较
-    return password === adminPassword;
+    try {
+      const { default: bcrypt } = await import('bcryptjs');
+      return await bcrypt.compare(password, adminPassword);
+    } catch (e) {
+      // 在Edge运行时不可用，回退为失败，避免误判
+      console.error('bcrypt not available in current runtime:', e);
+      return false;
+    }
   }
+
+  // 明文密码，直接比较
+  return password === adminPassword;
 }
 
 /**
@@ -130,31 +134,21 @@ export async function logAdminOperation(
   request?: NextRequest
 ): Promise<void> {
   try {
-    const { createServerSupabaseClient } = await import('@/lib/supabase/server');
-    const supabase = createServerSupabaseClient();
-
-    const ipAddress = request?.ip || 
-      request?.headers.get('x-forwarded-for') || 
-      request?.headers.get('x-real-ip') || 
-      'unknown';
-    
-    const userAgent = request?.headers.get('user-agent') || 'unknown';
-
-    await supabase.from('admin_operation_logs').insert({
-      admin_username: adminUsername,
-      operation_type: operationType,
-      target_user_id: targetUserId || null,
-      target_user_email: targetUserEmail || null,
-      credit_amount: creditAmount || 0,
-      before_balance: beforeBalance || 0,
-      after_balance: afterBalance || 0,
+    // 延迟调用，防止在Edge中直接引用Node-only模块
+    const logging = await import('./admin-logger-node');
+    await logging.logAdminOperationNode(
+      operationType,
+      adminUsername,
       description,
-      ip_address: ipAddress,
-      user_agent: userAgent,
-    });
+      targetUserId,
+      targetUserEmail,
+      creditAmount,
+      beforeBalance,
+      afterBalance,
+      request
+    );
   } catch (error) {
-    console.error('Failed to log admin operation:', error);
-    // 不抛出错误，避免影响主要功能
+    console.error('Failed to log admin operation (fallback to console only):', error);
   }
 }
 
