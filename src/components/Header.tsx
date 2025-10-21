@@ -162,18 +162,23 @@ export function Header({ className }: HeaderProps) {
                   className="object-contain"
                 />
               </button>
-              <span
-                className="ml-3 px-3 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25 border border-blue-400/20 backdrop-blur-sm transition-all duration-300 ease-out hover:scale-105 hover:shadow-xl hover:shadow-blue-500/30 hover:from-blue-600 hover:to-purple-700"
-                style={{ 
-                  lineHeight: '1.2',
-                  letterSpacing: '0.025em',
-                  textShadow: '0 1px 2px rgba(0,0,0,0.1)',
-                  background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
-                  boxShadow: '0 4px 14px 0 rgba(59, 130, 246, 0.25), 0 2px 4px 0 rgba(0,0,0,0.1)'
-                }}
-              >
-                AI 文秘
-              </span>
+              {isAuthenticated && user?.industry && (
+                <span
+                  className="ml-3 px-3 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25 border border-blue-400/20 backdrop-blur-sm transition-all duration-300 ease-out hover:scale-105 hover:shadow-xl hover:shadow-blue-500/30 hover:from-blue-600 hover:to-purple-700"
+                  style={{ 
+                    lineHeight: '1.2',
+                    letterSpacing: '0.025em',
+                    textShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                    background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
+                    boxShadow: '0 4px 14px 0 rgba(59, 130, 246, 0.25), 0 2px 4px 0 rgba(0,0,0,0.1)'
+                  }}
+                >
+                  {user.industry === 'housekeeping' ? '家政' : 
+                   user.industry === 'beauty' ? '医疗美容' : 
+                   user.industry === 'lifestyle-beauty' ? '生活美容' : 
+                   user.industry === 'general' ? '通用' : 'AI 文秘'}
+                </span>
+              )}
             </div>
           </div>
 
@@ -199,17 +204,6 @@ export function Header({ className }: HeaderProps) {
               }`}
             >
               {t('aiImage')}
-            </button>
-            
-            <button
-              onClick={() => handleNavigation('/pricing')}
-              className={`text-sm font-medium transition-colors ${
-                isActivePath('/pricing') 
-                  ? 'text-blue-600' 
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              {t('credits')}
             </button>
             
             <button

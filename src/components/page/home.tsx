@@ -147,29 +147,15 @@ export default function Home() {
 
   // 根据用户行业生成动态搜索框占位符
   const getDynamicSearchPlaceholder = () => {
-    if (!user?.industry || user.industry === 'general') {
-      return HOME_SEARCH_PLACEHOLDER[global.language];
-    }
-    
-    const industryNames = {
-      housekeeping: { chinese: '家政', english: 'Housekeeping', japanese: '家事代行' },
-      beauty: { chinese: '医疗美容', english: 'Medical Beauty', japanese: '医療美容' },
-      'lifestyle-beauty': { chinese: '生活美容', english: 'Lifestyle Beauty', japanese: '生活美容' },
-      general: { chinese: '通用', english: 'General', japanese: '一般' }
-    };
-    
-    const industryName = industryNames[user.industry as keyof typeof industryNames];
-    const basePlaceholder = HOME_SEARCH_PLACEHOLDER[global.language];
-    
     if (global.language === 'chinese') {
-      return `查找你需要的 ${industryName.chinese} AI 智能体`;
+      return '查找你需要的创作智能体';
     } else if (global.language === 'english') {
-      return `Find the ${industryName.english} AI Agent You Need`;
+      return 'Find the Creative AI Agent You Need';
     } else if (global.language === 'japanese') {
-      return `必要な${industryName.japanese}AIエージェントを見つける`;
+      return '必要な創作AIエージェントを見つける';
     }
     
-    return basePlaceholder;
+    return HOME_SEARCH_PLACEHOLDER[global.language];
   };
 
   // 初始化加载状态
@@ -436,85 +422,191 @@ export default function Home() {
       {/* 主要内容区域 */}
       <div className="relative z-10 min-h-screen">
         {/* 左侧导航栏 */}
-        <div className={`hidden lg:flex w-80 bg-bg-100/80 backdrop-blur-sm border-r border-bg-300 flex-col transition-all duration-300 fixed left-0 top-16 h-[calc(100vh-4rem)] z-20 ${
+        <div className={`hidden lg:flex w-80 bg-gradient-to-b from-bg-100/90 to-bg-200/90 backdrop-blur-md border-r border-bg-300/50 flex-col transition-all duration-300 fixed left-0 top-16 h-[calc(100vh-4rem)] z-20 shadow-2xl ${
           sidebarVisible ? 'translate-x-0' : '-translate-x-full'
         }`} style={{ 
           maxHeight: 'calc(100vh - 4rem)',
-          overflowY: 'auto'
+          overflowY: 'auto',
+          background: 'linear-gradient(135deg, rgba(248, 250, 252, 0.95) 0%, rgba(241, 245, 249, 0.95) 100%)'
         }}>
           {/* 分类导航标题 */}
-          <div className="p-6 border-b border-bg-300">
-            <h2 className="text-xl font-bold bg-gradient-to-r from-primary-100 to-primary-200 bg-clip-text text-transparent">
-              {HOME_CATEGORY_NAVIGATION[global.language]}
+          <div className="p-6 border-b border-bg-300/50 bg-gradient-to-r from-white/50 to-white/30 backdrop-blur-sm">
+            <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+              创作导航
             </h2>
+            <p className="text-sm text-gray-600 mt-1">AI 文秘可以帮你做这些事</p>
           </div>
           
           {/* 预设分类列表 */}
-          <div className="flex-1 overflow-y-auto p-3">
-            <div className="space-y-2">
+          <div className="flex-1 overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400">
+            <div className="space-y-3">
               {/* 全部分类 */}
               <Button
-                variant={type === 'All' ? "default" : "ghost"}
+                variant="ghost"
                 onClick={() => { setType('All') }}
-                className={`w-full justify-start h-12 px-4 text-left transition-all duration-200 ${
+                className={`w-full justify-start h-14 px-4 text-left transition-all duration-300 group relative overflow-hidden ${
                   type === 'All' 
-                    ? 'bg-gradient-to-r from-primary-100 to-primary-200 hover:from-primary-200 hover:to-primary-100 text-white shadow-lg' 
-                    : 'hover:bg-primary-300/20 hover:text-primary-100 text-text-200'
+                    ? 'bg-gradient-to-br from-blue-500 via-purple-600 to-indigo-700 hover:from-blue-600 hover:via-purple-700 hover:to-indigo-800 text-white shadow-xl transform scale-105' 
+                    : 'bg-transparent hover:bg-gradient-to-br hover:from-blue-50 hover:via-purple-50 hover:to-indigo-50 hover:text-blue-700 text-text-200 hover:shadow-lg hover:transform hover:scale-105 focus:bg-transparent focus:outline-none active:bg-transparent'
                 }`}
+                style={{
+                  backgroundImage: type === 'All' 
+                    ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%), radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%)'
+                    : 'none'
+                }}
               >
-                <div className="flex items-center">
-                  <svg className="w-4 h-4 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                  </svg>
-                  <span className="text-sm font-medium truncate">{HOME_ALL_CATEGORIES[global.language]}</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="flex items-center relative z-10">
+                  <div className="mr-3 flex-shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-lg">
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <span className="text-sm font-semibold truncate">{HOME_ALL_CATEGORIES[global.language]}</span>
                 </div>
               </Button>
               
               {/* 预设分类 */}
               {classify.map((item) => {
-                // 为每个分类定义图标
-                const getCategoryIcon = (category: string) => {
-                  const iconMap: { [key: string]: string } = {
-                    // 公域推广 - 推广图标
-                    'Public Domain Promotion': 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z',
+                // 为每个分类定义人物头像图标
+                const getCategoryAvatar = (category: string) => {
+                  const avatarMap: { [key: string]: JSX.Element } = {
+                    // 公域推广 - 营销专家头像
+                    'Public Domain Promotion': (
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-red-400 to-orange-500 flex items-center justify-center text-white font-bold text-sm">
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                        </svg>
+                      </div>
+                    ),
                     
-                    // 内容创作 - 编辑图标
-                    'Writing': 'M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z',
+                    // 内容创作 - 作家头像
+                    'Writing': (
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center text-white font-bold text-sm">
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                        </svg>
+                      </div>
+                    ),
                     
-                    // 营销活动 - 趋势图标
-                    'Marketing': 'M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z',
+                    // 营销活动 - 数据分析师头像
+                    'Marketing': (
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center text-white font-bold text-sm">
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+                        </svg>
+                      </div>
+                    ),
                     
-                    // 微信私域 - 微信图标
-                    'WeChat Private Domain': 'M8.5 2C6.57 2 5 3.57 5 5.5S6.57 9 8.5 9S12 7.43 12 5.5S10.43 2 8.5 2ZM8.5 7C7.67 7 7 6.33 7 5.5S7.67 4 8.5 4S10 4.67 10 5.5S9.33 7 8.5 7ZM15.5 2C13.57 2 12 3.57 12 5.5S13.57 9 15.5 9S19 7.43 19 5.5S17.43 2 15.5 2ZM15.5 7C14.67 7 14 6.33 14 5.5S14.67 4 15.5 4S17 4.67 17 5.5S16.33 7 15.5 7ZM8.5 10C6.57 10 5 11.57 5 13.5S6.57 17 8.5 17S12 15.43 12 13.5S10.43 10 8.5 10ZM8.5 15C7.67 15 7 14.33 7 13.5S7.67 12 8.5 12S10 12.67 10 13.5S9.33 15 8.5 15ZM15.5 10C13.57 10 12 11.57 12 13.5S13.57 17 15.5 17S19 15.43 19 13.5S17.43 10 15.5 10ZM15.5 15C14.67 15 14 14.33 14 13.5S14.67 12 15.5 12S17 12.67 17 13.5S16.33 15 15.5 15Z',
+                    // 微信私域 - 社群运营头像
+                    'WeChat Private Domain': (
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8.5 2C6.57 2 5 3.57 5 5.5S6.57 9 8.5 9S12 7.43 12 5.5S10.43 2 8.5 2ZM8.5 7C7.67 7 7 6.33 7 5.5S7.67 4 8.5 4S10 4.67 10 5.5S9.33 7 8.5 7ZM15.5 2C13.57 2 12 3.57 12 5.5S13.57 9 15.5 9S19 7.43 19 5.5S17.43 2 15.5 2ZM15.5 7C14.67 7 14 6.33 14 5.5S14.67 4 15.5 4S17 4.67 17 5.5S16.33 7 15.5 7ZM8.5 10C6.57 10 5 11.57 5 13.5S6.57 17 8.5 17S12 15.43 12 13.5S10.43 10 8.5 10ZM8.5 15C7.67 15 7 14.33 7 13.5S7.67 12 8.5 12S10 12.67 10 13.5S9.33 15 8.5 15ZM15.5 10C13.57 10 12 11.57 12 13.5S13.57 17 15.5 17S19 15.43 19 13.5S17.43 10 15.5 10ZM15.5 15C14.67 15 14 14.33 14 13.5S14.67 12 15.5 12S17 12.67 17 13.5S16.33 15 15.5 15Z"/>
+                        </svg>
+                      </div>
+                    ),
                     
-                    // 教育培训 - 书本图标
-                    'Education': 'M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19ZM17 12H7V10H17V12ZM15 16H7V14H15V16ZM17 8H7V6H17V8Z',
+                    // 教育培训 - 教师头像
+                    'Education': (
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-white font-bold text-sm">
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19ZM17 12H7V10H17V12ZM15 16H7V14H15V16ZM17 8H7V6H17V8Z"/>
+                        </svg>
+                      </div>
+                    ),
                     
-                    // 顾客互动 - 聊天图标
-                    'Customer Interaction': 'M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H6L4 18V4H20V16Z',
+                    // 顾客互动 - 客服头像
+                    'Customer Interaction': (
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-bold text-sm">
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H6L4 18V4H20V16Z"/>
+                        </svg>
+                      </div>
+                    ),
                     
-                    // 工作提效 - 齿轮图标
-                    'Work Efficiency': 'M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z'
+                    // 工作提效 - 效率专家头像
+                    'Work Efficiency': (
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white font-bold text-sm">
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+                        </svg>
+                      </div>
+                    )
                   };
-                  return iconMap[category] || 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z';
+                  return avatarMap[category] || (
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center text-white font-bold text-sm">
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                      </svg>
+                    </div>
+                  );
                 };
+
+                // 为每个分类定义独特的背景样式
+                const getCategoryStyle = (category: string, isActive: boolean) => {
+                  const styleMap: { [key: string]: { active: string; inactive: string } } = {
+                    'Public Domain Promotion': {
+                      active: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%), radial-gradient(circle at 30% 40%, rgba(255, 107, 107, 0.3) 0%, transparent 50%)',
+                      inactive: 'linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%)'
+                    },
+                    'Writing': {
+                      active: 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%), radial-gradient(circle at 70% 30%, rgba(78, 205, 196, 0.3) 0%, transparent 50%)',
+                      inactive: 'linear-gradient(135deg, #f0fdfa 0%, #e6fffa 100%)'
+                    },
+                    'Marketing': {
+                      active: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%), radial-gradient(circle at 20% 80%, rgba(168, 237, 234, 0.3) 0%, transparent 50%)',
+                      inactive: 'linear-gradient(135deg, #fef7f0 0%, #fef3e7 100%)'
+                    },
+                    'WeChat Private Domain': {
+                      active: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%), radial-gradient(circle at 50% 50%, rgba(102, 126, 234, 0.3) 0%, transparent 50%)',
+                      inactive: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)'
+                    },
+                    'Education': {
+                      active: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%), radial-gradient(circle at 80% 20%, rgba(240, 147, 251, 0.3) 0%, transparent 50%)',
+                      inactive: 'linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%)'
+                    },
+                    'Customer Interaction': {
+                      active: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%), radial-gradient(circle at 40% 60%, rgba(79, 172, 254, 0.3) 0%, transparent 50%)',
+                      inactive: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)'
+                    },
+                    'Work Efficiency': {
+                      active: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%), radial-gradient(circle at 60% 40%, rgba(67, 233, 123, 0.3) 0%, transparent 50%)',
+                      inactive: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)'
+                    }
+                  };
+                  return styleMap[category] || {
+                    active: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    inactive: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)'
+                  };
+                };
+
+                const categoryStyle = getCategoryStyle(item.english, type === item.english);
 
                 return (
                   <Button
                     key={item.english}
-                    variant={type === item.english ? "default" : "ghost"}
+                    variant="ghost"
                     onClick={() => { setType(item.english) }}
-                    className={`w-full justify-start h-12 px-4 text-left transition-all duration-200 ${
+                    className={`w-full justify-start h-14 px-4 text-left transition-all duration-300 group relative overflow-hidden ${
                       type === item.english 
-                        ? 'bg-gradient-to-r from-primary-100 to-primary-200 hover:from-primary-200 hover:to-primary-100 text-white shadow-lg' 
-                        : 'hover:bg-primary-300/20 hover:text-primary-100 text-text-200'
+                        ? 'text-white shadow-xl transform scale-105' 
+                        : 'bg-transparent hover:shadow-lg hover:transform hover:scale-105 text-text-200 focus:bg-transparent focus:outline-none active:bg-transparent'
                     }`}
+                    style={{
+                      backgroundImage: type === item.english ? categoryStyle.active : 'none'
+                    }}
                   >
-                    <div className="flex items-center">
-                      <svg className="w-4 h-4 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                        <path d={getCategoryIcon(item.english)}/>
-                      </svg>
-                      <span className="text-sm font-medium truncate">{item[global.language]}</span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="flex items-center relative z-10">
+                      <div className="mr-3 flex-shrink-0">
+                        {getCategoryAvatar(item.english)}
+                      </div>
+                      <span className="text-sm font-semibold truncate">{item[global.language]}</span>
                     </div>
                   </Button>
                 );
@@ -524,20 +616,31 @@ export default function Home() {
               {global.classify.map((item) => (
                 <Button
                   key={item.english}
-                  variant={type === item.english ? "default" : "ghost"}
+                  variant="ghost"
                   onClick={() => { setType(item.english) }}
-                  className={`w-full justify-start h-12 px-4 text-left transition-all duration-200 group ${
+                  className={`w-full justify-start h-14 px-4 text-left transition-all duration-300 group relative overflow-hidden ${
                     type === item.english 
-                      ? 'bg-gradient-to-r from-primary-100 to-primary-200 hover:from-primary-200 hover:to-primary-100 text-white shadow-lg' 
-                      : 'hover:bg-primary-300/20 hover:text-primary-100 text-text-200'
+                      ? 'text-white shadow-xl transform scale-105' 
+                      : 'bg-transparent hover:shadow-lg hover:transform hover:scale-105 text-text-200 focus:bg-transparent focus:outline-none active:bg-transparent'
                   }`}
+                  style={{
+                    backgroundImage: type === item.english 
+                      ? 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%), radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.3) 0%, transparent 50%)'
+                      : 'none'
+                  }}
                 >
-                  <div className="flex items-center justify-between w-full">
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="flex items-center justify-between w-full relative z-10">
                     <div className="flex items-center">
-                      <svg className="w-4 h-4 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                      </svg>
-                      <span className="text-sm font-medium truncate">{item[global.language]}</span>
+                      <div className="mr-3 flex-shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-lg">
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                          </svg>
+                        </div>
+                      </div>
+                      <span className="text-sm font-semibold truncate">{item[global.language]}</span>
                     </div>
                     {toolData.list[item.classify_key] ? (
                       onDelCustomTool(item)
@@ -547,7 +650,7 @@ export default function Home() {
                         onClick={(event) => {
                           event.stopPropagation();
                           onDelClassify(item)
-                        }} 
+                        }}
                       />
                     )}
                   </div>
@@ -640,17 +743,17 @@ export default function Home() {
                 <GradientRotatingText
                   words={global.language === 'chinese' ? [
                     HOME_TITLE[global.language],
-                    "智能文案生成",
+                    "创意写作，批量出稿",
                     "AI 精准配图", 
-                    "AI 文秘，懂业务更智能的数字员工"
+                    "AI 文秘，懂业务更智能"
                   ] : global.language === 'english' ? [
                     HOME_TITLE[global.language],
-                    "Smart Content Generation",
+                    "Creative Writing, Batch Output",
                     "AI Precision Image Generation",
                     "AI Secretary, Your Best Creative Partner"
                   ] : [
                     HOME_TITLE[global.language],
-                    "スマートコンテンツ生成",
+                    "クリエイティブライティング、バッチ出力",
                     "AI精密画像生成",
                     "AI秘書、最高の創作パートナー"
                   ]}
