@@ -818,7 +818,7 @@ export default function ToolFrom(props: IProps) {
                   <span>
                     {SUBMIT_BUTTON[dataSource.submitButton][language]}
                     <span className="ml-2 text-xs opacity-80">
-                      {language === 'chinese' ? `${deductionRate}积分/次` : 
+                      {language === 'chinese' ? `${deductionRate}积分/篇` : 
                        language === 'english' ? `${deductionRate}credits/use` : 
                        `${deductionRate}クレジット/回`}
                     </span>

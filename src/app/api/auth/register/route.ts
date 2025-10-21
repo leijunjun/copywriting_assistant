@@ -229,7 +229,7 @@ export async function POST(request: NextRequest) {
         expires_at: data.session?.expires_at,
       },
       credits: {
-        balance: creditResult.success ? creditResult.balance : 100,
+        balance: creditResult.success ? creditResult.balance : CREDIT_CONFIG.REGISTRATION_BONUS,
         updated_at: creditResult.success ? creditResult.updated_at : new Date().toISOString(),
       },
     });

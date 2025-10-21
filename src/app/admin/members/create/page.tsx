@@ -250,7 +250,7 @@ export default function CreateMemberPage() {
             <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
             <div>
               <p className="text-sm text-gray-700">
-                <strong>初始积分：</strong>新用户将自动获得 {100} 积分作为注册奖励
+                <strong>初始积分：</strong>新用户将自动获得 10 积分作为注册奖励
               </p>
             </div>
           </div>

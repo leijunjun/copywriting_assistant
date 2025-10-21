@@ -9,6 +9,7 @@ import { verifyAdminSession } from '@/lib/auth/admin-auth';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { logger } from '@/lib/utils/logger';
 import { BalanceCheckResponse, BalanceCheckResult } from '@/types/admin';
+import { CREDIT_CONFIG } from '@/config/credit-config';
 
 export const dynamic = 'force-dynamic';
 
@@ -80,7 +81,7 @@ export async function GET(request: NextRequest) {
       }
 
       // 计算积分总和（注册奖励 + 所有交易）
-      const initialBalance = 100; // 注册奖励积分
+      const initialBalance = CREDIT_CONFIG.REGISTRATION_BONUS; // 注册奖励积分
       const transactionSum = transactions?.reduce((sum, t) => sum + t.amount, 0) || 0;
       const calculatedBalance = initialBalance + transactionSum;
 

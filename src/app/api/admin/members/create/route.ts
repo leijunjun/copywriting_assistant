@@ -178,6 +178,8 @@ export async function POST(request: NextRequest) {
 
     // 创建积分账户（如果不存在）
     let creditData;
+    const initialBalance = CREDIT_CONFIG.REGISTRATION_BONUS; // 使用配置常量
+    
     const { data: existingCredit } = await supabase
       .from('user_credits')
       .select('*')
@@ -185,16 +187,41 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (existingCredit) {
-      // 积分账户已存在，使用现有数据
-      creditData = existingCredit;
-      logger.api('Credit account already exists', { userId: authData.user.id });
+      // 积分账户已存在，更新为新的初始积分
+      const { data: updatedCreditData, error: updateError } = await supabase
+        .from('user_credits')
+        .update({
+          balance: initialBalance,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('user_id', authData.user.id)
+        .select()
+        .single();
+
+      if (updateError) {
+        logger.error('Failed to update credit account', updateError, 'API');
+        return NextResponse.json(
+          {
+            success: false,
+            error: {
+              code: 'CREDIT_UPDATE_FAILED',
+              message: '更新积分账户失败',
+              type: 'DATABASE',
+              severity: 'HIGH',
+            },
+          },
+          { status: 500 }
+        );
+      }
+      creditData = updatedCreditData;
+      logger.api('Credit account updated', { userId: authData.user.id, newBalance: initialBalance });
     } else {
       // 创建新的积分账户
       const { data: newCreditData, error: creditError } = await supabase
         .from('user_credits')
         .insert({
           user_id: authData.user.id,
-          balance: CREDIT_CONFIG.REGISTRATION_BONUS,
+          balance: initialBalance,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         })
@@ -231,9 +258,9 @@ export async function POST(request: NextRequest) {
       `创建新会员: ${nickname} (${email})`,
       authData.user.id,
       email,
-      CREDIT_CONFIG.REGISTRATION_BONUS,
+      initialBalance,
       0,
-      CREDIT_CONFIG.REGISTRATION_BONUS,
+      initialBalance,
       request
     );
 

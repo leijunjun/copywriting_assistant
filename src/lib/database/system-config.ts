@@ -213,12 +213,12 @@ export async function initializeDefaultSystemConfigs(): Promise<void> {
   const defaultConfigs = [
     {
       config_key: 'credit_deduction_rate',
-      config_value: '5',
+      config_value: '1',
       description: 'Number of credits deducted per content generation',
     },
     {
       config_key: 'default_credit_balance',
-      config_value: '100',
+      config_value: '10',
       description: 'Initial credit balance for new users',
     },
     {

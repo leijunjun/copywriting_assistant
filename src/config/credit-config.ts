@@ -4,24 +4,24 @@
  */
 
 // 图片生成积分成本配置
-export const IMAGE_GENERATION_CREDITS = 50;
+export const IMAGE_GENERATION_CREDITS = 5;
 
 // 其他积分配置
 export const CREDIT_CONFIG = {
   // 图片生成
   IMAGE_GENERATION: {
-    COST: 50,
+    COST: 5,
     MIN_COST: 1,
     MAX_COST: 100,
   },
   // 文案生成
   WRITING_GENERATION: {
-    COST: 10,
+    COST: 1,
     MIN_COST: 1,
     MAX_COST: 50,
   },
   // 用户注册奖励
-  REGISTRATION_BONUS: 100,
+  REGISTRATION_BONUS: 10,
   // 每日签到奖励
   DAILY_CHECKIN_BONUS: 10,
 } as const;
