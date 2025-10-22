@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 字体定义 */
+@font-face {
+  font-family: 'AlimamaFangYuanTiVF';
+  src: url('/fonts/AlimamaFangYuanTiVF-Thin.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 字体加载测试 */
+.font-test {
+  font-family: 'AlimamaFangYuanTiVF', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', sans-serif !important;
+  font-size: 18px;
+  color: #333;
+}
+
 @layer base {
   :root {
     /* 新的配色方案 */
@@ -78,11 +94,19 @@
     @apply border-border;
   }
 
+  html, body {
+    font-family: 'AlimamaFangYuanTiVF', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', sans-serif !important;
+  }
+  
   body {
     @apply bg-background text-foreground;
     margin: 0;
     padding: 0;
     width: 100%;
+  }
+  
+  * {
+    font-family: 'AlimamaFangYuanTiVF', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', sans-serif !important;
   }
   
   html {

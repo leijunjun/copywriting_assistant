@@ -28,7 +28,7 @@ export default async function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
-      <body className={inter.className}>
+      <body className="font-alimama">
         <ClientProvider locale={locale} messages={messages}>
           <Header />
           <main className="min-h-screen">

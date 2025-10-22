@@ -30,7 +30,7 @@ export default function AdminRootLayout({
         <link rel="icon" href="/favicon.ico" />
         <link rel="shortcut icon" href="/favicon.ico" />
       </head>
-      <body className={inter.className}>
+      <body className="font-alimama">
         <div className="min-h-screen bg-gray-50">
           <Sidebar />
           <div className="lg:pl-64">
