@@ -88,9 +88,25 @@ export function Footer({ className }: FooterProps) {
               <p className="text-xs text-gray-500">
                 {t('tagline')}
               </p>
-              <p className="text-xs text-gray-400">
-                {t('icpNumber')}
-              </p>
+              <div className="flex items-center space-x-4">
+                <p className="text-xs text-gray-400">
+                  {t('icpNumber')}
+                </p>
+                <Link 
+                  href="/sitemap.xml" 
+                  className="text-xs text-gray-500 hover:text-blue-600 transition-colors duration-200"
+                >
+                  {t('sitemap')}
+                </Link>
+                <Link 
+                  href="/LLM.txt" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-xs text-gray-500 hover:text-blue-600 transition-colors duration-200"
+                >
+                  {t('llmDoc')}
+                </Link>
+              </div>
             </div>
 
             {/* Center: Contact */}

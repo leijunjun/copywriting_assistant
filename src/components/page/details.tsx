@@ -27,6 +27,7 @@ import { COPY_ERROR, COPY_SUCCESSFUL, DELETE_RECORD_CANCEL, DELETE_RECORD_CONTIN
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useAuth } from '@/lib/auth/auth-context';
 import { InsufficientCreditsModal } from '@/components/credits/InsufficientCreditsModal';
+import SocialShare from '@/components/SocialShare';
 
 interface IGenerateRecords { id: number; toolId: string | number; output: string; createdAt: string; }
 
@@ -104,7 +105,6 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
       for (const key in toolList) {
         const data = toolList[key]?.find(f => f.title === decodedId);
         if (data?.id) {
-          document.title = `${HEADER_TITLE[global.language]}-${data.name[global.language]}`;
           setDataSource(data)
           return;
         }
@@ -636,6 +636,23 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
                   <div className="text-left">
                     {dataSource?.id && onRenderingForm()}
                   </div>
+                  
+                  {/* 社交分享组件 */}
+                  {dataSource?.id && (
+                    <div className="p-4 border-t border-gray-200/50">
+                      <SocialShare
+                        config={{
+                          title: dataSource?.name[global.language] || 'AI文案助手',
+                          description: dataSource?.describe[global.language] || '智能文案生成工具',
+                          url: typeof window !== 'undefined' ? window.location.href : '',
+                          image: dataSource?.url ? `${typeof window !== 'undefined' ? window.location.origin : ''}${dataSource.url}` : undefined,
+                          hashtags: ['AI写作', '文案生成', '内容创作']
+                        }}
+                        compact={true}
+                        className="mb-2"
+                      />
+                    </div>
+                  )}
                   
                   <div className='absolute top-4 right-4 flex items-center gap-2'>
                     {dataSource?.prompt && onDelCustomTool()}

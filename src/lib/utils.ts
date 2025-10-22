@@ -84,7 +84,6 @@ export function getLanguage() {
     if (["en-US", "zh-CN", "ja-JP"].includes(searchLang)) lang = LANG[searchLang] as keyof Language;
     else lang = 'english'
   }
-  document.title = HEADER_TITLE[lang]
   localStorage.setItem('lang', lang)
   return lang;
 }

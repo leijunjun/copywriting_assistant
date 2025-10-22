@@ -1,6 +1,9 @@
 // "use server";
 import Details from "@/components/page/details";
 import { detectLocale } from "@/lib/utils";
+import { generateToolMetadata } from "@/lib/seo/meta-generator";
+import { generateSoftwareApplicationSchema } from "@/lib/seo/structured-data";
+import { toolList } from "@/constant/tool_list";
 import type { Metadata, ResolvingMetadata } from "next";
 import { headers } from "next/headers";
 
@@ -25,62 +28,50 @@ export async function generateMetadata(
   const headers_ = headers();
   const hostname = headers_.get("host");
 
-  const previousImages = (await parent).openGraph?.images || [];
-
-  const info = {
-    zh: {
-      title: "AI 文案助手",
-      description: "文案创作的得力助手，让创意和效率并驾齐驱",
-      image: "/writing_zh.jpg",
-    },
-    en: {
-      title: "AI Writing Assistant",
-      description: "A powerful tool for content creation, combining creativity and efficiency.",
-      image: "/writing_en.jpg",
-    },
-    ja: {
-      title: "AIライティングアシスタント",
-      description:
-        "創造性と効率を兼ね備えたコンテンツ作成の強力なツール。",
-      image: "/writing_ja.jpg",
-    },
-  };
-
   let locale = detectLocale(
     (searchParams && (searchParams.lang as string)) || params.locale || "en"
   ) as keyof typeof info;
 
-  if (!(locale in info)) {
-    locale = "en";
+  const siteUrl = (hostname as string).includes("localhost")
+    ? "http://localhost:3000"
+    : `https://${hostname}`;
+
+  const config = {
+    siteName: "一推火AI文秘",
+    siteUrl,
+    defaultImage: "/logo.png",
+    twitterHandle: "@your_twitter_handle",
+    facebookAppId: process.env.FACEBOOK_APP_ID,
+  };
+
+  return generateToolMetadata(config, locale, params.id);
+}
+export default async function Page({ params }: { params: { id: string; locale: string } }) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://your-domain.com';
+  
+  // 查找工具信息
+  const tool = Object.values(toolList).flat().find(t => t.title === params.id);
+  
+  if (tool) {
+    // 生成工具的结构化数据
+    const structuredData = generateSoftwareApplicationSchema({
+      siteName: "一推火AI文秘",
+      siteUrl,
+      logo: `${siteUrl}/logo.png`,
+      description: "专为门店打造的智能创作助手",
+      locale: params.locale
+    }, tool, params.locale);
+
+    return (
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+        <Details params={params} />
+      </>
+    );
   }
 
-  return {
-    title: info[locale as keyof typeof info].title,
-    description: info[locale as keyof typeof info].description,
-    metadataBase: new URL(
-      (hostname as string).includes("localhost")
-        ? "http://localhost:3000"
-        : `https://${hostname}`
-    ),
-    alternates: {
-      canonical: `/${locale}`,
-      languages: languages
-        .filter((item) => item.locale !== locale)
-        .map((item) => ({
-          [item.locale]: `${item.url}`,
-        }))
-        .reduce((acc, curr) => Object.assign(acc, curr), {}),
-    },
-    openGraph: {
-      url: `/${locale}`,
-      images: [info[locale as keyof typeof info].image, ...previousImages],
-    },
-    twitter: {
-      site: `/${locale}`,
-      images: [info[locale as keyof typeof info].image, ...previousImages],
-    },
-  };
-}
-export default async function Page({ params }: { params: { id: string } }) {
   return <Details params={params} />;
 }
