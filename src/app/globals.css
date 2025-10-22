@@ -322,7 +322,7 @@ pre {
   .main-container {
     width: 100%;
     max-width: 100vw;
-    padding: 8px;
+    padding: 4px;
   }
   
   /* 移动端工具卡片优化 */
@@ -346,7 +346,7 @@ pre {
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
-    padding: 0 8px !important;
+    padding: 0 4px !important;
   }
   
   /* 移动端 Footer 优化 */
@@ -354,7 +354,19 @@ pre {
     position: relative;
     z-index: 10;
     width: 100%;
-    margin-top: 2rem;
+    margin-top: 1rem;
+  }
+  
+  /* 移动端头部区域间距优化 */
+  .mobile-header-spacing {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+  
+  /* 移动端表单区域间距优化 */
+  .mobile-form-spacing {
+    margin-top: 0.25rem !important;
+    padding-top: 0.5rem !important;
   }
 }
 

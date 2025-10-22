@@ -681,7 +681,7 @@ export default function Home() {
           sidebarVisible ? 'lg:ml-80 ml-0' : 'ml-0'
         } mobile-content`}>
           {/* 顶部搜索区域 */}
-          <div className="relative p-4 sm:p-6 lg:p-8 border-b border-bg-300 bg-bg-100/60 backdrop-blur-sm w-full overflow-hidden">
+          <div className="relative p-2 sm:p-4 lg:p-6 border-b border-bg-300 bg-bg-100/60 backdrop-blur-sm w-full overflow-hidden mobile-header-spacing">
             {/* 创作者主题背景装饰 */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
               {/* 创意画笔装饰 */}
@@ -800,7 +800,7 @@ export default function Home() {
           </div>
           
           {/* 移动端分类选择器 */}
-          <div className="lg:hidden p-3 sm:p-4 border-b border-bg-300 bg-bg-100/60 backdrop-blur-sm w-full">
+          <div className="lg:hidden p-2 sm:p-3 border-b border-bg-300 bg-bg-100/60 backdrop-blur-sm w-full mobile-form-spacing">
             <div className="flex flex-wrap gap-2">
               {/* Default Category  */}
               {
@@ -869,7 +869,7 @@ export default function Home() {
           
           {/* 内容滚动区域 */}
           <div className={`transition-all duration-300 pb-16 sm:pb-20 ${
-            sidebarVisible ? 'p-4 sm:p-6' : 'px-4 sm:px-6 lg:px-12 py-4 sm:py-6 lg:py-8'
+            sidebarVisible ? 'p-2 sm:p-4' : 'px-2 sm:px-4 lg:px-8 py-2 sm:py-4 lg:py-6'
           }`}>
             {/* Recently used tools */}
             <div>
