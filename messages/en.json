@@ -16,7 +16,7 @@
     "loginSuccess": "Login successful",
     "loginFailed": "Login failed",
     "sessionExpired": "Session expired, please login again",
-    "welcome": "Welcome to AI Writing Assistant",
+    "welcome": "Welcome to AI Secretary",
     "loginDescription": "Login with email and password to start your creative journey",
     "loginRequired": "Login Required",
     "loginRequiredDescription": "Using AI tools requires a login account. After logging in, you can start using all features including content generation, history records, etc.",

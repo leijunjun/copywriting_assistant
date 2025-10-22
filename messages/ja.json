@@ -16,7 +16,7 @@
     "loginSuccess": "ログイン成功",
     "loginFailed": "ログイン失敗",
     "sessionExpired": "セッションが期限切れです。再度ログインしてください",
-    "welcome": "AIライティングアシスタントへようこそ",
+    "welcome": "AI秘書へようこそ",
     "loginDescription": "メールアドレスとパスワードでログインして、創作の旅を始めましょう",
     "loginRequired": "ログインが必要です",
     "loginRequiredDescription": "AIツールを使用するにはログインアカウントが必要です。ログイン後、コンテンツ生成、履歴記録など、すべての機能を使用できます。",

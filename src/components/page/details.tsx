@@ -415,20 +415,6 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
     }
   }
 
-  // 获取行业专用标签
-  const getIndustryTag = () => {
-    if (!user?.industry || user.industry === 'general') {
-      return null;
-    }
-    
-    const industryNames = {
-      housekeeping: { chinese: '家政专用', english: 'Housekeeping', japanese: '家事代行専用' },
-      beauty: { chinese: '医疗美容专用', english: 'Medical Beauty', japanese: '医療美容専用' },
-      'lifestyle-beauty': { chinese: '生活美容专用', english: 'Lifestyle Beauty', japanese: '生活美容専用' }
-    };
-    
-    return industryNames[user.industry as keyof typeof industryNames];
-  };
 
   const onRenderingResult = (item: any, key: number) => {
     const onRenderingTable = (csvData: string) => {
@@ -630,31 +616,8 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
                         <img className="relative w-full h-full object-cover rounded-xl shadow-lg" src={dataSource?.url} />
                       </div>
                       <div className="pl-4 text-left flex-1">
-                        <div className="flex items-center gap-3 pb-2">
+                        <div className="pb-2">
                           <div className="font-bold text-gray-800 text-lg">{dataSource?.name[global.language]}</div>
-                          {/* 行业标签紧邻工具名称 */}
-                          {(() => {
-                            const industryTag = getIndustryTag();
-                            if (!industryTag) return null;
-                            
-                            const getIndustryTagStyle = () => {
-                              if (user?.industry === 'housekeeping') {
-                                return 'bg-gradient-to-r from-green-500 to-emerald-600';
-                              } else if (user?.industry === 'beauty') {
-                                return 'bg-gradient-to-r from-pink-500 to-rose-600';
-                              } else if (user?.industry === 'lifestyle-beauty') {
-                                return 'bg-gradient-to-r from-purple-500 to-violet-600';
-                              }
-                              return 'bg-gradient-to-r from-blue-500 to-purple-600';
-                            };
-                            
-                            return (
-                              <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium ${getIndustryTagStyle()} text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-white/20`}>
-                                <div className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
-                                <span className="font-semibold">{industryTag[global.language]}</span>
-                              </span>
-                            );
-                          })()}
                         </div>
                         <div className="text-sm text-gray-600 leading-relaxed">{dataSource?.describe[global.language]}</div>
                       </div>
