@@ -17,7 +17,7 @@ const languages = [
 ];
 
 type Props = {
-  params: { locale: string };
+  params: { id: string; locale: string };
   searchParams: { [key: string]: string | string[] | undefined };
 };
 
@@ -28,9 +28,9 @@ export async function generateMetadata(
   const headers_ = headers();
   const hostname = headers_.get("host");
 
-  let locale = detectLocale(
+  const locale = detectLocale(
     (searchParams && (searchParams.lang as string)) || params.locale || "en"
-  ) as keyof typeof info;
+  );
 
   const siteUrl = (hostname as string).includes("localhost")
     ? "http://localhost:3000"

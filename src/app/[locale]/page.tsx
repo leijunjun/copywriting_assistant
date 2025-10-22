@@ -26,7 +26,7 @@ export async function generateMetadata(
   const headers_ = headers();
   const hostname = headers_.get("host");
 
-  let locale = detectLocale(
+  const locale = detectLocale(
     (searchParams && (searchParams.lang as string)) || params.locale || "en"
   ) as keyof typeof info;
 
