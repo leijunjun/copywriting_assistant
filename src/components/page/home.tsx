@@ -738,6 +738,19 @@ export default function Home() {
             <div className={`mx-auto text-center transition-all duration-300 ${
               sidebarVisible ? 'max-w-3xl' : 'max-w-7xl'
             }`}>
+              {/* wenmi.gif 图片 */}
+              <div className="mb-6 flex justify-center">
+                <img 
+                  src="/wenmi.gif" 
+                  alt="AI生成" 
+                  className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 rounded-full object-cover shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                  style={{
+                    border: '3px solid rgba(139, 92, 246, 0.3)',
+                    boxShadow: '0 8px 32px rgba(139, 92, 246, 0.2)'
+                  }}
+                />
+              </div>
+              
               {/* 主标题 - 旋转文字动画 */}
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">
                 <GradientRotatingText
