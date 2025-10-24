@@ -491,35 +491,57 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
     
     const reader = new FileReader();
     reader.onload = (event) => {
-      // 使用Canvas坐标系统内的相对位置
-      let initialX = 50;
-      let initialY = 50;
-      
-      if (editCanvasRef.current) {
-        const canvas = editCanvasRef.current;
-        const canvasWidth = canvas.width;
-        const canvasHeight = canvas.height;
+      // 创建图片对象来获取原始尺寸
+      const img = new Image();
+      img.onload = () => {
+        // 使用原始尺寸，不压缩
+        const originalWidth = img.naturalWidth;
+        const originalHeight = img.naturalHeight;
         
-        // 设置初始位置为Canvas中心附近
-        initialX = Math.min(50, canvasWidth - 100);
-        initialY = Math.min(50, canvasHeight - 100);
-      }
-      
-      const newImageOverlay: ImageOverlay = {
-        id: Date.now().toString(),
-        src: event.target?.result as string,
-        x: initialX,
-        y: initialY,
-        width: 100,
-        height: 100,
-        borderRadius: 5, // 默认圆角半径5px
+        // 计算合适的显示尺寸，保持宽高比
+        const maxDisplaySize = 200; // 最大显示尺寸
+        let displayWidth = originalWidth;
+        let displayHeight = originalHeight;
+        
+        // 如果图片太大，按比例缩小到合适的显示尺寸
+        if (originalWidth > maxDisplaySize || originalHeight > maxDisplaySize) {
+          const scale = Math.min(maxDisplaySize / originalWidth, maxDisplaySize / originalHeight);
+          displayWidth = originalWidth * scale;
+          displayHeight = originalHeight * scale;
+        }
+        
+        // 使用Canvas坐标系统内的相对位置
+        let initialX = 50;
+        let initialY = 50;
+        
+        if (editCanvasRef.current) {
+          const canvas = editCanvasRef.current;
+          const canvasWidth = canvas.width;
+          const canvasHeight = canvas.height;
+          
+          // 设置初始位置为Canvas中心附近
+          initialX = Math.min(50, canvasWidth - displayWidth);
+          initialY = Math.min(50, canvasHeight - displayHeight);
+        }
+        
+        const newImageOverlay: ImageOverlay = {
+          id: Date.now().toString(),
+          src: event.target?.result as string,
+          x: initialX,
+          y: initialY,
+          width: displayWidth,
+          height: displayHeight,
+          borderRadius: 5, // 默认圆角半径5px
+        };
+        setImageOverlays([...imageOverlays, newImageOverlay]);
+        
+        // 自动选择新上传的图片叠加层
+        setSelectedImageId(newImageOverlay.id);
+        setSelectedTextId(null);
       };
-      setImageOverlays([...imageOverlays, newImageOverlay]);
-      
-      // 自动选择新上传的图片叠加层
-      setSelectedImageId(newImageOverlay.id);
-      setSelectedTextId(null);
+      img.src = event.target?.result as string;
     };
+    // 使用最高质量读取文件
     reader.readAsDataURL(file);
   };
 
@@ -1638,9 +1660,69 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg w-[95vw] h-[90vh] flex flex-col">
-        {/* 头部 */}
-        <div className="flex justify-between items-center p-4 border-b">
-          <h2 className="text-xl font-bold">图片编辑器</h2>
+        {/* 头部 - 合并标题和工具导航 */}
+        <div className="flex justify-between items-center p-4 border-b bg-white">
+          <div className="flex items-center gap-6">
+            <h2 className="text-xl font-bold text-gray-800">图片编辑器</h2>
+            {/* 工具导航栏 */}
+            <div className="flex items-center gap-2">
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setActiveTool('text')}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    activeTool === 'text' 
+                      ? 'bg-blue-600 text-white shadow-md transform scale-105' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-sm'
+                  }`}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
+                  </svg>
+                  加字
+                </button>
+                <button
+                  onClick={() => setActiveTool('image')}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    activeTool === 'image' 
+                      ? 'bg-green-600 text-white shadow-md transform scale-105' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-sm'
+                  }`}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  加图
+                </button>
+                <button
+                  onClick={() => setActiveTool('blur')}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    activeTool === 'blur' 
+                      ? 'bg-purple-600 text-white shadow-md transform scale-105' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-sm'
+                  }`}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  模糊
+                </button>
+                <button
+                  onClick={() => setActiveTool('paint')}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    activeTool === 'paint' 
+                      ? 'bg-orange-600 text-white shadow-md transform scale-105' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-sm'
+                  }`}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM7 3H5a2 2 0 00-2 2v12a4 4 0 004 4h2M7 3h2M7 3v18" />
+                  </svg>
+                  涂改
+                </button>
+              </div>
+            </div>
+          </div>
           <div className="flex items-center gap-2">
             <button
               onClick={onClose}
@@ -1652,7 +1734,7 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
               onClick={onDownloadCropClick}
               disabled={isDownloading}
               data-downloading={isDownloading ? "true" : "false"}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-primary-100 text-white rounded hover:bg-primary-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isDownloading ? (
                 <>
@@ -1675,7 +1757,7 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
         {/* 主体内容 - 左右分栏 */}
         <div className="flex flex-1 overflow-hidden">
           {/* 左侧预览区 */}
-          <div className="flex-[3] p-4 overflow-auto bg-blue-50">
+          <div className="flex-[3] p-2 overflow-auto bg-blue-50">
             <div className="h-full flex flex-col">
               {/* 图片编辑区域 */}
               <div className="flex-1 flex items-center justify-center bg-gray-50 rounded-lg">
@@ -1772,37 +1854,7 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
           </div>
           
           {/* 右侧操作区 */}
-          <div className="flex-[1] min-w-[280px] max-w-[400px] border-l p-3 overflow-auto bg-green-50">
-            {/* 工具切换 */}
-            <div className="mb-3">
-              <h3 className="text-base font-medium mb-2">工具</h3>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  onClick={() => setActiveTool('text')}
-                  className={`px-3 py-2 text-sm rounded ${activeTool === 'text' ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
-                >
-                  加字
-                </button>
-                <button
-                  onClick={() => setActiveTool('image')}
-                  className={`px-3 py-2 text-sm rounded ${activeTool === 'image' ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
-                >
-                  加图
-                </button>
-                <button
-                  onClick={() => setActiveTool('blur')}
-                  className={`px-3 py-2 text-sm rounded ${activeTool === 'blur' ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
-                >
-                  模糊
-                </button>
-                <button
-                  onClick={() => setActiveTool('paint')}
-                  className={`px-3 py-2 text-sm rounded ${activeTool === 'paint' ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
-                >
-                  涂改
-                </button>
-              </div>
-            </div>
+          <div className="flex-[1] min-w-[280px] max-w-[400px] border-l p-2 overflow-auto bg-green-50">
 
             {/* 工具控制面板 */}
             <div className="mb-3">
@@ -2122,7 +2174,7 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
                       <div className="flex gap-2">
                         <button
                           onClick={() => setBlurRegions([])}
-                          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                          className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
                         >
                           清除所有模糊
                         </button>
@@ -2132,7 +2184,7 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
                               setBlurRegions(blurRegions.slice(0, -1));
                             }
                           }}
-                          className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+                          className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
                         >
                           撤销上一步
                         </button>
@@ -2188,7 +2240,7 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
                       <div className="flex gap-2">
                         <button
                           onClick={clearPaintStrokes}
-                          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                          className="px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700"
                         >
                           清除所有涂改
                         </button>
@@ -2198,7 +2250,7 @@ export function ImageEditorModal({ imageUrl, onClose, onSave }: ImageEditorModal
                               setPaintStrokes(paintStrokes.slice(0, -1));
                             }
                           }}
-                          className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+                          className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600"
                         >
                           撤销上一步
                         </button>
