@@ -103,7 +103,7 @@
     "pricing1": "100 credits = $1.50",
     "pricing2": "500 credits = $6.75 (Save $0.75)",
     "pricing3": "1000 credits = $12.00 (Save $3.00)",
-    "rechargeNotImplemented": "Recharge feature not available yet",
+    "rechargeNotImplemented": "Currently only supports offline recharge, please contact administrator for recharge!",
     "creditsNotFound": "Credit information not found",
     "login": "Login"
   },
@@ -221,7 +221,7 @@
     "pricing1": "100 credits = $1.50",
     "pricing2": "500 credits = $6.75 (Save $0.75)",
     "pricing3": "1000 credits = $12.00 (Save $3.00)",
-    "rechargeNotImplemented": "Recharge feature not available yet",
+    "rechargeNotImplemented": "Currently only supports offline recharge, please contact administrator for recharge!",
     "creditsNotFound": "Credit information not found",
     "login": "Login",
     "insufficientCreditsTitle": "Insufficient Credits",

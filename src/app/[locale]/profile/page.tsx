@@ -131,7 +131,8 @@ export default function ProfilePage() {
   };
 
   const handleRecharge = () => {
-    router.push('/credits');
+    // 弹出提示信息，与credits页面保持一致
+    alert(t('rechargeNotImplemented'));
   };
 
   if (loading) {

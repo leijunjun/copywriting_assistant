@@ -298,7 +298,7 @@ ${params.content}
         ]
     },
 
-    'Xiaohongshu post generation': (params: Pick<IToolParameter, 'role' | 'background' | 'purpose' | 'language' | 'tone'> & { mimicSample?: string }) => {
+    'Xiaohongshu post generation': (params: Pick<IToolParameter, 'role' | 'background' | 'purpose' | 'language' | 'tone'> & { mimicSample?: string, batchIndex?: number, batchTotal?: number }) => {
         // Tone映射表 - 将英文tone值转换为中文显示
         const toneMapping: { [key: string]: string } = {
             'Emotional Resonance (focus on empathy and healing)': '情绪共鸣型（主打共情与治愈）',
@@ -314,6 +314,17 @@ ${params.content}
             ? `\n请参考以下样本进行文风仿写（仅模仿风格，不抄袭内容）：\n样本：${(params as any).mimicSample}\n`
             : '';
 
+        // 批量生成提示
+        const batchHint = params.batchIndex && params.batchTotal && params.batchTotal > 1
+            ? `\n【批量生成说明】这是批量生成的第${params.batchIndex}/${params.batchTotal}篇笔记。请保持与其他篇目完全相同的质量标准：
+1. 标签数量必须保持4-6个，不能减少
+2. emoji使用必须丰富，与单篇生成保持相同密度
+3. 细节描述必须充分，有情绪、有实用价值
+4. 字数控制在300-600字，短段落划分
+5. 在具体案例、表达方式上有所差异，避免内容雷同
+6. 每篇都应该是高质量、有价值的独立内容，不能因为批量生成而降低标准\n`
+            : '';
+
         return [
             {
                 role: 'user',
@@ -324,9 +335,15 @@ ${params.content}
 目的：${params.purpose}
 语气：${displayTone}
 语言：${params.language}
-要求：标题吸睛，带关键词（如“学生党闭眼入”）；字数控制在300–600字，短段落划分，穿插合适的emoji和感叹号增加氛围感；内容符合角色设定和背景情况，真实感强，有细节、有情绪、有实用价值；结尾可引导互动（如“你们有类似经历吗”“求推荐更多好物”），匹配4-6个相关标签；无需解释和注释
-
-${mimicAppend}请直接生成帖子内容：`
+要求：
+-标题吸睛，带关键词（如"学生党闭眼入"）
+-字数控制在300–600字，短段落划分，穿插丰富的emoji和感叹号增加氛围感（emoji使用要充足，不能吝啬）
+-内容符合角色设定和背景情况，真实感强，有细节、有情绪、有实用价值（细节描述要充分）
+-结尾可引导互动（如"你们有类似经历吗""求推荐更多好物"）
+-匹配4-6个相关标签（必须达到这个数量范围）
+-规避广告法中禁止的词语和表达方式
+-无需解释和注释
+${mimicAppend}${batchHint}请直接生成帖子内容：`
             }
         ]
     },

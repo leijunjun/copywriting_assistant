@@ -103,7 +103,7 @@
     "pricing1": "100积分 = 10元",
     "pricing2": "500积分 = 45元（优惠5元）",
     "pricing3": "1000积分 = 80元（优惠20元）",
-    "rechargeNotImplemented": "充值功能暂未开放",
+    "rechargeNotImplemented": "目前仅支持线下，请联系管理员进行充值！",
     "creditsNotFound": "未找到积分信息",
     "login": "登录"
   },
@@ -221,7 +221,7 @@
     "pricing1": "100积分 = 10元",
     "pricing2": "500积分 = 45元（优惠5元）",
     "pricing3": "1000积分 = 80元（优惠20元）",
-    "rechargeNotImplemented": "充值功能暂未开放",
+    "rechargeNotImplemented": "目前仅支持线下，请联系管理员进行充值！",
     "creditsNotFound": "未找到积分信息",
     "login": "登录",
     "insufficientCreditsTitle": "积分不足",

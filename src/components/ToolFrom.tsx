@@ -109,15 +109,16 @@ export default function ToolFrom(props: IProps) {
     return obj;
   }
   // 基础表单校验（来自配置）
-  let baseSchema = z.object(onFormSchema());
+  let baseSchema: any = z.object(onFormSchema());
 
   // 如果是小红书工具，追加“样本仿写”相关的可选字段与条件校验
   const isXhs = props.dataSource?.title === 'xiaohongshu-post-generation';
   if (isXhs) {
     baseSchema = baseSchema.extend({
       mimicSample: z.string().optional(),
-      tone: z.string()
-    }).superRefine((data, ctx) => {
+      tone: z.string(),
+      batchCount: z.number().min(1).max(10).optional().default(1)
+    }).superRefine((data: any, ctx: any) => {
       if (data.tone === 'mimic_by_sample') {
         const value = (data as any).mimicSample || '';
         if (!value || value.trim().length === 0) {
@@ -140,14 +141,14 @@ export default function ToolFrom(props: IProps) {
     });
   }
 
-  const formSchema = baseSchema
+  const formSchema = baseSchema as any;
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<any>({
     resolver: zodResolver(formSchema),
-    defaultValues: { ...onFormSchema(true), ...(isXhs ? { mimicSample: '' } : {}) },
+    defaultValues: { ...onFormSchema(true), ...(isXhs ? { mimicSample: '', batchCount: 1 } : {}) },
   })
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+  const onSubmit = async (data: any) => {
     if (isLoading) return;
     
     // Check authentication before proceeding
@@ -810,6 +811,31 @@ export default function ToolFrom(props: IProps) {
                 {onRenderingSelect(LANGUAGE_LIST, OUTPUT_LANGUAGE[language])}
               </Select>
             </div>
+            
+            {/* 批量生成数量选择器（仅小红书工具） */}
+            {isXiaohongshuTool && (
+              <div className="flex items-center gap-2">
+                <Select 
+                  onValueChange={(value) => form.setValue('batchCount', parseInt(value))} 
+                  value={form.watch('batchCount')?.toString() || '1'} 
+                  disabled={isLoading}
+                >
+                  <SelectTrigger className="w-24">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {Array.from({ length: 10 }, (_, i) => i + 1).map(num => (
+                        <SelectItem key={num} value={num.toString()}>
+                          {num} 篇
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            
             <Button type="submit" disabled={isLoading || rateLoading} className="bg-[#8e47f0] hover:bg-[#7f39ea] w-64 relative" >
               {
                 isLoading ? (
@@ -818,9 +844,20 @@ export default function ToolFrom(props: IProps) {
                   <span>
                     {SUBMIT_BUTTON[dataSource.submitButton][language]}
                     <span className="ml-2 text-xs opacity-80">
-                      {language === 'chinese' ? `${deductionRate}积分/篇` : 
-                       language === 'english' ? `${deductionRate}credits/use` : 
-                       `${deductionRate}クレジット/回`}
+                      {(() => {
+                        const batchCount = form.watch('batchCount') || 1;
+                        const totalCost = deductionRate * batchCount;
+                        if (isXiaohongshuTool && batchCount > 1) {
+                          return language === 'chinese' 
+                            ? `生成 ${batchCount} 篇（${totalCost} 积分）`
+                            : language === 'english'
+                            ? `Generate ${batchCount} posts (${totalCost} credits)`
+                            : `${batchCount} 記事を生成（${totalCost} クレジット）`;
+                        }
+                        return language === 'chinese' ? `${deductionRate}积分/篇` : 
+                               language === 'english' ? `${deductionRate}credits/use` : 
+                               `${deductionRate}クレジット/回`;
+                      })()}
                     </span>
                   </span>
                 )

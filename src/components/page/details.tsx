@@ -29,7 +29,14 @@ import { useAuth } from '@/lib/auth/auth-context';
 import { InsufficientCreditsModal } from '@/components/credits/InsufficientCreditsModal';
 import SocialShare from '@/components/SocialShare';
 
-interface IGenerateRecords { id: number; toolId: string | number; output: string; createdAt: string; }
+interface IGenerateRecords { 
+  id: number; 
+  toolId: string | number; 
+  output: string; 
+  createdAt: string; 
+  batchIndex?: number;
+  error?: boolean;
+}
 
 export default function DialogDemo({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -116,7 +123,7 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
   const onRenderingForm = () => {
     const onOk = async (params: any) => {
       setLoad(true);
-      // 点击“生成”后，页面左右滑回顶部
+      // 点击"生成"后，页面左右滑回顶部
       try {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         if (leftColumnRef.current) {
@@ -128,111 +135,288 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
       } catch (e) {
         // ignore scrolling errors
       }
-      const data = {
+
+      const batchCount = params.batchCount || 1;
+      const isBatchMode = batchCount > 1;
+      
+      // 前置积分检查（批量模式）
+      if (isBatchMode) {
+        const totalCost = 5 * batchCount; // 假设单次成本为5积分
+        if (!authState.credits || authState.credits.balance < totalCost) {
+          toast({
+            title: "积分不足",
+            description: `批量生成需要${totalCost}积分，当前余额${authState.credits?.balance || 0}积分，请先充值`,
+            variant: "destructive"
+          });
+          setLoad(false);
+          return;
+        }
+      }
+
+      const baseRequestData = {
         params,
         prompt: dataSource?.prompt ? `${dataSource?.prompt}\n${params.content}` : '',
         tool_name: dataSource?.title,
-      }
+        language: global.language
+      };
 
-      
-
-      const id = dayjs().unix();
-      const newParams = {
-        id,
-        toolId: dataSource?.id || '',
-        output: '',
-        createdAt: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-      }
-      try {
-        const res = await fetch('/api/generateWriting', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...data, language: global.language }),
-        })
-        if (res?.body && res.ok) {
-          const reader = res.body.getReader();
-          const decoder = new TextDecoder('utf-8');
-          let partialData = '';
-          setGenerateRecords((v) => ([{ ...newParams }, ...v]));
-          const read = async () => {
-            const readerRead = await reader.read();
-            const { done, value } = readerRead;
-            if (done) {
-              console.log('Stream complete');
-              await addData(newParams);
-              onToast(`${SUBMIT_BUTTON[dataSource?.submitButton || ''][global.language]}${SUCCESSFULLY_GENERATED[global.language]}`, 'success')
-              
-              // 异步更新积分余额
-              try {
-                await refreshAuthState();
-                console.log('积分余额已更新');
-              } catch (error) {
-                console.error('更新积分余额失败:', error);
-              }
-              
-              setLoad(false);
-              return;
-            }
-
-            // Decoding and processing data blocks
-            partialData += decoder.decode(value, { stream: true });
-            const lines = partialData.split('\n');
-            // @ts-ignore
-            partialData = lines.pop();
-            lines.forEach(line => {
-              if (line.startsWith('data: ')) {
-                const data = line.slice(6); // Remove the 'data:' section
-                try {
-                  const parsedData = JSON.parse(data);
-                  if (parsedData?.content) {
-                    newParams.output += parsedData.content
-                    setGenerateRecords((v) => {
-                      return v.map((item) => {
-                        if (item.id === id) {
-                          return { ...item, output: item.output + parsedData.content }
-                        }
-                        return item;
-                      })
-                    })
-                  }
-                } catch (e) {
-                  toast({
-                    duration: 2000,
-                    description: (ErrMessage(0, global.language))
-                  })
-                  setLoad(false);
-                }
-              }
-            });
-            await read();
-          }
-          await read();
-        } else {
+      // 重试函数
+      const retryRequest = async (requestData: any, requestId: number, maxRetries = 3) => {
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
           try {
-            const resJson = await res.json();
-            if (resJson?.error?.err_code) {
-              setLoad(false);
-              toast({
-                duration: 2000,
-                description: (ErrMessage(resJson?.error.err_code, global.language))
-              })
-              return;
+            const res = await fetch('/api/generateWriting', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(requestData),
+            });
+
+            if (!res.ok) {
+              const errorData = await res.json().catch(() => ({}));
+              if (res.status >= 400 && res.status < 500) {
+                // 4xx错误不重试
+                throw new Error(errorData.error || `HTTP ${res.status}`);
+              }
+              // 5xx错误或网络错误才重试
+              if (attempt === maxRetries) {
+                throw new Error(errorData.error || `HTTP ${res.status}`);
+              }
+              // 等待递增间隔后重试
+              await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt - 1) * 1000));
+              continue;
             }
+
+            return res;
           } catch (error) {
-            toast({
-              duration: 2000,
-              description: (ErrMessage(0, global.language))
-            })
-            setLoad(false);
+            if (attempt === maxRetries) {
+              throw error;
+            }
+            // 等待递增间隔后重试
+            await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt - 1) * 1000));
           }
         }
-      } catch (error) {
-        toast({
-          duration: 2000,
-          description: (ErrMessage(0, global.language))
-        })
-        setLoad(false);
+      };
+
+      // 单个生成请求处理
+      const generateSinglePost = async (requestData: any, requestId: number) => {
+        const newParams = {
+          id: requestId,
+          toolId: dataSource?.id || '',
+          output: '',
+          createdAt: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+          batchIndex: requestData.params.batchIndex
+        };
+
+        try {
+          const res = await retryRequest(requestData, requestId);
+          
+          if (res?.body) {
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder('utf-8');
+            let partialData = '';
+            
+            const read = async () => {
+              const readerRead = await reader.read();
+              const { done, value } = readerRead;
+              
+              if (done) {
+                await addData(newParams);
+                return;
+              }
+
+              // Decoding and processing data blocks
+              partialData += decoder.decode(value, { stream: true });
+              const lines = partialData.split('\n');
+              partialData = lines.pop() || '';
+              
+              lines.forEach(line => {
+                if (line.startsWith('data: ')) {
+                  const data = line.slice(6);
+                  try {
+                    const parsedData = JSON.parse(data);
+                    if (parsedData?.content) {
+                      newParams.output += parsedData.content;
+                      setGenerateRecords((v) => {
+                        return v.map((item) => {
+                          if (item.id === requestId) {
+                            return { ...item, output: item.output + parsedData.content };
+                          }
+                          return item;
+                        });
+                      });
+                    }
+                  } catch (e) {
+                    console.error('解析流数据失败:', e);
+                  }
+                }
+              });
+              await read();
+            };
+            await read();
+          }
+        } catch (error) {
+          console.error(`生成请求 ${requestId} 失败:`, error);
+          // 显示错误卡片
+          setGenerateRecords((v) => {
+            return v.map((item) => {
+              if (item.id === requestId) {
+                return { 
+                  ...item, 
+                  output: `生成失败: ${error instanceof Error ? error.message : '未知错误'}`,
+                  error: true
+                };
+              }
+              return item;
+            });
+          });
+        }
+      };
+
+      if (isBatchMode) {
+        // 批量生成模式
+        const generatePromises = Array.from({ length: batchCount }, (_, index) => {
+          const requestId = dayjs().unix() * 1000 + index;
+          const requestData = {
+            ...baseRequestData,
+            params: {
+              ...baseRequestData.params,
+              batchIndex: index + 1,
+              batchTotal: batchCount
+            }
+          };
+          
+          // 立即插入空记录占位
+          const newParams = {
+            id: requestId,
+            toolId: dataSource?.id || '',
+            output: '',
+            createdAt: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+            batchIndex: index + 1
+          };
+          setGenerateRecords((v) => ([{ ...newParams }, ...v]));
+          
+          return generateSinglePost(requestData, requestId);
+        });
+
+        try {
+          await Promise.allSettled(generatePromises);
+          
+          // 统计成功数量
+          const successCount = generateRecords.filter(record => 
+            record.output && !record.error && record.output.length > 50
+          ).length;
+          
+          onToast(`批量生成完成！成功生成 ${successCount}/${batchCount} 篇`, 'success');
+          
+          // 异步更新积分余额
+          try {
+            await refreshAuthState();
+            console.log('积分余额已更新');
+          } catch (error) {
+            console.error('更新积分余额失败:', error);
+          }
+        } catch (error) {
+          console.error('批量生成过程中出现错误:', error);
+        }
+      } else {
+        // 单次生成模式（保持原有逻辑）
+        const id = dayjs().unix();
+        const newParams = {
+          id,
+          toolId: dataSource?.id || '',
+          output: '',
+          createdAt: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+        };
+        
+        try {
+          const res = await retryRequest(baseRequestData, id);
+          
+          if (res?.body && res.ok) {
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder('utf-8');
+            let partialData = '';
+            setGenerateRecords((v) => ([{ ...newParams }, ...v]));
+            
+            const read = async () => {
+              const readerRead = await reader.read();
+              const { done, value } = readerRead;
+              if (done) {
+                console.log('Stream complete');
+                await addData(newParams);
+                onToast(`${SUBMIT_BUTTON[dataSource?.submitButton || ''][global.language]}${SUCCESSFULLY_GENERATED[global.language]}`, 'success')
+                
+                // 异步更新积分余额
+                try {
+                  await refreshAuthState();
+                  console.log('积分余额已更新');
+                } catch (error) {
+                  console.error('更新积分余额失败:', error);
+                }
+                
+                setLoad(false);
+                return;
+              }
+
+              // Decoding and processing data blocks
+              partialData += decoder.decode(value, { stream: true });
+              const lines = partialData.split('\n');
+              partialData = lines.pop() || '';
+              lines.forEach(line => {
+                if (line.startsWith('data: ')) {
+                  const data = line.slice(6);
+                  try {
+                    const parsedData = JSON.parse(data);
+                    if (parsedData?.content) {
+                      newParams.output += parsedData.content
+                      setGenerateRecords((v) => {
+                        return v.map((item) => {
+                          if (item.id === id) {
+                            return { ...item, output: item.output + parsedData.content }
+                          }
+                          return item;
+                        })
+                      })
+                    }
+                  } catch (e) {
+                    toast({
+                      duration: 2000,
+                      description: (ErrMessage(0, global.language))
+                    })
+                    setLoad(false);
+                  }
+                }
+              });
+              await read();
+            }
+            await read();
+          } else {
+            try {
+              const resJson = await res?.json();
+              if (resJson?.error?.err_code) {
+                setLoad(false);
+                toast({
+                  duration: 2000,
+                  description: (ErrMessage(resJson?.error.err_code, global.language))
+                })
+                return;
+              }
+            } catch (error) {
+              toast({
+                duration: 2000,
+                description: (ErrMessage(0, global.language))
+              })
+              setLoad(false);
+            }
+          }
+        } catch (error) {
+          toast({
+            duration: 2000,
+            description: (ErrMessage(0, global.language))
+          })
+          setLoad(false);
+        }
       }
+      
+      setLoad(false);
     }
     if (dataSource) {
       return (
@@ -485,7 +669,12 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
                       <div className="w-3 h-3 bg-cyan-400 rounded-full animate-pulse"></div>
-                      <h3 className="text-xl font-bold text-cyan-400 mb-0">{load ? 'AI 思考中...' : '生成记录'}</h3>
+                      <h3 className="text-xl font-bold text-cyan-400 mb-0">
+                        {load ? 'AI 思考中...' : 
+                         generateRecords.some(r => r.batchIndex) ? 
+                         `批量生成记录 (${generateRecords.filter(r => r.batchIndex).length} 篇)` : 
+                         '生成记录'}
+                      </h3>
                       <div className="h-px w-16 bg-gradient-to-r from-cyan-400/50 to-transparent"></div>
                     </div>
                     {generateRecords?.length ? (
@@ -549,11 +738,36 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
                   <div className="space-y-6">
                     {generateRecords.map((item) => (
                       <div key={item?.id} className="group relative p-6 bg-gradient-to-br from-gray-900/80 via-gray-800/90 to-black/80 backdrop-blur-sm text-gray-100 rounded-2xl shadow-2xl border border-gray-700/50 hover:border-cyan-500/50 hover:shadow-cyan-500/20 transition-all duration-500 hover:scale-[1.02]">
+                        {/* 批次编号标识 */}
+                        {item.batchIndex && (
+                          <div className="absolute top-4 right-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+                            第 {item.batchIndex} 篇
+                          </div>
+                        )}
+                        
                         {/* 科技感装饰边框 */}
                         <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-500/10 via-transparent to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent pointer-events-none"></div>
+                        
+                        {/* 内容区域 */}
                         <div className="text-left">
-                          {onRenderingResult(item, item?.id)}
+                          {item.output ? (
+                            onRenderingResult(item, item?.id)
+                          ) : item.error ? (
+                            <div className="text-red-400 text-center py-8">
+                              <div className="text-4xl mb-4">⚠️</div>
+                              <p className="text-lg font-medium">生成失败</p>
+                              <p className="text-sm opacity-80 mt-2">{item.output}</p>
+                            </div>
+                          ) : (
+                            <div className="text-center py-8">
+                              <div className="flex items-center justify-center mb-4">
+                                <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+                              </div>
+                              <p className="text-cyan-400 font-medium">正在生成中...</p>
+                              <p className="text-gray-500 text-sm mt-2">AI正在为您创作内容</p>
+                            </div>
+                          )}
                         </div>
                         <div className="flex items-end justify-between mt-6 pt-4 border-t border-gray-600/50">
                           <div className="flex items-center gap-2 text-gray-400 text-sm">
@@ -637,23 +851,6 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
                     {dataSource?.id && onRenderingForm()}
                   </div>
                   
-                  {/* 社交分享组件 */}
-                  {dataSource?.id && (
-                    <div className="p-4 border-t border-gray-200/50">
-                      <SocialShare
-                        config={{
-                          title: dataSource?.name[global.language] || 'AI文案助手',
-                          description: dataSource?.describe[global.language] || '智能文案生成工具',
-                          url: typeof window !== 'undefined' ? window.location.href : '',
-                          image: dataSource?.url ? `${typeof window !== 'undefined' ? window.location.origin : ''}${dataSource.url}` : undefined,
-                          hashtags: ['AI写作', '文案生成', '内容创作']
-                        }}
-                        compact={true}
-                        className="mb-2"
-                      />
-                    </div>
-                  )}
-                  
                   <div className='absolute top-4 right-4 flex items-center gap-2'>
                     {dataSource?.prompt && onDelCustomTool()}
                     {dataSource?.prompt && <EditCustomToolForm dataSource={dataSource} disabled={load} />}
@@ -665,6 +862,22 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
                   </div>
                 </div>
                 </div>
+                
+                {/* 社交分享组件 - 移动到表单下方，右对齐 */}
+                {dataSource?.id && (
+                  <div className="mt-4 flex justify-end">
+                    <SocialShare
+                      config={{
+                        title: dataSource?.name[global.language] || 'AI文案助手',
+                        description: dataSource?.describe[global.language] || '智能文案生成工具',
+                        url: typeof window !== 'undefined' ? window.location.href : '',
+                        image: dataSource?.url ? `${typeof window !== 'undefined' ? window.location.origin : ''}${dataSource.url}` : undefined,
+                        hashtags: ['AI写作', '文案生成', '内容创作']
+                      }}
+                      compact={true}
+                    />
+                  </div>
+                )}
               </div>
             </div>
             : <></>

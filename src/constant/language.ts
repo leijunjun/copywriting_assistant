@@ -146,6 +146,7 @@ export const FROM_LABEL: { [key: string]: Language } = {
   'productHighlights': { chinese: '产品/服务亮点', english: 'Product/Service Highlights', japanese: '製品・サービスの強み' },
   'restrictions': { chinese: '限制及禁忌', english: 'Restrictions & Prohibitions', japanese: '制限・禁止事項' },
   'articlePurpose': { chinese: '软文目的', english: 'Article Purpose', japanese: '記事の目的' },
+  'batchCount': { chinese: '生成数量', english: 'Batch Count', japanese: '生成数' },
   'customerPainPoints': { chinese: '客户痛点和需求', english: 'Customer Pain Points', japanese: '顧客の痛みとニーズ' },
   'conversionAction': { chinese: '期待转化动作', english: 'Expected Conversion Action', japanese: '期待される転換アクション' },
   'additionalContent': { chinese: '补充内容', english: 'Additional Content', japanese: '追加コンテンツ' },
