@@ -12,7 +12,6 @@ import {
   Copy, 
   Check, 
   QrCode, 
-  Wechat, 
   MessageCircle, 
   MessageSquare, 
   Heart, 
@@ -42,7 +41,7 @@ interface SocialShareProps {
 }
 
 const iconMap = {
-  Wechat,
+  Wechat: MessageCircle,
   MessageCircle,
   MessageSquare,
   Heart,

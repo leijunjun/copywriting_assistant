@@ -168,7 +168,8 @@ export function generateKeywords(toolId?: string, locale: string = 'en'): string
       'article-title-generation': ['标题生成', '文章标题', 'SEO标题'],
       'xiaohongshu-post-generation': ['小红书', '种草文案', '社交营销'],
       'weibo-post-generation': ['微博', '社交媒体', '营销推广'],
-      'douyin-script-generation': ['抖音', '短视频', '脚本创作']
+      'douyin-script-generation': ['抖音', '短视频', '脚本创作'],
+      'ai-image-generation': ['AI图片生成', '智能配图', '图片创作', 'AI绘图', '图像生成', '配图工具']
     },
     en: {
       'grammar-checker': ['grammar check', 'writing assistance', 'text optimization'],
@@ -177,7 +178,8 @@ export function generateKeywords(toolId?: string, locale: string = 'en'): string
       'article-title-generation': ['title generation', 'article titles', 'SEO titles'],
       'xiaohongshu-post-generation': ['Xiaohongshu', 'social marketing', 'content creation'],
       'weibo-post-generation': ['Weibo', 'social media', 'marketing'],
-      'douyin-script-generation': ['TikTok', 'short video', 'script writing']
+      'douyin-script-generation': ['TikTok', 'short video', 'script writing'],
+      'ai-image-generation': ['AI image generation', 'smart image creation', 'image creation', 'AI drawing', 'image generation', 'image tool']
     },
     ja: {
       'grammar-checker': ['文法チェック', 'ライティング支援', 'テキスト最適化'],
@@ -186,7 +188,8 @@ export function generateKeywords(toolId?: string, locale: string = 'en'): string
       'article-title-generation': ['タイトル生成', '記事タイトル', 'SEOタイトル'],
       'xiaohongshu-post-generation': ['小红书', 'ソーシャルマーケティング', 'コンテンツ作成'],
       'weibo-post-generation': ['微博', 'ソーシャルメディア', 'マーケティング'],
-      'douyin-script-generation': ['抖音', 'ショート動画', 'スクリプト作成']
+      'douyin-script-generation': ['抖音', 'ショート動画', 'スクリプト作成'],
+      'ai-image-generation': ['AI画像生成', 'スマート画像作成', '画像作成', 'AI描画', '画像生成', '画像ツール']
     }
   }
 

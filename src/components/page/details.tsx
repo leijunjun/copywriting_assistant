@@ -156,7 +156,7 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
       const baseRequestData = {
         params,
         prompt: dataSource?.prompt ? `${dataSource?.prompt}\n${params.content}` : '',
-        tool_name: dataSource?.title,
+        tool_name: dataSource?.name?.english || dataSource?.title,
         language: global.language
       };
 

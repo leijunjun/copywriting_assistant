@@ -9,11 +9,13 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function getLocalStorage(Item: string) {
+  if (typeof window === 'undefined') return null;
   const data = localStorage.getItem(Item);
   return data;
 }
 
 export function setLocalStorage(key: string, value: string) {
+  if (typeof window === 'undefined') return;
   localStorage.setItem(key, value);
 }
 

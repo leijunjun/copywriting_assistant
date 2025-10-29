@@ -14,6 +14,7 @@ interface IToolParameter {
     promotionGoal: string, customerGroup: string, productHighlights: string, restrictions: string,
     articlePurpose: string, customerPainPoints: string, conversionAction: string, 
     additionalContent: string, articleStyle: string,
+    industryPosition: string, targetAudience: string, namingPreference: string, avoidContent: string,
 }
 
 export const toolParameter: { [key: string]: (params: IToolParameter) => Array<{ role: string, content: string }> } = {
@@ -328,7 +329,7 @@ ${params.content}
         return [
             {
                 role: 'user',
-                content: `根据以下信息生成一个小红书平台风格的帖子。
+                content: `你是一个写作经验15年的编辑，现在在运营小红书自媒体账号，你的文字有温度有灵魂，根据以下信息生成一个小红书平台风格的帖子。
 
 角色：${params.role}
 背景：${params.background}
@@ -386,7 +387,7 @@ ${params.content}
         return [
             {
                 role: 'user',
-                content: `根据以下信息生成一个抖音爆款短视频脚本，要求按照指定结构输出。
+                content: `你是一个创作经验15年的编剧，在4A广告公司工作过8年，现在在运营抖音自媒体账号，根据以下信息生成一个抖音爆款短视频脚本，要求按照指定结构输出。
 
 宣传目标：${params.promotionGoal}
 客群：${params.customerGroup}
@@ -482,16 +483,23 @@ Language: ${params.language}`
         ]
     },
 
-    'Social Media Bio Creation': (params: Pick<IToolParameter, 'keywords' | 'style' | 'language'>) => {
+    'Social Media Naming Suite': (params: Pick<IToolParameter, 'industryPosition' | 'targetAudience' | 'style' | 'namingPreference' | 'avoidContent' | 'language'>) => {
         return [
             {
                 role: 'user',
-                content: `Generate a high quality Social Media Bio for user in your own words based on these requirments.
-Never add explanations and notes.
+                content: `你是一个策划经验15年的广告人，在4A广告公司工作过8年，现在在运营自媒体矩阵，按照以下要求为新起的自媒体矩阵账号设计名称和配套简介。
+
+行业定位：${params.industryPosition}
+目标受众：${params.targetAudience}
+名称要求：
+- 3-8个字,名称风格${params.namingPreference}
+简介要求：
+- 每条简介控制在50字内,${params.style}风格,精致短语,数据化体现服务能力、准确表达出解决的痛点和提供价值,${params.avoidContent}
+输出要求：
+- 名称+简介组合，提供 2 组不同风格，分别用"A方案"和"B方案"表示，并总结出每组方案的亮点和特点
+
 Language: ${params.language}
-Format: Plain text
-Style: ${params.style}
-Keywords: ${params.keywords}`
+Format: Markdown`
             }
         ]
     },

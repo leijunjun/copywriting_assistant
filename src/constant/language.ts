@@ -150,6 +150,10 @@ export const FROM_LABEL: { [key: string]: Language } = {
   'customerPainPoints': { chinese: '客户痛点和需求', english: 'Customer Pain Points', japanese: '顧客の痛みとニーズ' },
   'conversionAction': { chinese: '期待转化动作', english: 'Expected Conversion Action', japanese: '期待される転換アクション' },
   'additionalContent': { chinese: '补充内容', english: 'Additional Content', japanese: '追加コンテンツ' },
+  'industryPosition': { chinese: '行业定位', english: 'Industry Position', japanese: '業界ポジショニング' },
+  'targetAudience': { chinese: '目标人群', english: 'Target Audience', japanese: 'ターゲット層' },
+  'namingPreference': { chinese: '命名偏好', english: 'Naming Preference', japanese: '命名の好み' },
+  'avoidContent': { chinese: '避免内容', english: 'Content to Avoid', japanese: '避けるべき内容' },
   'articleStyle': { chinese: '风格', english: 'Article Style', japanese: '記事スタイル' },
 }
 

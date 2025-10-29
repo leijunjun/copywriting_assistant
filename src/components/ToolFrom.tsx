@@ -12,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { CLEAR_CONTENT_BUTTON, FROM_LABEL, LANGUAGE_LIST, OUTPUT_LANGUAGE, PLEASE_ENTER, PLEASE_SELECT, SUBMIT_BUTTON, ROLE_TEMPLATES, WECHAT_ARTICLE_PURPOSE, WECHAT_ARTICLE_CONVERSION } from "@/constant/language";
+import { CLEAR_CONTENT_BUTTON, FROM_LABEL, LANGUAGE_LIST, OUTPUT_LANGUAGE, PLEASE_ENTER, PLEASE_SELECT, SUBMIT_BUTTON, ROLE_TEMPLATES, WECHAT_ARTICLE_PURPOSE, WECHAT_ARTICLE_CONVERSION, BIO_STYLE } from "@/constant/language";
 import { useCreditDeductionRate } from '@/hooks/useCreditDeductionRate';
 import { useAuthCheck } from '@/hooks/useAuthCheck';
 import { useIndustryPresets } from '@/hooks/useIndustryPresets';
@@ -54,11 +54,13 @@ export default function ToolFrom(props: IProps) {
 
   // Read configuration output language
   useEffect(() => {
-    const outputLanguageTemp = getLocalStorage('language');
-    if (outputLanguageTemp) {
-      setOutputLanguage(outputLanguageTemp)
-    } else {
-      setLocalStorage('language', language.replace(/^[a-z]/, (match) => match.toUpperCase()))
+    if (typeof window !== 'undefined') {
+      const outputLanguageTemp = getLocalStorage('language');
+      if (outputLanguageTemp) {
+        setOutputLanguage(outputLanguageTemp)
+      } else {
+        setLocalStorage('language', language.replace(/^[a-z]/, (match) => match.toUpperCase()))
+      }
     }
   }, [])
 
@@ -113,6 +115,8 @@ export default function ToolFrom(props: IProps) {
 
   // 如果是小红书工具，追加“样本仿写”相关的可选字段与条件校验
   const isXhs = props.dataSource?.title === 'xiaohongshu-post-generation';
+  const isSocialMediaBioTool = props.dataSource?.title === 'social-media-bio-creation';
+  
   if (isXhs) {
     baseSchema = baseSchema.extend({
       mimicSample: z.string().optional(),
@@ -145,7 +149,11 @@ export default function ToolFrom(props: IProps) {
 
   const form = useForm<any>({
     resolver: zodResolver(formSchema),
-    defaultValues: { ...onFormSchema(true), ...(isXhs ? { mimicSample: '', batchCount: 1 } : {}) },
+    defaultValues: { 
+      ...onFormSchema(true), 
+      ...(isXhs ? { mimicSample: '', batchCount: 1 } : {}),
+      ...(isSocialMediaBioTool && user?.industry === 'housekeeping' ? { industryPosition: '家政服务' } : {})
+    },
   })
 
   const onSubmit = async (data: any) => {
@@ -156,7 +164,7 @@ export default function ToolFrom(props: IProps) {
       setLoad(true);
       await onOk({ ...data, language: outputLanguage })
       setLoad(false);
-    }, window.location.pathname + window.location.search);
+    }, typeof window !== 'undefined' ? window.location.pathname + window.location.search : '');
   }
 
   const onChangeOutputLanguage = (value: string) => {
@@ -777,6 +785,150 @@ export default function ToolFrom(props: IProps) {
                   <FormControl>
                     <Select onValueChange={field.onChange} value={field.value} disabled={isLoading}>
                       {onRenderingSelect(dataSource.from.articleStyle?.list || [], onReminderInformation('Select', 'articleStyle'))}
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </>
+        ) : isSocialMediaBioTool ? (
+          // 自媒体起名（三件套）工具的特殊布局
+          <>
+            {/* 1. 行业定位输入 */}
+            <FormField
+              disabled={isLoading}
+              control={form.control}
+              name="industryPosition"
+              render={({ field }: any) => (
+                <FormItem className="px-3 pb-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <FormLabel className="font-bold text-black">{FROM_LABEL.industryPosition[language]}</FormLabel>
+                    {/* 行业定位预设选择器 */}
+                    <div className="w-48">
+                      {onRenderingSearchableSelect(getIndustryPresetData('industryPosition'), FROM_LABEL.preset[language], (value) => {
+                        form.setValue('industryPosition', value);
+                        form.trigger('industryPosition');
+                      }, 'industryPosition')}
+                    </div>
+                  </div>
+                  <FormControl>
+                    <Input 
+                      {...field} 
+                      placeholder={user?.industry === 'housekeeping' ? '家政服务' : '请输入行业定位'}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* 2. 目标人群输入 */}
+            <FormField
+              disabled={isLoading}
+              control={form.control}
+              name="targetAudience"
+              render={({ field }: any) => (
+                <FormItem className="px-3 pb-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <FormLabel className="font-bold text-black">{FROM_LABEL.targetAudience[language]}</FormLabel>
+                    {/* 目标人群预设选择器 */}
+                    <div className="w-48">
+                      {onRenderingSearchableSelect(getIndustryPresetData('targetAudience'), FROM_LABEL.preset[language], (value) => {
+                        form.setValue('targetAudience', value);
+                        form.trigger('targetAudience');
+                      }, 'targetAudience')}
+                    </div>
+                  </div>
+                  <FormControl>
+                    <Input 
+                      placeholder="描述目标用户群体的特征和需求"
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* 4. 命名偏好输入 */}
+            <FormField
+              disabled={isLoading}
+              control={form.control}
+              name="namingPreference"
+              render={({ field }: any) => (
+                <FormItem className="px-3 pb-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <FormLabel className="font-bold text-black">{FROM_LABEL.namingPreference[language]}</FormLabel>
+                    {/* 命名偏好预设选择器 */}
+                    <div className="w-48">
+                      {onRenderingSearchableSelect(getIndustryPresetData('namingPreference'), FROM_LABEL.preset[language], (value) => {
+                        form.setValue('namingPreference', value);
+                        form.trigger('namingPreference');
+                      }, 'namingPreference')}
+                    </div>
+                  </div>
+                  <FormControl>
+                    <Input 
+                      placeholder="描述对名称的偏好和要求"
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* 5. 避免内容输入 */}
+            <FormField
+              disabled={isLoading}
+              control={form.control}
+              name="avoidContent"
+              render={({ field }: any) => (
+                <FormItem className="px-3 pb-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <FormLabel className="font-bold text-black">{FROM_LABEL.avoidContent[language]}</FormLabel>
+                    {/* 避免内容预设选择器 */}
+                    <div className="w-48">
+                      {onRenderingSearchableSelect(getIndustryPresetData('avoidContent'), FROM_LABEL.preset[language], (value) => {
+                        form.setValue('avoidContent', value);
+                        form.trigger('avoidContent');
+                      }, 'avoidContent')}
+                    </div>
+                  </div>
+                  <FormControl>
+                    <Input 
+                      placeholder="描述需要避免的内容和词汇"
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* 6. 风格选择 */}
+            <FormField
+              disabled={isLoading}
+              control={form.control}
+              name="style"
+              render={({ field }: any) => (
+                <FormItem className="px-3 pb-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <FormLabel className="font-bold text-black">{FROM_LABEL.style[language]}</FormLabel>
+                  </div>
+                  <FormControl>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="选择风格调性" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {BIO_STYLE.map((style, index) => (
+                          <SelectItem key={index} value={style[language]}>
+                            {style[language]}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
                     </Select>
                   </FormControl>
                   <FormMessage />

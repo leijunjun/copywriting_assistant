@@ -361,5 +361,57 @@ export const housekeepingPresets: IndustryPresets = {
       { chinese: "科学育儿，专业指导，助力宝宝健康成长", english: "Scientific parenting, professional guidance, helping babies grow healthy", japanese: "科学的育児、プロの指導、赤ちゃんの健康な成長をサポート" },
       { chinese: "整理收纳，空间规划，打造极简生活", english: "Organizing and decluttering, space planning, creating minimalist living", japanese: "整理収納、空間計画、ミニマルライフを創造" }
     ]
+  },
+  
+  // 自媒体起名（三件套）工具
+  'social-media-bio-creation': {
+    industryPosition: [
+      { chinese: "家政服务", english: "Housekeeping Services", japanese: "家事代行サービス" },
+      { chinese: "母婴护理", english: "Maternal Care", japanese: "母子ケア" },
+      { chinese: "家庭保洁", english: "Home Cleaning", japanese: "家庭清掃" },
+      { chinese: "育儿嫂服务", english: "Nanny Service", japanese: "ベビーシッターサービス" },
+      { chinese: "月嫂服务", english: "Maternity Matron Service", japanese: "産後ケアサービス" },
+      { chinese: "老人照护", english: "Elderly Care", japanese: "高齢者ケア" },
+      { chinese: "整理收纳", english: "Organizing Service", japanese: "整理収納サービス" },
+      { chinese: "钟点工服务", english: "Hourly Housekeeping", japanese: "時間制家事代行" },
+      { chinese: "住家保姆", english: "Live-in Maid", japanese: "住み込みメイド" },
+      { chinese: "深度清洁", english: "Deep Cleaning", japanese: "深層清掃" }
+    ],
+    targetAudience: [
+      { chinese: "需要家政服务的双职工家庭", english: "Dual-income families needing housekeeping services", japanese: "家事代行サービスが必要な共働き家族" },
+      { chinese: "需要月嫂育儿嫂的新手父母", english: "New parents needing maternity matrons and nannies", japanese: "産後ケア・ベビーシッターが必要な新米両親" },
+      { chinese: "家有老人需要照护的家庭", english: "Families with elderly needing care", japanese: "高齢者ケアが必要な家族" },
+      { chinese: "工作忙碌无暇家务的白领", english: "Busy white-collar workers with no time for housework", japanese: "家事をする時間がない忙しいホワイトカラー" },
+      { chinese: "产后需要专业护理的妈妈", english: "Postpartum mothers needing professional care", japanese: "プロのケアが必要な産後ママ" },
+      { chinese: "追求生活品质的中产家庭", english: "Middle-class families pursuing quality of life", japanese: "生活の質を追求する中産階級家族" },
+      { chinese: "需要整理收纳的现代家庭", english: "Modern families needing organizing services", japanese: "整理収納サービスが必要な現代家族" },
+      { chinese: "单亲家庭需要家政支持", english: "Single-parent families needing housekeeping support", japanese: "家事代行サポートが必要なシングルマザー・ファーザー家族" },
+      { chinese: "多子女家庭需要育儿协助", english: "Large families needing childcare assistance", japanese: "育児支援が必要な多子家族" },
+      { chinese: "高收入家庭追求专业服务", english: "High-income families pursuing professional services", japanese: "プロサービスを追求する高収入家族" }
+    ],
+    namingPreference: [
+      { chinese: "亲切的第三人称称呼，如'李阿姨贴心家政'", english: "Friendly and memorable, reflecting professionalism and warmth", japanese: "親しみやすく覚えやすく、プロフェッショナルさと温かさを表現" },
+      { chinese: "突出服务特色，如'贴心'、'安心'", english: "Highlight service characteristics like 'caring' and 'reassuring'", japanese: "'心のこもった''安心'などのサービス特色を強調" },
+      { chinese: "简洁有力，朗朗上口", english: "Concise and powerful, easy to pronounce", japanese: "簡潔で力強く、発音しやすい" },
+      { chinese: "体现专业性和可信度", english: "Reflect professionalism and credibility", japanese: "プロフェッショナルさと信頼性を表現" },
+      { chinese: "突出地域特色或服务范围", english: "Highlight regional characteristics or service scope", japanese: "地域特色やサービス範囲を強調" },
+      { chinese: "温馨亲切，让人产生信任感", english: "Warm and friendly, creating trust", japanese: "温かく親しみやすく、信頼感を与える" },
+      { chinese: "简洁明了，突出核心价值", english: "Simple and clear, highlighting core values", japanese: "シンプルで明確、核心価値を強調" },
+      { chinese: "朗朗上口，便于传播", english: "Catchy and easy to spread", japanese: "覚えやすく、拡散しやすい" },
+      { chinese: "体现服务理念和使命", english: "Reflect service philosophy and mission", japanese: "サービス理念と使命を表現" },
+      { chinese: "突出专业认证和资质", english: "Highlight professional certifications and qualifications", japanese: "プロ認証と資格を強調" }
+    ],
+    avoidContent: [
+      { chinese: "避免使用'最好'、'第一'等绝对化用语", english: "Avoid absolute terms like 'best' or 'first'", japanese: "'最高''第一'などの絶対的表現は使用しない" },
+      { chinese: "不要使用地域歧视或性别偏见词汇", english: "Don't use regional discrimination or gender bias terms", japanese: "地域差別や性別偏見の用語は使用しない" },
+      { chinese: "避免夸大服务效果和承诺", english: "Avoid exaggerating service effects and promises", japanese: "サービス効果と約束を誇大表現しない" },
+      { chinese: "不使用'顶级'、'极品'等过度修饰词", english: "Don't use excessive modifiers like 'top-tier' or 'premium'", japanese: "'最高級''極品'などの過度な修飾語は使用しない" },
+      { chinese: "避免使用'唯一'、'独家'等排他性词汇", english: "Avoid exclusive terms like 'only' or 'exclusive'", japanese: "'唯一''独占'などの排他性用語は使用しない" },
+      { chinese: "不使用'完美'、'无缺'等绝对词汇", english: "Don't use absolute terms like 'perfect' or 'flawless'", japanese: "'完璧''無欠'などの絶対的用語は使用しない" },
+      { chinese: "避免贬低竞争对手或同行", english: "Avoid disparaging competitors or peers", japanese: "競合他社や同業者を貶めない" },
+      { chinese: "不使用可能引起争议的敏感词汇", english: "Don't use sensitive terms that might cause controversy", japanese: "論争を引き起こす可能性のある敏感な用語は使用しない" },
+      { chinese: "避免使用过于商业化的词汇", english: "Avoid overly commercial terms", japanese: "過度に商業的な用語は使用しない" },
+      { chinese: "不使用可能误导消费者的表述", english: "Don't use statements that might mislead consumers", japanese: "消費者を誤解させる可能性のある表現は使用しない" }
+    ]
   }
 };

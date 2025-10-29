@@ -262,16 +262,19 @@ export const toolList: IToolList = {
       resultType: 'text',
       title: 'social-media-bio-creation',
       submitButton: 'Generate',
-      name: { chinese: '社交网络Bio生成', english: 'Social Media Bio Creation', japanese: 'ソーシャルネットワークBio生成' },
+      name: { chinese: '自媒体起名（三件套）', english: 'Social Media Naming Suite', japanese: 'ソーシャルメディア命名スイート' },
       classify: { chinese: '公域推广', english: 'Public Domain Promotion', japanese: 'パブリックドメイン促進' },
       url: '/SocialMediaBioCreation.png',
       describe: {
-        chinese: '通过一个高质量的Bio(头像下简介）吸引更多的粉丝',
-        english: 'Attract more followers with a compelling and high-quality bio.',
-        japanese: '質の高いBioを通じてより多くのファンを魅了する'
+        chinese: '用 AI 创意！自媒体账号创意起名、诱人简介、配套头像，生成 AB方案供选择',
+        english: 'Use AI creativity! Creative naming for social media accounts, attractive bios, and matching avatars, generate AB solutions for selection.',
+        japanese: 'AIの創造性を活用！ソーシャルメディアアカウントのクリエイティブな命名、魅力的なプロフィール、マッチングアバター、選択用のABソリューションを生成'
       },
       from: {
-        keywords: { type: 'Textarea', },
+        industryPosition: { type: 'Input' },
+        targetAudience: { type: 'Input' },
+        namingPreference: { type: 'Input' },
+        avoidContent: { type: 'Input' },
         style: { type: 'Select', list: BIO_STYLE },
       }
     },
