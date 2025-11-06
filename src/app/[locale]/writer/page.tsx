@@ -360,6 +360,7 @@ export default function WriterPage() {
     console.log('开始生成反向提示词...');
     setIsGeneratingPrompt(true);
     setPromptContent('');
+    setStructureCollapsed(true); // 立即折叠结构解析区域
     setPromptCollapsed(false); // 展开反向提示词区域
     let accumulatedText = '';
 
@@ -375,8 +376,8 @@ export default function WriterPage() {
 以下是指南：
 `;
 
-      console.log('发送请求到 /api/dify/workflow');
-      const response = await fetch('/api/dify/workflow', {
+      console.log('发送请求到 /api/writer/chat');
+      const response = await fetch('/api/writer/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -446,8 +447,7 @@ export default function WriterPage() {
       // 显示"开始 AI 引导创作"按钮
       console.log('设置 showStartChatButton = true');
       setShowStartChatButton(true);
-      // 自动折叠结构解析，显示反向提示词栏目
-      setStructureCollapsed(true);
+      // 确保反向提示词区域保持展开状态
       setPromptCollapsed(false);
     } catch (error) {
       console.error('生成反向提示词失败:', error);
@@ -455,7 +455,7 @@ export default function WriterPage() {
       setIsGeneratingPrompt(false);
       // 即使出错也显示按钮，允许用户重试或继续
       setShowStartChatButton(true);
-      // 不自动折叠结构解析，让用户有机会保存模板
+      // 如果出错，用户可以通过侧边栏重新展开结构解析区域
     }
   };
 
@@ -507,7 +507,7 @@ export default function WriterPage() {
 
 注意：请将分析重点放在"如何写"而非"写什么"，因为用户可能会用这种风格去创作完全不同话题的内容。如果用户要撰写同样风格的文章，需要提供什么样的背景信息，以及还有其他什么是用户需要了解的。`;
 
-      const response = await fetch('/api/dify/workflow', {
+      const response = await fetch('/api/writer/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

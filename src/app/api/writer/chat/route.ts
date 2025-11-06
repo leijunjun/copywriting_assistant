@@ -5,14 +5,19 @@ import { CREDIT_CONFIG } from '@/config/credit-config';
 import { hasSufficientCredits } from '@/lib/credits/balance';
 import { deductCredits } from '@/lib/credits/transactions';
 
+/**
+ * Writer Chat API
+ * 为 Writer 页面提供智能对话生成功能
+ * 使用 302.ai 的 OpenAI 兼容接口
+ */
 export async function POST(request: NextRequest) {
   try {
-    logger.api('302 AI workflow request received');
+    logger.api('Writer chat request received');
 
     // 获取当前用户信息
     const user = await getCurrentUser();
     if (!user) {
-      logger.error('User not authenticated for workflow', undefined, 'API');
+      logger.error('User not authenticated for writer chat', undefined, 'API');
       return NextResponse.json(
         { success: false, message: '用户未登录' },
         { status: 401 }
@@ -33,8 +38,8 @@ export async function POST(request: NextRequest) {
     // 获取 302 API 配置
     const apiKey = process.env.NEXT_PUBLIC_API_KEY;
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    // Writer 专用模型：使用 qwen3-235b-a22b-instruct-2507
-    const model = 'qwen3-235b-a22b-instruct-2507';
+    // Writer 专用模型：可通过环境变量配置，默认使用 qwen3-235b-a22b-instruct-2507
+    const model = process.env.NEXT_PUBLIC_WRITER_MODEL || 'qwen3-235b-a22b-instruct-2507';
 
     if (!apiKey || !apiUrl) {
       logger.error('302 API not configured', undefined, 'API');
@@ -57,7 +62,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (!creditCheck.validation?.has_sufficient_credits) {
-      logger.credits('Insufficient credits for workflow generation', {
+      logger.credits('Insufficient credits for writer chat', {
         userId: user.id,
         required: creditDeductionRate,
         current: creditCheck.validation?.current_balance || 0,
@@ -73,7 +78,7 @@ export async function POST(request: NextRequest) {
       }, { status: 402 });
     }
 
-    logger.api('Calling 302 AI API', { 
+    logger.api('Calling 302 AI API for Writer chat', { 
       userId: user.id,
       promptLength: prompt.length,
       model: model
@@ -132,7 +137,7 @@ export async function POST(request: NextRequest) {
                     const deductionResult = await deductCredits({
                       user_id: user.id,
                       amount: creditDeductionRate,
-                      description: '内容生成使用 AI工作流',
+                      description: '内容生成使用 Writer 智能写作',
                       service_type: 'content_generation'
                     });
 
@@ -199,11 +204,11 @@ export async function POST(request: NextRequest) {
             
             controller.close();
             
-            logger.api('302 AI workflow completed successfully', {
+            logger.api('Writer chat completed successfully', {
               userId: user.id
             });
           } catch (error) {
-            logger.error('Error in 302 API stream processing', error, 'API', { 
+            logger.error('Error in Writer chat stream processing', error, 'API', { 
               userId: user.id 
             });
             controller.error(error);
@@ -227,10 +232,11 @@ export async function POST(request: NextRequest) {
     }
 
   } catch (error) {
-    logger.error('Unexpected error in 302 AI workflow', error, 'API');
+    logger.error('Unexpected error in Writer chat', error, 'API');
     return NextResponse.json(
-      { success: false, message: 'AI Workflow 执行失败，请稍后重试' },
+      { success: false, message: 'Writer 智能写作执行失败，请稍后重试' },
       { status: 500 }
     );
   }
 }
+

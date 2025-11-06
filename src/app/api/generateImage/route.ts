@@ -119,6 +119,9 @@ async function handleImageGeneration(request: NextRequest) {
 
     // 调用豆包API生成图片
     const apiKey = process.env.NEXT_PUBLIC_API_KEY;
+    const imageApiUrl = process.env.NEXT_PUBLIC_IMAGE_API_URL || 'https://api.302.ai/doubao/images/generations';
+    const imageModel = process.env.NEXT_PUBLIC_IMAGE_MODEL || 'doubao-seedream-4-0-250828';
+    
     if (!apiKey) {
       logger.error('API key not configured', undefined, 'API');
       return NextResponse.json(
@@ -127,14 +130,20 @@ async function handleImageGeneration(request: NextRequest) {
       );
     }
 
-    const response = await fetch('https://api.302.ai/doubao/images/generations', {
+    logger.api('Calling image generation API', {
+      userId: user.id,
+      apiUrl: imageApiUrl,
+      model: imageModel
+    });
+
+    const response = await fetch(imageApiUrl, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'doubao-seedream-4-0-250828',
+        model: imageModel,
         prompt: prompt,
         size: sizeInPixels,
         sequential_image_generation: 'disabled',
