@@ -196,6 +196,17 @@ export function Header({ className }: HeaderProps) {
             </button>
             
             <button
+              onClick={() => handleNavigation('/writer')}
+              className={`text-sm font-medium transition-colors ${
+                isActivePath('/writer') 
+                  ? 'text-blue-600' 
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              {t('inspirationWriter')}
+            </button>
+            
+            <button
               onClick={() => handleNavigation('/ai-image-generation')}
               className={`text-sm font-medium transition-colors ${
                 isActivePath('/ai-image-generation') 
@@ -225,16 +236,20 @@ export function Header({ className }: HeaderProps) {
             
             {isAuthenticated && user && credits ? (
               <>
-                {/* 积分显示 - 融合样式 - 手机端隐藏 */}
-                <div className={`hidden sm:flex items-center space-x-2 rounded-lg px-3 py-1.5 transition-all duration-300 ${
-                  getCreditStatus(credits.balance).color === 'default' 
-                    ? 'bg-gray-100 text-gray-700' 
-                    : getCreditStatus(credits.balance).color === 'destructive'
-                    ? 'bg-red-100 text-red-700'
-                    : getCreditStatus(credits.balance).color === 'secondary'
-                    ? 'bg-yellow-100 text-yellow-700'
-                    : 'bg-green-100 text-green-700'
-                } ${isUpdatingCredits ? 'animate-pulse bg-blue-100 text-blue-700' : ''}`}>
+                {/* 积分显示 - 融合样式 - 手机端隐藏 - 可点击跳转到credits页面 */}
+                <button
+                  onClick={() => handleNavigation('/credits')}
+                  className={`hidden sm:flex items-center space-x-2 rounded-lg px-3 py-1.5 transition-all duration-300 cursor-pointer hover:shadow-md hover:scale-105 ${
+                    getCreditStatus(credits.balance).color === 'default' 
+                      ? 'bg-gray-100 text-gray-700 hover:bg-gray-200' 
+                      : getCreditStatus(credits.balance).color === 'destructive'
+                      ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                      : getCreditStatus(credits.balance).color === 'secondary'
+                      ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'
+                      : 'bg-green-100 text-green-700 hover:bg-green-200'
+                  } ${isUpdatingCredits ? 'animate-pulse bg-blue-100 text-blue-700' : ''}`}
+                  title={t('manageCredits')}
+                >
                   <CreditIcon className={`h-4 w-4 ${isUpdatingCredits ? 'animate-spin' : ''}`} />
                   <span className={`text-sm font-medium ${isUpdatingCredits ? 'animate-pulse' : ''}`}>
                     {credits.balance.toLocaleString()}
@@ -242,7 +257,7 @@ export function Header({ className }: HeaderProps) {
                   {isUpdatingCredits && (
                     <span className="text-xs text-blue-600 animate-pulse">{t('updating')}</span>
                   )}
-                </div>
+                </button>
 
                 {/* 个人信息菜单 - 优化版本 */}
                 <DropdownMenu>
