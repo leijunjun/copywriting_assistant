@@ -1280,7 +1280,7 @@ export default function WriterPage() {
                 </p>
                 <p className="flex items-center justify-center gap-2">
                   <span className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></span>
-                  点击"拆解分析"开始创作之旅
+                  点击&quot;拆解分析&quot;开始创作之旅
                 </p>
               </div>
             </div>
@@ -1564,7 +1564,7 @@ export default function WriterPage() {
           <DialogHeader>
             <DialogTitle>使用说明</DialogTitle>
             <DialogDescription>
-              本工具启发于 Dan Koe 的"AI 内容永动机方法论"，特此感谢！旨在通过 AI 的启发和辅导完成有参考、有个性、有温度的文章创作。
+              本工具启发于 Dan Koe 的&quot;AI 内容永动机方法论&quot;，特此感谢！旨在通过 AI 的启发和辅导完成有参考、有个性、有温度的文章创作。
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-6 py-4">
