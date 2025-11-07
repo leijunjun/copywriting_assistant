@@ -240,5 +240,26 @@
     "credits": "积分管理",
     "history": "交易记录",
     "settings": "设置"
+  },
+  "xhsShare": {
+    "title": "分享到小红书",
+    "subtitle": "一键分享精彩内容到小红书，让更多人看到",
+    "contentPreview": "内容预览",
+    "copy": "复制",
+    "shareButton": "一键分享到小红书",
+    "sharing": "分享中...",
+    "copySuccess": "复制成功！",
+    "copySuccessDesc": "文案已复制到剪贴板",
+    "copyFailed": "复制失败",
+    "copyFailedDesc": "无法复制文案，请手动选择复制",
+    "manualShareDesc": "文案已复制，请打开小红书粘贴发布",
+    "openAppGuide": "正在尝试打开小红书...",
+    "openAppGuideDesc": "如果小红书没有自动打开，请手动打开小红书 App，在发布页面粘贴内容",
+    "tipTitle": "使用提示",
+    "tip1": "点击按钮会自动复制文案并尝试打开小红书",
+    "tip2": "如果小红书没有打开，请手动打开 App",
+    "tip3": "在小红书的发布页面粘贴文案即可",
+    "wechatMaskTitle": "请在浏览器中打开",
+    "wechatMaskDesc": "点击右上角菜单，选择\"在浏览器中打开\""
   }
 }

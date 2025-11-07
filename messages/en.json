@@ -240,5 +240,26 @@
     "credits": "Credits",
     "history": "History",
     "settings": "Settings"
+  },
+  "xhsShare": {
+    "title": "Share to Xiaohongshu",
+    "subtitle": "Share amazing content to Xiaohongshu with one click",
+    "contentPreview": "Content Preview",
+    "copy": "Copy",
+    "shareButton": "Share to Xiaohongshu",
+    "sharing": "Sharing...",
+    "copySuccess": "Copy Success!",
+    "copySuccessDesc": "Content copied to clipboard",
+    "copyFailed": "Copy Failed",
+    "copyFailedDesc": "Unable to copy content, please select manually",
+    "manualShareDesc": "Content copied, please open Xiaohongshu and paste to publish",
+    "openAppGuide": "Trying to open Xiaohongshu...",
+    "openAppGuideDesc": "If Xiaohongshu doesn't open automatically, please open the app manually and paste the content",
+    "tipTitle": "Tips",
+    "tip1": "Click the button to copy content and try to open Xiaohongshu",
+    "tip2": "If Xiaohongshu doesn't open, please open the app manually",
+    "tip3": "Paste the content in Xiaohongshu's publish page",
+    "wechatMaskTitle": "Please Open in Browser",
+    "wechatMaskDesc": "Tap the menu in the top-right corner and select 'Open in Browser'"
   }
 }
