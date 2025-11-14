@@ -14,7 +14,8 @@ export interface AdminSession {
 // 会员列表项类型
 export interface MemberListItem {
   id: string;
-  email: string;
+  email: string | null; // 邮箱，手机号用户为null
+  phone: string | null; // 手机号，邮箱用户为null
   nickname: string;
   industry: string;
   created_at: string;
@@ -100,8 +101,9 @@ export interface AlertItem {
 }
 
 // 会员创建请求类型
+// Note: 'email' field name is kept for backward compatibility, but it can contain either email or phone number
 export interface CreateMemberRequest {
-  email: string;
+  email: string; // Can be email or phone number
   password: string;
   nickname: string;
   industry: string;
@@ -222,7 +224,7 @@ export interface DashboardResponse {
 }
 
 // 行业类型
-export type IndustryType = 'general' | 'housekeeping' | 'beauty' | 'lifestyle-beauty';
+export type IndustryType = 'general' | 'housekeeping' | 'beauty' | 'lifestyle-beauty' | 'makeup';
 
 // 行业选项类型
 export interface IndustryOption {

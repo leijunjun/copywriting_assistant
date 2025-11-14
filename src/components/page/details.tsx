@@ -28,6 +28,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useAuth } from '@/lib/auth/auth-context';
 import { InsufficientCreditsModal } from '@/components/credits/InsufficientCreditsModal';
 import SocialShare from '@/components/SocialShare';
+import { CREDIT_CONFIG } from '@/config/credit-config';
 
 interface IGenerateRecords { 
   id: number; 
@@ -141,7 +142,9 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
       
       // 前置积分检查（批量模式）
       if (isBatchMode) {
-        const totalCost = 5 * batchCount; // 假设单次成本为5积分
+        // 使用配置的文案生成积分成本
+        const singleCost = CREDIT_CONFIG.WRITING_GENERATION.COST;
+        const totalCost = singleCost * batchCount;
         if (!authState.credits || authState.credits.balance < totalCost) {
           toast({
             title: "积分不足",
@@ -156,7 +159,7 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
       const baseRequestData = {
         params,
         prompt: dataSource?.prompt ? `${dataSource?.prompt}\n${params.content}` : '',
-        tool_name: dataSource?.name?.english || dataSource?.title,
+        tool_name: dataSource?.title || dataSource?.name?.english, // 优先使用 title，因为它是工具的唯一标识符
         language: global.language
       };
 
@@ -233,6 +236,42 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
                   const data = line.slice(6);
                   try {
                     const parsedData = JSON.parse(data);
+                    
+                    // 检查是否是错误信息
+                    if (parsedData?.error) {
+                      const errorCode = parsedData.err_code || 0;
+                      const errorMessage = parsedData.message || '未知错误';
+                      
+                      console.error(`流式响应中的错误 (请求 ${requestId}):`, {
+                        err_code: errorCode,
+                        message: errorMessage
+                      });
+                      
+                      // 显示错误卡片
+                      setGenerateRecords((v) => {
+                        return v.map((item) => {
+                          if (item.id === requestId) {
+                            return { 
+                              ...item, 
+                              output: `生成失败: ${errorMessage}`,
+                              error: true,
+                              err_code: errorCode
+                            };
+                          }
+                          return item;
+                        });
+                      });
+                      
+                      // 显示错误提示
+                      toast({
+                        duration: 3000,
+                        description: ErrMessage(errorCode, global.language)
+                      });
+                      
+                      return; // 停止处理后续数据
+                    }
+                    
+                    // 正常的内容数据
                     if (parsedData?.content) {
                       newParams.output += parsedData.content;
                       setGenerateRecords((v) => {
@@ -245,7 +284,7 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
                       });
                     }
                   } catch (e) {
-                    console.error('解析流数据失败:', e);
+                    console.error('解析流数据失败:', e, '原始数据:', data.substring(0, 100));
                   }
                 }
               });
@@ -365,6 +404,43 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
                   const data = line.slice(6);
                   try {
                     const parsedData = JSON.parse(data);
+                    
+                    // 检查是否是错误信息
+                    if (parsedData?.error) {
+                      const errorCode = parsedData.err_code || 0;
+                      const errorMessage = parsedData.message || '未知错误';
+                      
+                      console.error('流式响应中的错误:', {
+                        err_code: errorCode,
+                        message: errorMessage
+                      });
+                      
+                      // 显示错误信息
+                      setGenerateRecords((v) => {
+                        return v.map((item) => {
+                          if (item.id === id) {
+                            return { 
+                              ...item, 
+                              output: `生成失败: ${errorMessage}`,
+                              error: true,
+                              err_code: errorCode
+                            };
+                          }
+                          return item;
+                        });
+                      });
+                      
+                      // 显示错误提示
+                      toast({
+                        duration: 3000,
+                        description: ErrMessage(errorCode, global.language)
+                      });
+                      
+                      setLoad(false);
+                      return; // 停止处理
+                    }
+                    
+                    // 正常的内容数据
                     if (parsedData?.content) {
                       newParams.output += parsedData.content
                       setGenerateRecords((v) => {
@@ -377,6 +453,7 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
                       })
                     }
                   } catch (e) {
+                    console.error('解析流数据失败:', e, '原始数据:', data.substring(0, 100));
                     toast({
                       duration: 2000,
                       description: (ErrMessage(0, global.language))
@@ -773,6 +850,7 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
                           <div className="flex items-center gap-2 text-gray-400 text-sm">
                             <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
                             <span>{dayjs(item.createdAt).format('MM-DD HH:mm')}</span>
+                            <span className="text-gray-500 text-xs ml-2">以上内容由AI 生成，仅供学习交流</span>
                           </div>
                           <div className="flex gap-3 relative z-10">
                             <Button 

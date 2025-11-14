@@ -16,6 +16,7 @@ import { CreditBalance } from '@/components/credits/CreditBalance';
 import { ProfilePageSkeleton, LoadingIndicator, PageLoadingOverlay } from '@/components/ui/loading-skeleton';
 import { logger } from '@/lib/utils/logger';
 import { clearLocalStorageItems } from '@/lib/utils/localStorage';
+import { useAuth } from '@/lib/auth/auth-context';
 
 interface UserData {
   id: string;
@@ -58,6 +59,7 @@ OptimizedCreditBalance.displayName = 'OptimizedCreditBalance';
 export default function ProfilePage() {
   const t = useTranslations('Common');
   const router = useRouter();
+  const { clearAuthState, triggerAuthEvent } = useAuth();
   const [user, setUser] = useState<UserData | null>(null);
   const [credits, setCredits] = useState<CreditData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -112,20 +114,42 @@ export default function ProfilePage() {
 
   const handleLogout = async () => {
     try {
+      // 先清除全局状态，确保UI立即更新
+      clearAuthState();
+      
+      // 然后调用登出API
       const response = await fetch('/api/auth/logout', {
         method: 'POST',
+        cache: 'no-store',
       });
 
       if (response.ok) {
         // Clear local storage using utility function that triggers events
         clearLocalStorageItems(['user', 'session', 'loginRedirectUrl']);
         
+        // 再次确保状态清除（防止竞态条件）
+        clearAuthState();
+        
+        // 触发logout事件，确保所有组件都能收到通知
+        triggerAuthEvent('logout');
+        
         // 使用router.push而不是强制刷新，让React处理状态更新
         router.push('/auth/login');
         
         logger.auth('User logged out successfully');
+      } else {
+        // 即使API失败，也清除本地状态
+        clearLocalStorageItems(['user', 'session', 'loginRedirectUrl']);
+        clearAuthState();
+        triggerAuthEvent('logout');
+        router.push('/auth/login');
       }
     } catch (err) {
+      // 即使出错，也清除本地状态
+      clearLocalStorageItems(['user', 'session', 'loginRedirectUrl']);
+      clearAuthState();
+      triggerAuthEvent('logout');
+      router.push('/auth/login');
       logger.error('Failed to logout', err, 'API');
     }
   };

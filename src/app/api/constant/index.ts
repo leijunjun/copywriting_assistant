@@ -1,3 +1,6 @@
+import { getLoseaiConfig } from '@/constant/loseai';
+import { IndustryType, getToolPresets } from '@/constant/industry';
+
 interface IToolParameter {
     content: string, tone: string, keywords: string, emailContext: string,
     audience: string, language: string, type: string, requestForReply: string,
@@ -15,6 +18,7 @@ interface IToolParameter {
     articlePurpose: string, customerPainPoints: string, conversionAction: string, 
     additionalContent: string, articleStyle: string,
     industryPosition: string, targetAudience: string, namingPreference: string, avoidContent: string,
+    persona: string, product: string,
 }
 
 export const toolParameter: { [key: string]: (params: IToolParameter) => Array<{ role: string, content: string }> } = {
@@ -953,6 +957,72 @@ ${params.additionalContent ? `补充内容：${params.additionalContent}` : ''}
                 content: `根据以下信息生成一个小红书平台风格的帖子。\n\n角色：${params.role}\n背景：${params.background}\n目的：${params.purpose}\n语气：${displayTone}\n语言：${params.language}\n要求：\n- 标题吸睛，带关键词（如“学生党闭眼入”“打工人自救指南”）\n- 字数控制在300–600字，短段落划分，穿插合适的emoji和感叹号增加氛围感\n- 内容符合角色设定和背景情况，真实感强，有细节、有情绪、有实用价值\n- 结尾可引导互动（如“你们有类似经历吗？”“求推荐更多好物！”）\n- 匹配 4-6 个相关标签，无需解释和注释\n\n${mimicAppend}请直接生成帖子内容：`
             }
         ]
+    },
+
+    // 小红书帖子生成（商品类）
+    'xiaohongshu-post-generation-product': (params: Pick<IToolParameter, 'persona' | 'product' | 'style' | 'language'> & { industry?: IndustryType, batchIndex?: number, batchTotal?: number }) => {
+        // 从 loseai 配置中获取优化要求
+        const industry = params.industry || 'general' as IndustryType;
+        const loseaiOptimization = getLoseaiConfig(industry, 'xiaohongshu-post-generation-product');
+        
+        // 处理风格选择：如果为随机选择或为空，则从行业预设中随机选择一个
+        let selectedStyle = params.style;
+        if (!selectedStyle || selectedStyle === '__random__') {
+            const toolPresets = getToolPresets(industry, 'xiaohongshu-post-generation-product');
+            if (toolPresets && toolPresets['style']) {
+                const stylePresets = toolPresets['style'] as any[];
+                if (stylePresets && stylePresets.length > 0) {
+                    // 随机选择一个风格
+                    const randomIndex = Math.floor(Math.random() * stylePresets.length);
+                    const randomStyle = stylePresets[randomIndex];
+                    // 如果风格数据有 value 字段，使用 value；否则使用多语言内容
+                    selectedStyle = randomStyle.value || randomStyle.chinese || '';
+                } else {
+                    // 如果没有预设风格，使用默认值
+                    selectedStyle = '';
+                }
+            } else {
+                selectedStyle = '';
+            }
+        }
+        
+        // 批量生成提示
+        const batchHint = params.batchIndex && params.batchTotal && params.batchTotal > 1
+            ? `\n【批量生成说明】这是批量生成的第${params.batchIndex}/${params.batchTotal}篇笔记。请保持与其他篇目完全相同的质量标准：
+1. 标签数量必须保持4-6个，不能减少
+2. emoji使用必须丰富，与单篇生成保持相同密度
+3. 细节描述必须充分，有情绪、有实用价值
+4. 字数控制在300-600字，短段落划分
+5. 在具体案例、表达方式上有所差异，避免内容雷同
+6. 每篇都应该是高质量、有价值的独立内容，不能因为批量生成而降低标准\n`
+            : '';
+        
+        // 如果有 loseai 优化要求，构建包含两阶段的提示词
+        if (loseaiOptimization) {
+            return [
+                {
+                    role: 'user',
+                    content: `
+你是一个小红书爆款文案编辑，对护肤品有 8 年的推广经验，写出的稿子很有闺蜜味，现在要针对${params.product}产品，用${params.persona}的口吻撰写种草帖子，要求如下：
+- 解析参考的爆款帖子 ${selectedStyle}的结构、文风和语气，模仿撰写，禁止完全雷同，要有所创新。
+- 为了商品属性不失真，商品相关表达要符合${params.product}原意；
+- 最终输出要提炼 5-10个标签，不能少于5个，不能多于10个；
+- 直接输出，无需解释，无需展示中间过程。
+语言：${params.language}${batchHint}`
+                }
+            ];
+        } else {
+            // 如果没有 loseai 优化要求，只使用阶段一提示词
+            return [
+                {
+                    role: 'user',
+                    content: `你是一个小红书热款文案编辑，分析${selectedStyle}的文风并模仿，以${params.persona}的角色，对${params.product}中的产品进行帖子撰写。有一点要注意，为了不让内容失真，商品属性相关的表达要遵守原意。
+
+请直接生成帖子内容。
+语言：${params.language}${batchHint}`
+                }
+            ];
+        }
     },
 
     'weibo-post-generation': (params: Pick<IToolParameter, 'content' | 'language' | 'tone'>) => {

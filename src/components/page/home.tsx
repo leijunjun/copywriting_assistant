@@ -757,7 +757,7 @@ export default function Home() {
                   words={global.language === 'chinese' ? [
                     HOME_TITLE[global.language],
                     "创意写作，批量出稿",
-                    "AI 精准配图", 
+                    '高效产出有"人味儿"', 
                     "AI 文秘，懂业务更智能"
                   ] : global.language === 'english' ? [
                     HOME_TITLE[global.language],

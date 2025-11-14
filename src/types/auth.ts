@@ -37,13 +37,14 @@ export interface SessionData {
 }
 
 // Authentication Request Types
+// Note: 'email' field name is kept for backward compatibility, but it can contain either email or phone number
 export interface LoginRequest {
-  email: string;
+  email: string; // Can be email or phone number
   password: string;
 }
 
 export interface RegisterRequest {
-  email: string;
+  email: string; // Can be email or phone number
   password: string;
   nickname?: string;
   industry?: string;
@@ -224,13 +225,14 @@ export interface UserProfileProps {
 }
 
 // Form Types
+// Note: 'email' field name is kept for backward compatibility, but it can contain either email or phone number
 export interface LoginFormData {
-  email: string;
+  email: string; // Can be email or phone number
   password: string;
 }
 
 export interface RegisterFormData {
-  email: string;
+  email: string; // Can be email or phone number
   password: string;
   confirmPassword: string;
   nickname?: string;

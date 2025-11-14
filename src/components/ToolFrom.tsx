@@ -12,6 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { CLEAR_CONTENT_BUTTON, FROM_LABEL, LANGUAGE_LIST, OUTPUT_LANGUAGE, PLEASE_ENTER, PLEASE_SELECT, SUBMIT_BUTTON, ROLE_TEMPLATES, WECHAT_ARTICLE_PURPOSE, WECHAT_ARTICLE_CONVERSION, BIO_STYLE } from "@/constant/language";
 import { useCreditDeductionRate } from '@/hooks/useCreditDeductionRate';
 import { useAuthCheck } from '@/hooks/useAuthCheck';
@@ -35,6 +36,8 @@ export default function ToolFrom(props: IProps) {
   const [presetOpen, setPresetOpen] = useState<{[key: string]: boolean}>({})
   const [searchQuery, setSearchQuery] = useState<{[key: string]: string}>({})
   const presetRefs = useRef<{[key: string]: HTMLDivElement | null}>({});
+  const [styleReferenceOpen, setStyleReferenceOpen] = useState(false);
+  const [styleReferenceContent, setStyleReferenceContent] = useState('');
   
   // Get credit deduction rate
   const { deductionRate, loading: rateLoading } = useCreditDeductionRate();
@@ -113,8 +116,9 @@ export default function ToolFrom(props: IProps) {
   // 基础表单校验（来自配置）
   let baseSchema: any = z.object(onFormSchema());
 
-  // 如果是小红书工具，追加“样本仿写”相关的可选字段与条件校验
+  // 如果是小红书工具，追加"样本仿写"相关的可选字段与条件校验
   const isXhs = props.dataSource?.title === 'xiaohongshu-post-generation';
+  const isXiaohongshuProduct = props.dataSource?.title === 'xiaohongshu-post-generation-product';
   const isSocialMediaBioTool = props.dataSource?.title === 'social-media-bio-creation';
   
   if (isXhs) {
@@ -144,6 +148,13 @@ export default function ToolFrom(props: IProps) {
       }
     });
   }
+  
+  // 如果是小红书商品推广帖，添加 batchCount 字段
+  if (isXiaohongshuProduct) {
+    baseSchema = baseSchema.extend({
+      batchCount: z.number().min(1).max(10).optional().default(1)
+    });
+  }
 
   const formSchema = baseSchema as any;
 
@@ -152,6 +163,7 @@ export default function ToolFrom(props: IProps) {
     defaultValues: { 
       ...onFormSchema(true), 
       ...(isXhs ? { mimicSample: '', batchCount: 1 } : {}),
+      ...(isXiaohongshuProduct ? { batchCount: 1, style: '__random__' } : {}),
       ...(isSocialMediaBioTool && user?.industry === 'housekeeping' ? { industryPosition: '家政服务' } : {})
     },
   })
@@ -373,6 +385,9 @@ export default function ToolFrom(props: IProps) {
   // 检查是否为小红书帖子生成工具
   const isXiaohongshuTool = dataSource.title === 'xiaohongshu-post-generation';
   
+  // 检查是否为小红书帖子生成工具（商品类）
+  const isXiaohongshuProductTool = dataSource.title === 'xiaohongshu-post-generation-product';
+  
   // 检查是否为抖音短视频脚本工具
   const isTikTokTool = dataSource.title === 'TikTok-post-generation';
   
@@ -518,6 +533,198 @@ export default function ToolFrom(props: IProps) {
                         )}
                       />
                     )}
+                  </FormItem>
+                );
+              }}
+            />
+          </>
+        ) : isXiaohongshuProductTool ? (
+          // 小红书帖子生成工具（商品类）的特殊布局
+          <>
+            {/* 1. 商品输入 */}
+            <FormField
+              disabled={isLoading}
+              control={form.control}
+              name="product"
+              render={({ field }: any) => {
+                // 获取商品预设数据 - 这里预设数据结构是 {label: MultilingualContent, value: string}
+                const productPresets = getIndustryPresetData('product');
+                return (
+                  <FormItem className="px-3 pb-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <FormLabel className="font-bold text-black">{FROM_LABEL.product[language]}</FormLabel>
+                      {/* 商品预设选择器 - 显示简称，值为完整文本 */}
+                      <div className="w-48">
+                        {productPresets.length > 0 && (
+                          <div 
+                            className="relative" 
+                            ref={(el) => { presetRefs.current['product'] = el; }} 
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Button
+                              type="button"
+                              variant="outline"
+                              role="combobox"
+                              aria-expanded={presetOpen['product'] || false}
+                              className="w-full justify-between"
+                              onClick={(e: React.MouseEvent) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setPresetOpen((prev: {[key: string]: boolean}) => ({
+                                  ...prev,
+                                  ['product']: !prev['product']
+                                }));
+                              }}
+                            >
+                              <span className="text-gray-500">{FROM_LABEL.preset[language]}</span>
+                              <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                            
+                            {(presetOpen['product'] || false) && (
+                              <div className="absolute right-0 z-50 mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto min-w-full w-max max-w-96">
+                                <div className="space-y-1 p-2">
+                                  {productPresets.map((item: any) => (
+                                    <div
+                                      key={item.label?.chinese || item.chinese}
+                                      className="p-2 hover:bg-gray-100 cursor-pointer rounded-md border border-gray-200"
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        // 如果有 label 和 value 结构，使用 value；否则使用原始值
+                                        const selectedValue = item.value || item[language];
+                                        form.setValue('product', selectedValue);
+                                        form.trigger('product');
+                                        setPresetOpen((prev: {[key: string]: boolean}) => ({
+                                          ...prev,
+                                          ['product']: false
+                                        }));
+                                      }}
+                                    >
+                                      {item.label ? item.label[language] : item[language]}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <FormControl>
+                      <Input 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
+            />
+            
+            {/* 2. 人设输入 */}
+            <FormField
+              disabled={isLoading}
+              control={form.control}
+              name="persona"
+              render={({ field }: any) => (
+                <FormItem className="px-3 pb-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <FormLabel className="font-bold text-black">{FROM_LABEL.persona[language]}</FormLabel>
+                    {/* 人设预设选择器 */}
+                    <div className="w-48">
+                      {onRenderingSearchableSelect(getIndustryPresetData('persona'), FROM_LABEL.preset[language], (value) => {
+                        form.setValue('persona', value);
+                        form.trigger('persona');
+                      }, 'persona')}
+                    </div>
+                  </div>
+                  <FormControl>
+                    <Input 
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* 3. 风格选择 */}
+            <FormField
+              disabled={isLoading}
+              control={form.control}
+              name="style"
+              render={({ field }: any) => {
+                // 获取风格预设数据 - 结构是 {label: MultilingualContent, value: string}
+                const stylePresets = getIndustryPresetData('style');
+                // 随机选择风格的选项文本
+                const randomStyleLabel = {
+                  chinese: '随机选择风格',
+                  english: 'Random Style',
+                  japanese: 'ランダムスタイル'
+                };
+                
+                // 检查当前选中的风格是否为随机或空
+                const currentStyle = field.value || '__random__';
+                const isRandomStyle = currentStyle === '__random__' || !currentStyle;
+                
+                // 查找当前选中风格的内容
+                const selectedStylePreset = stylePresets.find((item: any) => {
+                  const itemValue = item.value || item.english || '';
+                  return itemValue === currentStyle;
+                });
+                
+                // 处理风格选择变化
+                const handleStyleChange = (value: string) => {
+                  field.onChange(value);
+                };
+                
+                // 处理参考原文点击
+                const handleReferenceClick = () => {
+                  if (selectedStylePreset) {
+                    // 风格预设可能是 PresetOption 类型（有 value）或 MultilingualContent 类型
+                    const content = (selectedStylePreset as any).value || '';
+                    setStyleReferenceContent(content);
+                    setStyleReferenceOpen(true);
+                  }
+                };
+                
+                return (
+                  <FormItem className="px-3 pb-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <FormLabel className="font-bold text-black">{FROM_LABEL.style[language]}</FormLabel>
+                      {!isRandomStyle && selectedStylePreset && (
+                        <button
+                          type="button"
+                          onClick={handleReferenceClick}
+                          className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+                        >
+                          {language === 'chinese' ? '参考原文' : language === 'english' ? 'Reference' : '参考原文'}
+                        </button>
+                      )}
+                    </div>
+                    <FormControl>
+                      <Select onValueChange={handleStyleChange} value={currentStyle} disabled={isLoading}>
+                        <SelectTrigger>
+                          <SelectValue placeholder={randomStyleLabel[language]} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem value="__random__">
+                              {randomStyleLabel[language]}
+                            </SelectItem>
+                            {stylePresets.map((item: any) => (
+                              <SelectItem 
+                                key={item.label?.chinese || item.chinese} 
+                                value={item.value || item.english || ''}
+                              >
+                                {item.label ? item.label[language] : item[language]}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
                   </FormItem>
                 );
               }}
@@ -964,8 +1171,8 @@ export default function ToolFrom(props: IProps) {
               </Select>
             </div>
             
-            {/* 批量生成数量选择器（仅小红书工具） */}
-            {isXiaohongshuTool && (
+            {/* 批量生成数量选择器（小红书工具：服务推广帖和商品推广帖） */}
+            {(isXiaohongshuTool || isXiaohongshuProductTool) && (
               <div className="flex items-center gap-2">
                 <Select 
                   onValueChange={(value) => form.setValue('batchCount', parseInt(value))} 
@@ -999,7 +1206,7 @@ export default function ToolFrom(props: IProps) {
                       {(() => {
                         const batchCount = form.watch('batchCount') || 1;
                         const totalCost = deductionRate * batchCount;
-                        if (isXiaohongshuTool && batchCount > 1) {
+                        if ((isXiaohongshuTool || isXiaohongshuProductTool) && batchCount > 1) {
                           return language === 'chinese' 
                             ? `生成 ${batchCount} 篇（${totalCost} 积分）`
                             : language === 'english'
@@ -1023,6 +1230,21 @@ export default function ToolFrom(props: IProps) {
       open={showLoginModal}
       onOpenChange={setShowLoginModal}
     />
+    {/* 参考原文对话框 */}
+    <Dialog open={styleReferenceOpen} onOpenChange={setStyleReferenceOpen}>
+      <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>
+            {language === 'chinese' ? '参考原文' : language === 'english' ? 'Reference Content' : '参考原文'}
+          </DialogTitle>
+        </DialogHeader>
+        <div className="mt-4">
+          <div className="whitespace-pre-wrap text-sm leading-relaxed p-4 bg-gray-50 rounded-lg border">
+            {styleReferenceContent}
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
     </>
   )
 }

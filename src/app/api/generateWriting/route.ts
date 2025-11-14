@@ -12,8 +12,17 @@ import { convertToAppError } from '@/lib/utils/error';
 export async function POST(request: Request) {
   try {
     const { tool_name, prompt, params, language } = await request.json();
-    const api_key = process.env.NEXT_PUBLIC_API_KEY
-    const model = process.env.NEXT_PUBLIC_MODEL_NAME || ''
+    
+    // 判断是否为小红书商品帖，如果是则使用 kimi API
+    const isKimiTool = tool_name === 'xiaohongshu-post-generation-product';
+    
+    // 根据工具类型选择 API 配置
+    const api_key = isKimiTool 
+      ? (process.env.NEXT_PUBLIC_KIMI_API_KEY || process.env.NEXT_PUBLIC_API_KEY)
+      : process.env.NEXT_PUBLIC_API_KEY;
+    const model = isKimiTool
+      ? (process.env.NEXT_PUBLIC_KIMI_MODEL || process.env.NEXT_PUBLIC_MODEL_NAME || '')
+      : (process.env.NEXT_PUBLIC_MODEL_NAME || '');
 
     if (!api_key || !model || !tool_name) {
       return NextResponse.json({ error: 'parameter is incorrect' }, { status: 400 });
@@ -31,6 +40,26 @@ export async function POST(request: Request) {
       const appError = convertToAppError(authError || new Error('User not found'), { tool_name });
       logger.error('User authentication failed', appError, undefined, { tool_name });
       return NextResponse.json({ error: 'User not authenticated' }, { status: 401 });
+    }
+
+    // Get user industry for tools that need it (like xiaohongshu-post-generation-product)
+    let userIndustry = 'general';
+    try {
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('industry')
+        .eq('id', user.id)
+        .single();
+      
+      if (!userError && userData) {
+        const industry = (userData as { industry?: string })?.industry;
+        if (industry) {
+          userIndustry = industry;
+        }
+      }
+    } catch (error) {
+      logger.error('Failed to fetch user industry', convertToAppError(error), undefined, { userId: user.id });
+      // Continue with default 'general' industry
     }
 
     // Get credit deduction rate from hardcoded config
@@ -111,7 +140,12 @@ export async function POST(request: Request) {
       }
       
       try {
-        messages = toolParameter[tool_name]({ ...params });
+        // For xiaohongshu-post-generation-product, add industry information
+        if (tool_name === 'xiaohongshu-post-generation-product') {
+          messages = toolParameter[tool_name]({ ...params, industry: userIndustry });
+        } else {
+          messages = toolParameter[tool_name]({ ...params });
+        }
       } catch (error) {
         const appError = convertToAppError(error, { tool_name, params });
         logger.error('Error generating tool parameters', appError, undefined, { tool_name, params });
@@ -127,13 +161,18 @@ export async function POST(request: Request) {
     };
 
     const raw = JSON.stringify({ model, messages, stream: true });
-    const fetchUrl = `${process.env.NEXT_PUBLIC_API_URL}/v1/chat/completions`;
+    
+    // 根据工具类型选择 API URL
+    const fetchUrl = isKimiTool
+      ? 'https://api.302.ai/v1/chat/completions'
+      : `${process.env.NEXT_PUBLIC_API_URL}/v1/chat/completions`;
     
     try {
       logger.api('Making API request to external service', { 
         url: fetchUrl, 
         tool_name, 
-        userId: user.id 
+        userId: user.id,
+        apiProvider: isKimiTool ? 'kimi' : 'default'
       });
       
       const response = await fetch(fetchUrl, {
@@ -218,15 +257,70 @@ export async function POST(request: Request) {
                   for (let index = 1; index < arr.length; index++) {
                     const jsonString = arr[index];
                     if (isValidJSONObject(jsonString)) {
-                      const parsedChunk = JSON.parse(jsonString);
-                      if (parsedChunk.choices[0]) {
-                        const delta = parsedChunk.choices[0].delta;
-                        if (delta && Object.keys(delta).length > 0) {
-                          hasContent = true; // Mark that we received content
-                          controller.enqueue(`data: ${JSON.stringify(delta)}\n\n`);
-                        } else {
-                          controller.enqueue(`data: ${JSON.stringify({ stop: parsedChunk.choices[0].finish_reason })}\n\n`);
+                      try {
+                        const parsedChunk = JSON.parse(jsonString);
+                        
+                        // 检查是否有错误信息（302 API 可能返回的错误格式）
+                        if (parsedChunk.error) {
+                          logger.error('Error in stream response from 302 API', undefined, undefined, {
+                            error: parsedChunk.error,
+                            tool_name,
+                            userId: user.id
+                          });
+                          
+                          // 提取错误代码，302 API 的错误代码通常在 error.code 或 error.err_code 中
+                          const errorCode = parsedChunk.error.code || parsedChunk.error.err_code || parsedChunk.error.status || -10003;
+                          const errorMessage = parsedChunk.error.message || parsedChunk.error.msg || '未知错误';
+                          
+                          // 通过流式响应发送错误信息
+                          controller.enqueue(`data: ${JSON.stringify({ 
+                            error: true, 
+                            err_code: errorCode,
+                            message: errorMessage 
+                          })}\n\n`);
+                          controller.close();
+                          return;
                         }
+                        
+                        // 检查 choices 数组中的错误
+                        if (parsedChunk.choices && parsedChunk.choices[0]) {
+                          const choice = parsedChunk.choices[0];
+                          
+                          // 检查是否有错误
+                          if (choice.error) {
+                            logger.error('Error in choice from 302 API', undefined, undefined, {
+                              error: choice.error,
+                              tool_name,
+                              userId: user.id
+                            });
+                            
+                            const errorCode = choice.error.code || choice.error.err_code || -10003;
+                            const errorMessage = choice.error.message || choice.error.msg || '未知错误';
+                            
+                            controller.enqueue(`data: ${JSON.stringify({ 
+                              error: true, 
+                              err_code: errorCode,
+                              message: errorMessage 
+                            })}\n\n`);
+                            controller.close();
+                            return;
+                          }
+                          
+                          const delta = choice.delta;
+                          if (delta && Object.keys(delta).length > 0) {
+                            hasContent = true; // Mark that we received content
+                            controller.enqueue(`data: ${JSON.stringify(delta)}\n\n`);
+                          } else if (choice.finish_reason) {
+                            controller.enqueue(`data: ${JSON.stringify({ stop: choice.finish_reason })}\n\n`);
+                          }
+                        }
+                      } catch (parseError) {
+                        // JSON 解析错误，记录但继续处理
+                        logger.error('Failed to parse stream chunk', convertToAppError(parseError), undefined, {
+                          jsonString: jsonString.substring(0, 200),
+                          tool_name,
+                          userId: user.id
+                        });
                       }
                     }
                   }
@@ -235,8 +329,30 @@ export async function POST(request: Request) {
               controller.close();
             } catch (error) {
               const appError = convertToAppError(error, { tool_name, userId: user.id });
-              logger.error('Error in stream processing', appError, undefined, { tool_name, userId: user.id });
-              controller.error(error);
+              logger.error('Error in stream processing', appError, undefined, { 
+                tool_name, 
+                userId: user.id,
+                errorMessage: error instanceof Error ? error.message : String(error),
+                errorStack: error instanceof Error ? error.stack : undefined
+              });
+              
+              // 通过流式响应发送错误信息，而不是直接调用 controller.error
+              try {
+                const errorMessage = error instanceof Error ? error.message : '流处理过程中发生未知错误';
+                controller.enqueue(`data: ${JSON.stringify({ 
+                  error: true, 
+                  err_code: -10003,
+                  message: errorMessage 
+                })}\n\n`);
+                controller.close();
+              } catch (enqueueError) {
+                // 如果发送错误信息也失败，直接关闭流
+                logger.error('Failed to send error in stream', convertToAppError(enqueueError), undefined, {
+                  tool_name,
+                  userId: user.id
+                });
+                controller.close();
+              }
             }
           }
         });

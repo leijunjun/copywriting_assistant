@@ -382,5 +382,12 @@ export const beautyPresets: IndustryPresets = {
         japanese: "レーザー美肌技術はますます成熟、最新機器を使用して治療効果を確保しながら安全性を保証" 
       },
     ]
+  },
+
+  // 小红书帖子生成工具（商品类）- 暂无预设内容
+  'xiaohongshu-post-generation-product': {
+    persona: [],
+    product: [],
+    style: []
   }
 };

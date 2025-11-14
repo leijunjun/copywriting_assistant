@@ -155,6 +155,8 @@ export const FROM_LABEL: { [key: string]: Language } = {
   'namingPreference': { chinese: '命名偏好', english: 'Naming Preference', japanese: '命名の好み' },
   'avoidContent': { chinese: '避免内容', english: 'Content to Avoid', japanese: '避けるべき内容' },
   'articleStyle': { chinese: '风格', english: 'Article Style', japanese: '記事スタイル' },
+  'persona': { chinese: '人设', english: 'Persona', japanese: 'ペルソナ' },
+  'product': { chinese: '商品', english: 'Product Description', japanese: '商品紹介' },
 }
 
 // 料理能力表词汇 Vocabulary of cooking ability table

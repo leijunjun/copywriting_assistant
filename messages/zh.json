@@ -7,7 +7,7 @@
     "password": "密码",
     "nickname": "昵称",
     "confirmPassword": "确认密码",
-    "emailPlaceholder": "请输入邮箱地址",
+    "emailPlaceholder": "请输入手机或邮箱",
     "passwordPlaceholder": "请输入密码",
     "nicknamePlaceholder": "请输入昵称（可选）",
     "confirmPasswordPlaceholder": "请再次输入密码",
@@ -17,7 +17,7 @@
     "loginFailed": "登录失败",
     "sessionExpired": "会话已过期，请重新登录",
     "welcome": "欢迎使用AI文秘",
-    "loginDescription": "使用邮箱和密码登录，开始您的创作之旅",
+    "loginDescription": "使用账号和密码登录，开始您的创作之旅",
     "loginRequired": "需要登录",
     "loginRequiredDescription": "使用AI工具需要登录账户。登录后即可开始使用所有功能，包括内容生成、历史记录等。",
     "loginBenefits": "登录后享受完整功能",
@@ -42,7 +42,8 @@
     "general": "通用",
     "housekeeping": "家政",
     "beauty": "医疗美容",
-    "lifestyle-beauty": "生活美容"
+    "lifestyle-beauty": "生活美容",
+    "makeup": "美妆"
   },
   "credits": {
     "balance": "积分余额",
@@ -150,6 +151,7 @@
     "housekeeping": "家政",
     "beauty": "医疗美容",
     "lifestyle-beauty": "生活美容",
+    "makeup": "美妆",
     "credits": "积分",
     "profile": "个人资料",
     "logout": "退出登录",

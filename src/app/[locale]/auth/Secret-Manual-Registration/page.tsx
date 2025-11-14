@@ -18,12 +18,13 @@ import { ErrorMessage } from '@/components/ui/error-message';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { logger } from '@/lib/utils/logger';
 import { useAuth } from '@/lib/auth/auth-context';
+import { identifyAuthType } from '@/lib/utils/auth-identifier';
 
 export default function RegisterPage() {
   const t = useTranslations('auth');
   const router = useRouter();
   const { triggerAuthEvent } = useAuth();
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [nickname, setNickname] = useState('');
@@ -50,10 +51,10 @@ export default function RegisterPage() {
       return;
     }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setError('Please enter a valid email address');
+    // Validate identifier (email or phone)
+    const authType = identifyAuthType(identifier);
+    if (!authType) {
+      setError('Please enter a valid email address or phone number');
       setLoading(false);
       return;
     }
@@ -65,9 +66,9 @@ export default function RegisterPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
-          email, 
+          email: identifier, // Keep 'email' field name for backward compatibility
           password, 
-          nickname: nickname || email.split('@')[0],
+          nickname: nickname || (authType === 'email' ? identifier.split('@')[0] : identifier.slice(-4)),
           industry
         }),
       });
@@ -153,18 +154,19 @@ export default function RegisterPage() {
                     <SelectItem value="housekeeping">{t('housekeeping')}</SelectItem>
                     <SelectItem value="beauty">{t('beauty')}</SelectItem>
                     <SelectItem value="lifestyle-beauty">{t('lifestyle-beauty')}</SelectItem>
+                    <SelectItem value="makeup">{t('makeup')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">{t('email')}</Label>
+                <Label htmlFor="identifier">邮箱 / 手机号</Label>
                 <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t('emailPlaceholder')}
+                  id="identifier"
+                  type="text"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
+                  placeholder={t('emailPlaceholder') || 'Email or phone number'}
                   required
                 />
               </div>

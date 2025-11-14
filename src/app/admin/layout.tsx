@@ -6,12 +6,14 @@
  */
 
 import React from 'react';
-import { Inter } from "next/font/google";
-import "../globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Sidebar } from '@/components/admin/Sidebar';
+import type { Metadata } from "next";
 
-const inter = Inter({ subsets: ["latin"] });
+export const metadata: Metadata = {
+  title: "管理后台 - AI文案助手",
+  description: "AI文案助手管理后台",
+};
 
 export default function AdminRootLayout({
   children,
@@ -19,30 +21,16 @@ export default function AdminRootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="zh">
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <title>管理后台 - AI文案助手</title>
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="shortcut icon" href="/favicon.ico" />
-      </head>
-      <body className="font-alimama">
-        <div className="min-h-screen bg-gray-50">
-          <Sidebar />
-          <div className="lg:pl-64">
-            <main className="py-6">
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                {children}
-              </div>
-            </main>
+    <div className="min-h-screen bg-gray-50">
+      <Sidebar />
+      <div className="lg:pl-64">
+        <main className="py-6">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {children}
           </div>
-        </div>
-        <Toaster />
-      </body>
-    </html>
+        </main>
+      </div>
+      <Toaster />
+    </div>
   );
 }

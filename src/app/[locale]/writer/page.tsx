@@ -72,7 +72,7 @@ export default function WriterPage() {
   const [isStructureFullyScrolled, setIsStructureFullyScrolled] = useState(false);
   
   // 说明对话框状态
-  const [helpDialogOpen, setHelpDialogOpen] = useState(false);
+  const [helpDialogOpen, setHelpDialogOpen] = useState(true);
   
   // 引用
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -482,9 +482,6 @@ export default function WriterPage() {
       return;
     }
 
-    // 进入全屏模式
-    await enterFullscreen();
-
     // 显示流程提示，5秒后自动隐藏
     setShowProcessHint(true);
     setTimeout(() => {
@@ -676,17 +673,75 @@ export default function WriterPage() {
         console.log('AI 主动发起对话，系统提示语长度:', prompt.length);
       } else {
         // 正常的对话流程：系统提示语 + 对话历史 + 新消息
-        const conversationHistory = currentMessages
-          .map(m => `${m.role === 'user' ? '用户' : 'AI'}: ${m.content}`)
-          .join('\n\n');
+        // 智能截断对话历史，在控制请求大小的同时尽量保留关键信息
+        const MAX_HISTORY_LENGTH = 12000; // 增加对话历史长度限制（字符数）
+        const MAX_MESSAGES = 30; // 增加消息数量限制
+        
+        // 构建对话历史字符串
+        let conversationHistory = '';
+        
+        if (currentMessages.length <= MAX_MESSAGES) {
+          // 如果消息数量不多，保留全部对话历史
+          conversationHistory = currentMessages
+            .map(m => `${m.role === 'user' ? '用户' : 'AI'}: ${m.content}`)
+            .join('\n\n');
+        } else {
+          // 如果消息数量超过限制，采用智能截断策略
+          // 1. 保留前几条消息（通常包含关键背景信息，如话题、背景等）
+          const earlyMessages = currentMessages.slice(0, 5);
+          // 2. 保留最近的消息（最重要的上下文）
+          const recentCount = MAX_MESSAGES - 5;
+          const recentMessages = currentMessages.slice(-recentCount);
+          
+          // 检查是否有重叠，避免重复
+          let messagesToUse: Message[];
+          if (currentMessages.length <= 5 + recentCount) {
+            // 如果没有重叠，直接使用全部消息
+            messagesToUse = currentMessages;
+          } else {
+            // 合并早期和最近的消息（去重：如果最近的消息与早期的消息有重叠，只保留一次）
+            const recentStartIndex = currentMessages.length - recentCount;
+            // 如果最近的消息起始位置在早期消息之后，说明没有重叠
+            if (recentStartIndex >= 5) {
+              messagesToUse = [...earlyMessages, ...recentMessages];
+            } else {
+              // 有重叠，只保留早期消息（因为早期消息更重要）
+              messagesToUse = currentMessages.slice(0, MAX_MESSAGES);
+            }
+          }
+          
+          conversationHistory = messagesToUse
+            .map(m => `${m.role === 'user' ? '用户' : 'AI'}: ${m.content}`)
+            .join('\n\n');
+          
+          console.log(`对话历史过长（${currentMessages.length}条），已智能截断：保留前5条和最近${recentCount}条消息`);
+        }
+        
+        // 如果对话历史仍然太长，进一步截断（保留最近的字符，但保留开头的重要信息）
+        if (conversationHistory.length > MAX_HISTORY_LENGTH) {
+          // 尝试保留开头部分（可能包含关键信息）和结尾部分（最近的上下文）
+          const headLength = Math.floor(MAX_HISTORY_LENGTH * 0.3); // 保留30%的开头
+          const tailLength = MAX_HISTORY_LENGTH - headLength; // 剩余70%保留结尾
+          
+          const head = conversationHistory.substring(0, headLength);
+          const tail = conversationHistory.substring(conversationHistory.length - tailLength);
+          
+          conversationHistory = `${head}\n\n[... 中间部分已省略 ...]\n\n${tail}`;
+          console.log(`对话历史过长（${conversationHistory.length}字符），已截断为保留开头和结尾部分`);
+        }
         
         // 构建系统提示语
         let enhancedSystemPrompt = systemPrompt || '';
         
-        // 如果进入阶段2，添加结构解析内容
+        // 如果进入阶段2，添加结构解析内容和参考文档原文
         if (actualStage === 'stage2' && structureContent) {
-          enhancedSystemPrompt = `${systemPrompt}\n\n[结构解析参考]\n以下是参考文档的结构分析，请在你撰写文章时参考这些结构特点和写作技巧：\n\n${structureContent}\n\n重要提示：请结合用户提供的背景信息和上述结构解析，在撰写文章时：\n1. 参考结构解析中的文章结构和组织方式\n2. 运用结构解析中提到的心理模式和写作技巧\n3. 确保文章风格与参考文档保持一致\n4. 根据用户提供的背景信息创作内容`;
-          console.log('阶段2：已添加结构解析内容到系统提示，结构解析长度:', structureContent.length);
+          let referenceSection = '';
+          if (referenceText) {
+            referenceSection = `\n\n[参考文档原文]\n以下是参考文档的完整内容，请仔细学习其语言风格、用词习惯、句式特点和表达方式：\n\n${referenceText}\n\n`;
+          }
+          
+          enhancedSystemPrompt = `${systemPrompt}\n\n[结构解析参考]\n以下是参考文档的结构分析，请在你撰写文章时参考这些结构特点和写作技巧：\n\n${structureContent}${referenceSection}重要提示：请结合用户提供的背景信息和上述结构解析，在撰写文章时：\n1. 参考结构解析中的文章结构和组织方式\n2. 仔细模仿参考文档原文的语言风格、用词习惯和句式特点\n3. 运用结构解析中提到的心理模式和写作技巧\n4. 确保文章风格与参考文档保持一致（包括语气、语调、表达方式等）\n5. 根据用户提供的背景信息创作内容`;
+          console.log('阶段2：已添加结构解析内容和参考文档原文，结构解析长度:', structureContent.length, '参考文档长度:', referenceText?.length || 0);
         }
         
         // 如果有系统提示语，将其作为上下文包含进来
@@ -700,22 +755,83 @@ export default function WriterPage() {
 
       console.log('调用 generateWriting API，fullPrompt 长度:', fullPrompt.length);
 
-      const response = await fetch('/api/generateWriting', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          prompt: fullPrompt,
-          tool_name: 'CustomTool',
-          language: 'chinese'
-        })
-      });
+      // 重试函数
+      const retryRequest = async (requestData: any, maxRetries = 3) => {
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+          // 创建 AbortController 用于超时控制
+          const abortController = new AbortController();
+          const timeoutId = setTimeout(() => abortController.abort(), 120000); // 120秒超时
+          
+          try {
+            const response = await fetch('/api/generateWriting', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(requestData),
+              signal: abortController.signal,
+            });
+            
+            clearTimeout(timeoutId);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || '生成失败');
-      }
+            if (!response.ok) {
+              const errorData = await response.json().catch(() => ({}));
+              
+              // 4xx错误（客户端错误）不重试，直接抛出
+              if (response.status >= 400 && response.status < 500) {
+                throw new Error(errorData.error || errorData.details || `请求失败 (${response.status})`);
+              }
+              
+              // 5xx错误（服务器错误）或网络错误才重试
+              if (attempt === maxRetries) {
+                throw new Error(errorData.error || errorData.details || `服务器错误 (${response.status})`);
+              }
+              
+              // 等待递增间隔后重试（指数退避）
+              const delay = Math.pow(2, attempt - 1) * 1000;
+              console.log(`请求失败，${delay}ms 后进行第 ${attempt + 1} 次重试...`);
+              await new Promise(resolve => setTimeout(resolve, delay));
+              continue;
+            }
+
+            return response;
+          } catch (error) {
+            clearTimeout(timeoutId);
+            
+            // 如果是最后一次尝试，抛出错误
+            if (attempt === maxRetries) {
+              throw error;
+            }
+            
+            // 检查是否是超时或网络错误
+            const isAbortError = error instanceof Error && (
+              error.name === 'AbortError' || 
+              error.message.includes('aborted') ||
+              error.message.includes('timeout')
+            );
+            const isNetworkError = error instanceof TypeError || 
+              (error instanceof Error && error.message.includes('fetch'));
+            
+            // 如果是超时或网络错误，进行重试
+            if (isAbortError || isNetworkError) {
+              const delay = Math.pow(2, attempt - 1) * 1000;
+              const errorType = isAbortError ? '请求超时' : '网络错误';
+              console.log(`${errorType}，${delay}ms 后进行第 ${attempt + 1} 次重试...`);
+              await new Promise(resolve => setTimeout(resolve, delay));
+              continue;
+            }
+            
+            // 其他错误直接抛出
+            throw error;
+          }
+        }
+      };
+
+      const response = await retryRequest({
+        prompt: fullPrompt,
+        tool_name: 'CustomTool',
+        language: 'chinese'
+      });
 
       // 处理流式响应
       const reader = response.body?.getReader();
@@ -768,11 +884,28 @@ export default function WriterPage() {
       }
     } catch (error) {
       console.error('生成失败:', error);
-      const errorMessage: Message = {
+      
+      // 提供更友好的错误提示
+      let errorMessage = '生成失败';
+      if (error instanceof Error) {
+        if (error.message.includes('External API request failed')) {
+          errorMessage = '外部 API 请求失败，可能是网络问题或服务暂时不可用，请稍后重试';
+        } else if (error.name === 'AbortError' || error.message.includes('aborted') || error.message.includes('超时') || error.message.includes('timeout')) {
+          errorMessage = '请求超时，请稍后重试';
+        } else if (error.message.includes('网络错误') || error.message.includes('fetch')) {
+          errorMessage = '网络连接失败，请检查网络连接后重试';
+        } else if (error.message.includes('Insufficient credits')) {
+          errorMessage = '积分不足，请充值后再试';
+        } else {
+          errorMessage = `生成失败：${error.message}`;
+        }
+      }
+      
+      const errorMessageObj: Message = {
         role: 'assistant',
-        content: `抱歉，生成失败：${error instanceof Error ? error.message : '未知错误'}`
+        content: `抱歉，${errorMessage}。如果问题持续存在，请尝试刷新页面或联系客服。`
       };
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages(prev => [...prev, errorMessageObj]);
     }
   };
 

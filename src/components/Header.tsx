@@ -82,15 +82,20 @@ export function Header({ className }: HeaderProps) {
 
   const handleLogout = async () => {
     try {
+      // 先清除全局状态，确保UI立即更新
+      clearAuthState();
+      
+      // 然后调用登出API
       const response = await fetch('/api/auth/logout', {
         method: 'POST',
+        cache: 'no-store',
       });
 
       if (response.ok) {
         // Clear local storage using utility function that triggers events
         clearLocalStorageItems(['user', 'session', 'loginRedirectUrl']);
         
-        // Clear global auth state
+        // 再次确保状态清除（防止竞态条件）
         clearAuthState();
         
         // 触发logout事件，确保所有组件都能收到通知
@@ -100,8 +105,19 @@ export function Header({ className }: HeaderProps) {
         router.push('/auth/login');
         
         logger.auth('User logged out from header');
+      } else {
+        // 即使API失败，也清除本地状态
+        clearLocalStorageItems(['user', 'session', 'loginRedirectUrl']);
+        clearAuthState();
+        triggerAuthEvent('logout');
+        router.push('/auth/login');
       }
     } catch (err) {
+      // 即使出错，也清除本地状态
+      clearLocalStorageItems(['user', 'session', 'loginRedirectUrl']);
+      clearAuthState();
+      triggerAuthEvent('logout');
+      router.push('/auth/login');
       logger.error('Failed to logout from header', undefined, LogCategory.API);
     }
   };
@@ -173,10 +189,16 @@ export function Header({ className }: HeaderProps) {
                     boxShadow: '0 4px 14px 0 rgba(59, 130, 246, 0.25), 0 2px 4px 0 rgba(0,0,0,0.1)'
                   }}
                 >
-                  {user.industry === 'housekeeping' ? '家政' : 
-                   user.industry === 'beauty' ? '医疗美容' : 
-                   user.industry === 'lifestyle-beauty' ? '生活美容' : 
-                   user.industry === 'general' ? '通用' : 'AI 文秘'}
+                  {(() => {
+                    const industryNames: { [key: string]: string } = {
+                      housekeeping: t('housekeeping'),
+                      beauty: t('beauty'),
+                      'lifestyle-beauty': t('lifestyle-beauty'),
+                      makeup: t('makeup'),
+                      general: t('general')
+                    };
+                    return industryNames[user.industry] || 'AI 文秘';
+                  })()}
                 </span>
               )}
             </div>

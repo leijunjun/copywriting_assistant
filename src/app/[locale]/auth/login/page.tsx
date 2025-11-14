@@ -18,12 +18,14 @@ import { ErrorMessage } from '@/components/ui/error-message';
 import { logger, LogCategory } from '@/lib/utils/logger';
 import { useAuth } from '@/lib/auth/auth-context';
 import { WeChatModal } from '@/components/ui/wechat-modal';
+import { identifyAuthType } from '@/lib/utils/auth-identifier';
+import { setLocalStorageItem } from '@/lib/utils/localStorage';
 
 export default function LoginPage() {
   const t = useTranslations('auth');
   const router = useRouter();
   const { triggerAuthEvent } = useAuth();
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,10 +35,10 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setError('Please enter a valid email address');
+    // Validate identifier (email or phone)
+    const authType = identifyAuthType(identifier);
+    if (!authType) {
+      setError('Please enter a valid email address or phone number');
       setLoading(false);
       return;
     }
@@ -47,7 +49,7 @@ export default function LoginPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: identifier, password }), // Keep 'email' field name for backward compatibility
       });
 
       const data = await response.json();
@@ -57,12 +59,19 @@ export default function LoginPage() {
           userId: data.user.id,
         });
         
-        // Store session data
-        localStorage.setItem('user', JSON.stringify(data.user));
-        localStorage.setItem('session', JSON.stringify(data.session));
+        // 先清除可能存在的旧数据，确保状态干净
+        localStorage.removeItem('user');
+        localStorage.removeItem('session');
+        
+        // Store session data - 使用 setLocalStorageItem 触发事件
+        setLocalStorageItem('user', JSON.stringify(data.user));
+        setLocalStorageItem('session', JSON.stringify(data.session));
         
         // Trigger auth event to update header state
         triggerAuthEvent('login');
+        
+        // 等待一小段时间确保状态更新完成
+        await new Promise(resolve => setTimeout(resolve, 100));
         
         // Check if there's a redirect URL stored
         const redirectUrl = localStorage.getItem('loginRedirectUrl');
@@ -121,13 +130,13 @@ export default function LoginPage() {
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="email">{t('email')}</Label>
+                <Label htmlFor="identifier">邮箱 / 手机号</Label>
                 <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t('emailPlaceholder')}
+                  id="identifier"
+                  type="text"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
+                  placeholder={t('emailPlaceholder') || 'Email or phone number'}
                   required
                 />
               </div>

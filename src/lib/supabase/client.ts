@@ -56,6 +56,7 @@ export type Database = {
         Row: {
           id: string;
           email: string | null;
+          phone: string | null;
           nickname: string;
           avatar_url: string | null;
           created_at: string;
@@ -64,7 +65,8 @@ export type Database = {
         };
         Insert: {
           id?: string;
-          email: string | null;
+          email?: string | null;
+          phone?: string | null;
           nickname: string;
           avatar_url?: string | null;
           created_at?: string;
@@ -73,6 +75,7 @@ export type Database = {
         Update: {
           id?: string;
           email?: string | null;
+          phone?: string | null;
           nickname?: string;
           avatar_url?: string | null;
           created_at?: string;

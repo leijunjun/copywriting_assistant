@@ -42,7 +42,8 @@
     "general": "General",
     "housekeeping": "Housekeeping",
     "beauty": "Medical Beauty",
-    "lifestyle-beauty": "Lifestyle Beauty"
+    "lifestyle-beauty": "Lifestyle Beauty",
+    "makeup": "Makeup"
   },
   "credits": {
     "balance": "Credit Balance",
@@ -150,6 +151,7 @@
     "housekeeping": "Housekeeping",
     "beauty": "Medical Beauty",
     "lifestyle-beauty": "Lifestyle Beauty",
+    "makeup": "Makeup",
     "credits": "Credits",
     "profile": "Profile",
     "logout": "Logout",

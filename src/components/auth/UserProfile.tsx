@@ -140,6 +140,15 @@ export function UserProfile({ user, onLogout, className }: UserProfileProps) {
                     };
                   }
                   
+                  if (user.industry === 'makeup') {
+                    return {
+                      bgColor: 'bg-gradient-to-r from-orange-100 to-orange-200',
+                      textColor: 'text-orange-800',
+                      dotColor: 'bg-orange-500',
+                      borderColor: 'border-orange-300'
+                    };
+                  }
+                  
                   return {
                     bgColor: 'bg-gradient-to-r from-purple-100 to-purple-200',
                     textColor: 'text-purple-800',
@@ -157,7 +166,8 @@ export function UserProfile({ user, onLogout, className }: UserProfileProps) {
                   const industryNames = {
                     housekeeping: t('housekeeping'),
                     beauty: t('beauty'),
-                    'lifestyle-beauty': t('lifestyle-beauty')
+                    'lifestyle-beauty': t('lifestyle-beauty'),
+                    makeup: t('makeup')
                   };
                   
                   return industryNames[user.industry as keyof typeof industryNames] || t('general');

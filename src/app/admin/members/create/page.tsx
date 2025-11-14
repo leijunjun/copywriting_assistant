@@ -15,6 +15,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, UserPlus, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { identifyAuthType } from '@/lib/utils/auth-identifier';
 
 interface CreateMemberForm {
   email: string;
@@ -28,6 +29,7 @@ const industryOptions = [
   { value: 'housekeeping', label: '家政服务' },
   { value: 'beauty', label: '医疗美容' },
   { value: 'lifestyle-beauty', label: '生活美容' },
+  { value: 'makeup', label: '美妆' },
 ];
 
 export default function CreateMemberPage() {
@@ -51,6 +53,18 @@ export default function CreateMemberPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate identifier (email or phone)
+    const authType = identifyAuthType(formData.email);
+    if (!authType) {
+      toast({
+        title: '验证失败',
+        description: '请输入有效的邮箱地址或手机号',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
     setLoading(true);
 
     try {
@@ -71,17 +85,24 @@ export default function CreateMemberPage() {
         });
         router.push('/admin/members');
       } else {
+        // 提取错误消息
+        const errorMessage = data.error?.message || data.error || '创建失败，请重试';
+        console.error('创建会员失败:', {
+          status: response.status,
+          error: data.error,
+          fullResponse: data,
+        });
         toast({
           title: '创建失败',
-          description: data.error?.message || '创建失败，请重试',
+          description: errorMessage,
           variant: 'destructive',
         });
       }
     } catch (error) {
-      console.error('创建会员失败:', error);
+      console.error('创建会员异常:', error);
       toast({
         title: '创建失败',
-        description: '创建失败，请重试',
+        description: error instanceof Error ? error.message : '创建失败，请重试',
         variant: 'destructive',
       });
     } finally {
@@ -123,20 +144,20 @@ export default function CreateMemberPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* 邮箱 */}
+            {/* 邮箱/手机号 */}
             <div className="space-y-2">
-              <Label htmlFor="email">邮箱地址 *</Label>
+              <Label htmlFor="email">邮箱/手机号 *</Label>
               <Input
                 id="email"
-                type="email"
+                type="text"
                 value={formData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
-                placeholder="请输入邮箱地址"
+                placeholder="请输入邮箱地址或手机号"
                 required
                 autoComplete="username"
               />
               <p className="text-sm text-gray-500">
-                邮箱将作为用户的登录账号
+                邮箱或手机号将作为用户的登录账号
               </p>
             </div>
 
@@ -258,7 +279,7 @@ export default function CreateMemberPage() {
             <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
             <div>
               <p className="text-sm text-gray-700">
-                <strong>账号状态：</strong>创建的账号将立即生效，用户可以使用邮箱和密码登录
+                <strong>账号状态：</strong>创建的账号将立即生效，用户可以使用邮箱/手机号和密码登录
               </p>
             </div>
           </div>

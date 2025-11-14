@@ -45,13 +45,14 @@ export const SessionValidateSchema = z.object({
 });
 
 // Authentication request validation schemas
+// Support both email and phone number
 export const LoginRequestSchema = z.object({
-  email: z.string().email('Invalid email format'),
+  email: z.string().min(1, 'Email or phone is required'), // Keep 'email' field name for backward compatibility
   password: z.string().min(1, 'Password is required'),
 });
 
 export const RegisterRequestSchema = z.object({
-  email: z.string().email('Invalid email format'),
+  email: z.string().min(1, 'Email or phone is required'), // Keep 'email' field name for backward compatibility
   password: z.string().min(6, 'Password must be at least 6 characters'),
   nickname: z.string().min(1, 'Nickname is required').max(100, 'Nickname too long'),
 });
@@ -120,13 +121,14 @@ export const ValidationErrorSchema = z.object({
 });
 
 // Form validation schemas
+// Support both email and phone number
 export const LoginFormSchema = z.object({
-  email: z.string().email('Invalid email format'),
+  email: z.string().min(1, 'Email or phone is required'), // Keep 'email' field name for backward compatibility
   password: z.string().min(1, 'Password is required'),
 });
 
 export const RegisterFormSchema = z.object({
-  email: z.string().email('Invalid email format'),
+  email: z.string().min(1, 'Email or phone is required'), // Keep 'email' field name for backward compatibility
   password: z.string().min(6, 'Password must be at least 6 characters'),
   confirmPassword: z.string().min(6, 'Password must be at least 6 characters'),
   nickname: z.string().min(1, 'Nickname is required').max(100, 'Nickname too long'),

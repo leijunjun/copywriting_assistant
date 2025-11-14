@@ -71,26 +71,26 @@ export default function AboutContent() {
             {/* Stat 3 */}
             <div className="text-center">
               <div className="bg-gradient-to-r from-orange-500 to-red-600 text-white text-4xl font-bold rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                专
+                批
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
                 {global.language === 'chinese' ? '行业话术' : global.language === 'english' ? 'Industry Expertise' : '業界専門用語'}
               </h3>
               <p className="text-gray-600">
-                {global.language === 'chinese' ? '懂AI更懂行业场景' : global.language === 'english' ? 'Understand more AI business scenarios' : 'より多くのAIビジネスシーンを理解'}
+                {global.language === 'chinese' ? '批量生成行业专用文稿' : global.language === 'english' ? 'Batch generate industry-specific content' : '業界専用原稿の一括生成'}
               </p>
             </div>
 
             {/* Stat 4 */}
             <div className="text-center">
               <div className="bg-gradient-to-r from-purple-500 to-pink-600 text-white text-4xl font-bold rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                快
+                专
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                {global.language === 'chinese' ? '支持批量' : global.language === 'english' ? 'Unlimited Expansion' : '無制限拡張'}
+                {global.language === 'chinese' ? '量身定制' : global.language === 'english' ? 'Customized' : 'カスタマイズ'}
               </h3>
               <p className="text-gray-600">
-                {global.language === 'chinese' ? '批量产出批量导出' : global.language === 'english' ? 'Support custom intelligent agents' : 'カスタムインテリジェントエージェントをサポート'}
+                {global.language === 'chinese' ? '支持企业专用模板定制' : global.language === 'english' ? 'Support enterprise-specific template customization' : '企業専用テンプレートのカスタマイズをサポート'}
               </p>
             </div>
           </div>

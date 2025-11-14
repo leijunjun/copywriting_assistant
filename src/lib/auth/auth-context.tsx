@@ -74,7 +74,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setAuthState(prev => ({ ...prev, isLoading: true }));
 
-      const response = await fetch('/api/user/profile');
+      // 添加时间戳防止缓存，确保获取最新数据
+      const timestamp = Date.now();
+      const response = await fetch(`/api/user/profile?t=${timestamp}`, {
+        method: 'GET',
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+        },
+      });
       
       if (response.ok) {
         const data = await response.json();
@@ -103,6 +112,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           });
         }
       } else if (response.status === 401) {
+        setAuthState({
+          user: null,
+          credits: null,
+          isAuthenticated: false,
+          isLoading: false,
+        });
+      } else {
+        // 处理其他错误状态
         setAuthState({
           user: null,
           credits: null,
@@ -141,13 +158,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'user' || e.key === 'session') {
         if (e.newValue === null) {
-          // 用户登出
+          // 用户登出 - 立即清除状态
           clearAuthState();
           triggerAuthEvent('logout');
         } else {
-          // 用户登录或注册
-          refreshAuthState();
-          triggerAuthEvent('login');
+          // 用户登录或注册 - 先清除旧状态，再刷新新状态
+          clearAuthState();
+          // 使用 setTimeout 确保状态清除后再刷新，避免竞态条件
+          setTimeout(() => {
+            refreshAuthState();
+            triggerAuthEvent('login');
+          }, 0);
         }
       }
     };
@@ -156,13 +177,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const handleLocalStorageChange = (e: CustomEvent) => {
       if (e.detail?.key === 'user' || e.detail?.key === 'session') {
         if (e.detail?.newValue === null) {
-          // 用户登出
+          // 用户登出 - 立即清除状态
           clearAuthState();
           triggerAuthEvent('logout');
         } else {
-          // 用户登录或注册
-          refreshAuthState();
-          triggerAuthEvent('login');
+          // 用户登录或注册 - 先清除旧状态，再刷新新状态
+          clearAuthState();
+          // 使用 setTimeout 确保状态清除后再刷新，避免竞态条件
+          setTimeout(() => {
+            refreshAuthState();
+            triggerAuthEvent('login');
+          }, 0);
         }
       }
     };

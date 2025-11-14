@@ -25,4 +25,11 @@ export interface IndustryPresets {
 export const generalPresets: IndustryPresets = {
   // 通用用户使用默认预设，这里保持空对象
   // 实际预设内容将从 src/constant/language.ts 中获取
+  
+  // 小红书帖子生成工具（商品类）- 暂无预设内容
+  'xiaohongshu-post-generation-product': {
+    persona: [],
+    product: [],
+    style: []
+  }
 };

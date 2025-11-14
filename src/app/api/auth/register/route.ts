@@ -1,7 +1,7 @@
 /**
  * Register API Endpoint
  * 
- * Handles user registration with email and password.
+ * Handles user registration with email/phone and password.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -13,19 +13,22 @@ import { getCreditBalance } from '@/lib/credits/balance';
 import { logger } from '@/lib/utils/logger';
 import { createErrorResponse } from '@/lib/utils/error';
 import { CREDIT_CONFIG } from '@/config/credit-config';
+import { identifyAuthType, formatPhoneForSupabase, normalizePhone } from '@/lib/utils/auth-identifier';
 
 export async function POST(request: NextRequest) {
   try {
     logger.api('Registration request received');
 
     const body = await request.json();
-    const { email, password, nickname, industry } = body;
+    // Support both 'email' (legacy) and 'identifier' (new) field names
+    const identifier = body.email || body.identifier;
+    const { password, nickname, industry } = body;
 
-    if (!email || !password) {
+    if (!identifier || !password) {
       return NextResponse.json(
         createErrorResponse({
           code: 'MISSING_CREDENTIALS',
-          message: 'Email and password are required',
+          message: 'Email/phone and password are required',
           type: 'VALIDATION',
           severity: 'MEDIUM',
         }),
@@ -33,13 +36,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    // Identify input type (email or phone)
+    const authType = identifyAuthType(identifier);
+    if (!authType) {
       return NextResponse.json(
         createErrorResponse({
-          code: 'INVALID_EMAIL',
-          message: 'Invalid email format',
+          code: 'INVALID_IDENTIFIER',
+          message: 'Please enter a valid email address or phone number',
           type: 'VALIDATION',
           severity: 'MEDIUM',
         }),
@@ -61,7 +64,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate industry value
-    const validIndustries = ['general', 'housekeeping', 'beauty', 'lifestyle-beauty'];
+    const validIndustries = ['general', 'housekeeping', 'beauty', 'lifestyle-beauty', 'makeup'];
     const userIndustry = industry || 'general';
     if (!validIndustries.includes(userIndustry)) {
       return NextResponse.json(
@@ -78,20 +81,32 @@ export async function POST(request: NextRequest) {
     // Create server-side Supabase client
     const supabaseServer = createServerSupabaseClient();
 
-    // Register with Supabase
-    const { data, error } = await supabaseServer.auth.signUp({
-      email,
-      password,
-    });
+    // Register with Supabase based on identifier type
+    let signUpParams: { email?: string; phone?: string; password: string };
+    if (authType === 'phone') {
+      const formattedPhone = formatPhoneForSupabase(identifier);
+      signUpParams = {
+        phone: formattedPhone,
+        password,
+      };
+    } else {
+      signUpParams = {
+        email: identifier,
+        password,
+      };
+    }
+
+    const { data, error } = await supabaseServer.auth.signUp(signUpParams);
 
     if (error) {
-      logger.error('Registration failed', undefined, 'API', { error: error.message });
+      logger.error('Registration failed', undefined, 'API', { error: error.message, authType });
       
       if (error.message.includes('already registered') || error.message.includes('already exists')) {
+        const identifierType = authType === 'phone' ? 'Phone number' : 'Email';
         return NextResponse.json(
           createErrorResponse({
-            code: 'EMAIL_EXISTS',
-            message: 'Email already registered',
+            code: authType === 'phone' ? 'PHONE_EXISTS' : 'EMAIL_EXISTS',
+            message: `${identifierType} already registered`,
             type: 'AUTHENTICATION',
             severity: 'MEDIUM',
           }),
@@ -122,16 +137,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    logger.api('Supabase user created', { userId: data.user.id });
+    logger.api('Supabase user created', { userId: data.user.id, authType });
+
+    // Determine default nickname based on auth type
+    let defaultNickname = 'User';
+    if (authType === 'email' && data.user.email) {
+      defaultNickname = data.user.email.split('@')[0];
+    } else if (authType === 'phone') {
+      const normalizedPhone = normalizePhone(identifier);
+      defaultNickname = normalizedPhone.slice(-4); // Use last 4 digits as default
+    }
 
     // Create user profile in database
+    // 邮箱用户存储email，手机号用户存储phone
+    const normalizedPhone = authType === 'phone' ? normalizePhone(identifier) : null;
     const { data: userData, error: userError } = await supabaseServer
       .from('users')
       .insert({
         id: data.user.id,
-        email: data.user.email,
-        nickname: nickname || data.user.email?.split('@')[0] || 'User',
-        avatar_url: '', // Empty avatar for email users
+        email: authType === 'email' ? identifier : null,
+        phone: normalizedPhone, // 存储手机号（去除+86前缀和空格）
+        nickname: nickname || defaultNickname,
+        avatar_url: '', // Empty avatar
         industry: userIndustry,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
@@ -209,7 +236,8 @@ export async function POST(request: NextRequest) {
 
     logger.auth('User registered successfully', {
       userId: userData.id,
-      email: userData.email,
+      authType,
+      identifier: authType === 'email' ? userData.email : identifier,
     });
 
     return NextResponse.json({

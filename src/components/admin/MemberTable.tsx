@@ -29,6 +29,7 @@ const industryOptions = [
   { value: 'housekeeping', label: '家政服务' },
   { value: 'beauty', label: '医疗美容' },
   { value: 'lifestyle-beauty', label: '生活美容' },
+  { value: 'makeup', label: '美妆' },
 ];
 
 export function MemberTable({ className }: MemberTableProps) {
@@ -182,7 +183,7 @@ export function MemberTable({ className }: MemberTableProps) {
                           {member.nickname}
                         </div>
                         <div className="text-sm text-gray-500">
-                          {member.email}
+                          {member.email || member.phone || '未设置'}
                         </div>
                       </div>
                     </td>

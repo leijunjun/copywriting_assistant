@@ -21,8 +21,9 @@ interface MyDB extends DBSchema {
 }
 
 export async function initDB(): Promise<IDBPDatabase<MyDB>> {
-  const db = await openDB<MyDB>(DB_NAME, 1, {
-    upgrade(db) {
+  const db = await openDB<MyDB>(DB_NAME, 2, {
+    upgrade(db, oldVersion, newVersion, transaction) {
+      // 如果 store 不存在，创建它
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
         store.createIndex('byToolId', 'toolId');  // Create index

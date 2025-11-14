@@ -264,5 +264,12 @@ export const lifestyleBeautyPresets: IndustryPresets = {
         japanese: "美しさには継続と忍耐が必要、プロ美容サービスを選択していただきありがとうございます。最もプロな態度で最高品質のサービスを提供いたします" 
       },
     ]
+  },
+
+  // 小红书帖子生成工具（商品类）- 暂无预设内容
+  'xiaohongshu-post-generation-product': {
+    persona: [],
+    product: [],
+    style: []
   }
 };

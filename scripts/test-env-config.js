@@ -15,6 +15,8 @@ const optionalEnvVars = [
   'NEXT_PUBLIC_WRITER_MODEL',
   'NEXT_PUBLIC_IMAGE_API_URL',
   'NEXT_PUBLIC_IMAGE_MODEL',
+  'NEXT_PUBLIC_KIMI_API_KEY',
+  'NEXT_PUBLIC_KIMI_MODEL',
 ];
 
 console.log('🔍 检查环境变量配置...\n');
@@ -43,6 +45,10 @@ optionalEnvVars.forEach(varName => {
       defaultValue = 'https://api.302.ai/doubao/images/generations';
     } else if (varName === 'NEXT_PUBLIC_IMAGE_MODEL') {
       defaultValue = 'doubao-seedream-4-0-250828';
+    } else if (varName === 'NEXT_PUBLIC_KIMI_API_KEY') {
+      defaultValue = '将使用 NEXT_PUBLIC_API_KEY';
+    } else if (varName === 'NEXT_PUBLIC_KIMI_MODEL') {
+      defaultValue = '将使用 NEXT_PUBLIC_MODEL_NAME';
     }
     console.log(`  ⚠️  ${varName}: 未配置（将使用默认值: ${defaultValue}）`);
   }

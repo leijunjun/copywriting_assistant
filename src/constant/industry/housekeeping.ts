@@ -413,5 +413,12 @@ export const housekeepingPresets: IndustryPresets = {
       { chinese: "避免使用过于商业化的词汇", english: "Avoid overly commercial terms", japanese: "過度に商業的な用語は使用しない" },
       { chinese: "不使用可能误导消费者的表述", english: "Don't use statements that might mislead consumers", japanese: "消費者を誤解させる可能性のある表現は使用しない" }
     ]
+  },
+
+  // 小红书帖子生成工具（商品类）- 暂无预设内容
+  'xiaohongshu-post-generation-product': {
+    persona: [],
+    product: [],
+    style: []
   }
 };

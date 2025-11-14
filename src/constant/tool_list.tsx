@@ -326,19 +326,38 @@ export const toolList: IToolList = {
       resultType: 'text',
       title: 'xiaohongshu-post-generation',
       submitButton: 'Generate',
-      name: { chinese: '小红书帖子生成', english: 'Xiaohongshu post generation', japanese: '小紅書投稿生成' },
+      name: { chinese: '小红书【服务】帖', english: 'Xiaohongshu Post (Service)', japanese: '小紅書投稿生成（サービス類）' },
       classify: { chinese: '公域推广', english: 'Public Domain Promotion', japanese: 'パブリックドメイン促進' },
       url: '/XiaohongshuPostGeneration.png',
       describe: {
-        chinese: '生成一个小红书平台风格的笔记',
-        english: 'Generate a Xiaohongshu-style post.',
-        japanese: '小さな赤書プラットフォーム風のノートを生成する'
+        chinese: '针对服务行业的推广需求，生成一个小红书平台风格的笔记',
+        english: 'Generate a Xiaohongshu-style post for services.',
+        japanese: '小さな赤書プラットフォーム風のノート（サービス類）を生成する'
       },
       from: {
         role: { type: 'Input', isBig: false, },
         background: { type: 'Textarea', isBig: true, },
         purpose: { type: 'Textarea', isBig: true, },
         tone: { type: 'Select', list: SOCIAL_MEDIA_STYLE },
+      }
+    },
+    {
+      id: 'social_media_13',
+      resultType: 'text',
+      title: 'xiaohongshu-post-generation-product',
+      submitButton: 'Generate',
+      name: { chinese: '小红书【商品】帖', english: 'Xiaohongshu Post (Product)', japanese: '小紅書投稿生成（商品類）' },
+      classify: { chinese: '公域推广', english: 'Public Domain Promotion', japanese: 'パブリックドメイン促進' },
+      url: '/XiaohongshuPostGeneration.png',
+      describe: {
+        chinese: '围绕实物产品的销售种草，生成一个小红书平台风格的笔记',
+        english: 'Generate a Xiaohongshu-style post for products.',
+        japanese: '小さな赤書プラットフォーム風のノート（商品類）を生成する'
+      },
+      from: {
+        persona: { type: 'Input', isBig: false, },
+        product: { type: 'Input', isBig: false, },
+        style: { type: 'Select', list: [] },
       }
     },
 
