@@ -84,7 +84,8 @@ export const makeupPresets: IndustryPresets = {
     product: [
       {
         label: { chinese: "格兰素护手霜", english: "Glysomed Hand Cream", japanese: "グリソメッドハンドクリーム" },
-        value: `#格兰素护手霜
+        value: `
+#格兰素护手霜
 ##品牌历史	
 ###创立时间与起源
 	1952 年创立于德国，以 “解决战后肌肤干燥问题” 为初始使命，早期靠高浓度甘油配方打开市场

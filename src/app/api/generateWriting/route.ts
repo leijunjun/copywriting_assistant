@@ -160,19 +160,7 @@ export async function POST(request: Request) {
       "Content-Type": "application/json"
     };
 
-    // 针对小红书商品帖，设置 max_tokens 限制（400字约等于 500-600 tokens）
-    // 中文字符通常 1 字符 ≈ 1.5-2 tokens，设置 600 tokens 确保不超过 400 字
-    const requestBody: any = { 
-      model, 
-      messages, 
-      stream: true
-    };
-    
-    if (tool_name === 'xiaohongshu-post-generation-product') {
-      requestBody.max_tokens = 600;
-    }
-
-    const raw = JSON.stringify(requestBody);
+    const raw = JSON.stringify({ model, messages, stream: true });
     
     // 根据工具类型选择 API URL
     const fetchUrl = isKimiTool
