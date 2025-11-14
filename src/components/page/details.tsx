@@ -677,6 +677,57 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
   }
 
 
+  // 计算文本字数（去除 HTML 标签和 Markdown 语法）
+  const getWordCount = (text: string, resultType?: string): number => {
+    if (!text) return 0;
+    
+    let plainText = text;
+    
+    // 如果是表格类型，需要特殊处理 CSV 数据
+    if (resultType === 'table') {
+      try {
+        const rows: any = Papa.parse(text, {
+          comments: '```',
+          skipEmptyLines: true,
+        });
+        if (rows.data && rows.data.length > 0) {
+          // 将表格数据转换为纯文本
+          plainText = rows.data
+            .map((row: any) => Array.isArray(row) ? row.join(' ') : String(row))
+            .join(' ');
+        }
+      } catch (e) {
+        // 如果解析失败，使用原始文本
+        console.warn('表格数据解析失败，使用原始文本计算字数:', e);
+      }
+    }
+    
+    // 移除 HTML 标签
+    plainText = plainText.replace(/<[^>]*>/g, '');
+    
+    // 移除 Markdown 语法标记
+    plainText = plainText
+      .replace(/#{1,6}\s+/g, '') // 标题标记
+      .replace(/\*\*([^*]+)\*\*/g, '$1') // 粗体
+      .replace(/\*([^*]+)\*/g, '$1') // 斜体
+      .replace(/`([^`]+)`/g, '$1') // 行内代码
+      .replace(/```[\s\S]*?```/g, '') // 代码块
+      .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // 链接
+      .replace(/!\[([^\]]*)\]\([^\)]+\)/g, '') // 图片
+      .replace(/^\s*[-*+]\s+/gm, '') // 列表标记
+      .replace(/^\s*\d+\.\s+/gm, '') // 有序列表
+      .replace(/^\s*>\s+/gm, '') // 引用
+      .replace(/---+/g, '') // 分隔线
+      .replace(/\n+/g, ' ') // 换行符替换为空格
+      .trim();
+    
+    // 计算中文字符和英文单词
+    const chineseChars = (plainText.match(/[\u4e00-\u9fa5]/g) || []).length;
+    const englishWords = plainText.replace(/[\u4e00-\u9fa5]/g, '').trim().split(/\s+/).filter(w => w.length > 0).length;
+    
+    return chineseChars + englishWords;
+  };
+
   const onRenderingResult = (item: any, key: number) => {
     const onRenderingTable = (csvData: string) => {
       const rows: any = Papa.parse(csvData, {
@@ -852,7 +903,16 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
                             <span>{dayjs(item.createdAt).format('MM-DD HH:mm')}</span>
                             <span className="text-gray-500 text-xs ml-2">以上内容由AI 生成，仅供学习交流</span>
                           </div>
-                          <div className="flex gap-3 relative z-10">
+                          <div className="flex items-center gap-3 relative z-10">
+                            {item.output && (
+                              <div className="flex items-center gap-1.5 text-gray-400 text-xs px-2 py-1 rounded-md bg-gray-800/50 border border-gray-700/50">
+                                <svg width="12" height="12" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-cyan-400">
+                                  <path d="M3.5 2C3.22386 2 3 2.22386 3 2.5V12.5C3 12.7761 3.22386 13 3.5 13H11.5C11.7761 13 12 12.7761 12 12.5V4.70711L9.29289 2H3.5ZM2 2.5C2 1.67157 2.67157 1 3.5 1H9.5C9.63261 1 9.75979 1.05268 9.85355 1.14645L12.8536 4.14645C12.9473 4.24021 13 4.36739 13 4.5V12.5C13 13.3284 12.3284 14 11.5 14H3.5C2.67157 14 2 13.3284 2 12.5V2.5ZM4.5 4C4.22386 4 4 4.22386 4 4.5C4 4.77614 4.22386 5 4.5 5H10.5C10.7761 5 11 4.77614 11 4.5C11 4.22386 10.7761 4 10.5 4H4.5ZM4.5 7C4.22386 7 4 7.22386 4 7.5C4 7.77614 4.22386 8 4.5 8H10.5C10.7761 8 11 7.77614 11 7.5C11 7.22386 10.7761 7 10.5 7H4.5ZM4.5 10C4.22386 10 4 10.2239 4 10.5C4 10.7761 4.22386 11 4.5 11H7.5C7.77614 11 8 10.7761 8 10.5C8 10.2239 7.77614 10 7.5 10H4.5Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path>
+                                </svg>
+                                <span className="text-cyan-300 font-medium">{getWordCount(item.output, dataSource?.resultType)}</span>
+                                <span className="text-gray-500">字</span>
+                              </div>
+                            )}
                             <Button 
                               variant="outline" 
                               size="icon" 

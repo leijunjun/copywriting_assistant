@@ -1,5 +1,5 @@
-import { getLoseaiConfig } from '@/constant/loseai';
 import { IndustryType, getToolPresets } from '@/constant/industry';
+import { getProhibitedWordsDetailedPrompt } from '@/config/prohibited-words-config';
 
 interface IToolParameter {
     content: string, tone: string, keywords: string, emailContext: string,
@@ -961,9 +961,7 @@ ${params.additionalContent ? `补充内容：${params.additionalContent}` : ''}
 
     // 小红书帖子生成（商品类）
     'xiaohongshu-post-generation-product': (params: Pick<IToolParameter, 'persona' | 'product' | 'style' | 'language'> & { industry?: IndustryType, batchIndex?: number, batchTotal?: number }) => {
-        // 从 loseai 配置中获取优化要求
         const industry = params.industry || 'general' as IndustryType;
-        const loseaiOptimization = getLoseaiConfig(industry, 'xiaohongshu-post-generation-product');
         
         // 处理风格选择：如果为随机选择或为空，则从行业预设中随机选择一个
         let selectedStyle = params.style;
@@ -989,40 +987,30 @@ ${params.additionalContent ? `补充内容：${params.additionalContent}` : ''}
         // 批量生成提示
         const batchHint = params.batchIndex && params.batchTotal && params.batchTotal > 1
             ? `\n【批量生成说明】这是批量生成的第${params.batchIndex}/${params.batchTotal}篇笔记。请保持与其他篇目完全相同的质量标准：
-1. 标签数量必须保持4-6个，不能减少
-2. emoji使用必须丰富，与单篇生成保持相同密度
-3. 细节描述必须充分，有情绪、有实用价值
-4. 字数控制在300-600字，短段落划分
-5. 在具体案例、表达方式上有所差异，避免内容雷同
-6. 每篇都应该是高质量、有价值的独立内容，不能因为批量生成而降低标准\n`
+1. 在具体案例、数据、表达方式上有所差异，避免内容雷同
+2. 每篇都应该是高质量、有价值的独立内容，不能因为批量生成而降低标准\n`
             : '';
         
-        // 如果有 loseai 优化要求，构建包含两阶段的提示词
-        if (loseaiOptimization) {
-            return [
-                {
-                    role: 'user',
-                    content: `
-你是一个小红书爆款文案编辑，对护肤品有 8 年的推广经验，写出的稿子很有闺蜜味，现在要针对${params.product}产品，用${params.persona}的口吻撰写种草帖子，要求如下：
-- 解析参考的爆款帖子 ${selectedStyle}的结构、文风和语气，模仿撰写，禁止完全雷同，要有所创新。
-- 为了商品属性不失真，商品相关表达要符合${params.product}原意；
-- 最终输出要提炼 5-10个标签，不能少于5个，不能多于10个；
-- 直接输出，无需解释，无需展示中间过程。
-语言：${params.language}${batchHint}`
-                }
-            ];
-        } else {
-            // 如果没有 loseai 优化要求，只使用阶段一提示词
-            return [
-                {
-                    role: 'user',
-                    content: `你是一个小红书热款文案编辑，分析${selectedStyle}的文风并模仿，以${params.persona}的角色，对${params.product}中的产品进行帖子撰写。有一点要注意，为了不让内容失真，商品属性相关的表达要遵守原意。
+        // 获取违禁词规范提示
+        const prohibitedWordsHint = getProhibitedWordsDetailedPrompt();
+        
+        return [
+            {
+                role: 'user',
+                content: `
+你是一个小红书爆款文案编辑，对护肤品有 8 年的推广经验，写出的稿子很有闺蜜味，现在要针对${params.product}产品撰写种草帖子，要求如下：
+- 解析参考帖子 ${selectedStyle}的表述方式、结构、文风和语气，用${params.persona}的口吻模仿撰写，禁止雷同，要有所创新
+- 细节描述必须充分,并且有情绪、有实用价值,emoji使用必须丰富
+- 为了商品属性不失真,商品相关表达要符合${params.product}原意
+- 帖子字数控制在250-400字,短段落划分,不要超过400字
+- 最终输出要提炼 5-10个标签,不能少于5个,不能多于10个
+- 直接输出，无需解释，无需展示中间过程
 
-请直接生成帖子内容。
+${prohibitedWordsHint}
+
 语言：${params.language}${batchHint}`
-                }
-            ];
-        }
+            }
+        ];
     },
 
     'weibo-post-generation': (params: Pick<IToolParameter, 'content' | 'language' | 'tone'>) => {

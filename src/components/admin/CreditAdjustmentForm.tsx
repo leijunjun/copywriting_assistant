@@ -26,7 +26,8 @@ interface CreditAdjustmentFormProps {
 
 interface User {
   id: string;
-  email: string;
+  email: string | null;
+  phone: string | null;
   nickname: string;
   industry: string;
   created_at: string;
@@ -157,7 +158,7 @@ export function CreditAdjustmentForm({
       ...prev,
       user_id: user.id,
     }));
-    setSearchQuery(user.email);
+    setSearchQuery(user.email || user.phone || '');
     setShowSearchResults(false);
   };
 
@@ -221,7 +222,7 @@ export function CreditAdjustmentForm({
                     type="text"
                     value={searchQuery}
                     onChange={(e) => handleSearchChange(e.target.value)}
-                    placeholder="输入邮箱或昵称搜索用户..."
+                    placeholder="输入邮箱、手机号或昵称搜索用户..."
                     className="pl-10 pr-10"
                     required
                   />
@@ -255,16 +256,30 @@ export function CreditAdjustmentForm({
                               <User className="h-5 w-5 text-gray-400" />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center space-x-2">
-                                <Mail className="h-4 w-4 text-gray-400" />
-                                <p className="text-sm font-medium text-gray-900 truncate">
-                                  {user.email}
-                                </p>
+                              <div className="space-y-1">
+                                {user.email && (
+                                  <div className="flex items-center space-x-2">
+                                    <Mail className="h-4 w-4 text-gray-400" />
+                                    <p className="text-sm font-medium text-gray-900 truncate">
+                                      {user.email}
+                                    </p>
+                                  </div>
+                                )}
+                                {user.phone && (
+                                  <div className="flex items-center space-x-2">
+                                    <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                    </svg>
+                                    <p className="text-sm font-medium text-gray-900 truncate">
+                                      {user.phone}
+                                    </p>
+                                  </div>
+                                )}
                               </div>
-                              <p className="text-sm text-gray-500 truncate">
+                              <p className="text-sm text-gray-500 truncate mt-1">
                                 {user.nickname} • {user.industry}
                               </p>
-                              <p className="text-xs text-gray-400">
+                              <p className="text-xs text-gray-400 mt-1">
                                 注册时间: {new Date(user.created_at).toLocaleDateString()}
                               </p>
                             </div>
@@ -286,7 +301,7 @@ export function CreditAdjustmentForm({
                   <div className="flex items-center space-x-2">
                     <User className="h-4 w-4 text-blue-600" />
                     <span className="text-sm font-medium text-blue-900">
-                      已选择用户: {selectedUser.email}
+                      已选择用户: {selectedUser.email || selectedUser.phone || '未知'}
                     </span>
                   </div>
                   <p className="text-xs text-blue-700 mt-1">

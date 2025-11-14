@@ -141,7 +141,7 @@ export function Footer({ className }: FooterProps) {
             <div className="flex flex-col items-start lg:items-end space-y-2">
               <div className="flex space-x-4">
                 <Link 
-                  href="https://www.yituihuo.cn" 
+                  href="https://www.yituihuo.com" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-sm text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium"
@@ -149,7 +149,7 @@ export function Footer({ className }: FooterProps) {
                   {t('lietianbao')}
                 </Link>
                 <Link 
-                  href="https://#" 
+                  href="https://www.yituihuo.com" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-sm text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium"
