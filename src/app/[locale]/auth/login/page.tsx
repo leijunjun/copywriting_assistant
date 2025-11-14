@@ -6,9 +6,9 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -24,11 +24,85 @@ import { setLocalStorageItem } from '@/lib/utils/localStorage';
 export default function LoginPage() {
   const t = useTranslations('auth');
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { triggerAuthEvent } = useAuth();
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // 记录来路页面
+  useEffect(() => {
+    // 检查是否已经有存储的跳转URL（由其他组件设置，如 useAuthCheck）
+    const existingRedirectUrl = localStorage.getItem('loginRedirectUrl');
+    if (existingRedirectUrl) {
+      return; // 如果已有，不覆盖
+    }
+
+    // 优先使用 URL 参数中的 redirect
+    const redirectParam = searchParams.get('redirect');
+    if (redirectParam) {
+      // 验证 redirect 参数是否为有效的相对路径
+      try {
+        const url = new URL(redirectParam, window.location.origin);
+        // 只允许同源的相对路径
+        if (url.origin === window.location.origin) {
+          const redirectPath = url.pathname + url.search + url.hash;
+          if (isValidRedirectPath(redirectPath)) {
+            localStorage.setItem('loginRedirectUrl', redirectPath);
+            return;
+          }
+        }
+      } catch (e) {
+        // 如果 redirect 参数是相对路径，直接使用
+        if (isValidRedirectPath(redirectParam)) {
+          localStorage.setItem('loginRedirectUrl', redirectParam);
+          return;
+        }
+      }
+    }
+
+    // 如果没有 URL 参数，检查 referrer
+    if (typeof window !== 'undefined' && document.referrer) {
+      try {
+        const referrerUrl = new URL(document.referrer);
+        // 只处理同源的 referrer
+        if (referrerUrl.origin === window.location.origin) {
+          const referrerPath = referrerUrl.pathname + referrerUrl.search + referrerUrl.hash;
+          if (isValidRedirectPath(referrerPath)) {
+            localStorage.setItem('loginRedirectUrl', referrerPath);
+          }
+        }
+      } catch (e) {
+        // 忽略无效的 referrer URL
+      }
+    }
+  }, [searchParams]);
+
+  // 验证跳转路径是否有效（排除登录、注册等页面）
+  const isValidRedirectPath = (path: string): boolean => {
+    if (!path || path === '/') {
+      return false;
+    }
+    
+    // 排除认证相关页面（考虑国际化前缀，如 /zh/auth/login）
+    const excludedPatterns = [
+      /\/auth\/login/i,
+      /\/auth\/register/i,
+      /\/auth\/success/i,
+      /\/auth\/callback/i,
+      /\/admin\/login/i,
+    ];
+    
+    // 检查是否匹配排除的模式
+    for (const pattern of excludedPatterns) {
+      if (pattern.test(path)) {
+        return false;
+      }
+    }
+    
+    return true;
+  };
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();

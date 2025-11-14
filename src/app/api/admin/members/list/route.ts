@@ -9,6 +9,7 @@ import { verifyAdminSession } from '@/lib/auth/admin-auth';
 import { createServerSupabaseClient, createServerSupabaseClientForActions } from '@/lib/supabase/server';
 import { logger } from '@/lib/utils/logger';
 import { MemberListParams, MemberListResponse } from '@/types/admin';
+import { normalizePhone, isPhone } from '@/lib/utils/auth-identifier';
 
 export const dynamic = 'force-dynamic';
 
@@ -59,8 +60,14 @@ export async function GET(request: NextRequest) {
 
     // 搜索条件
     // 注意：user_stats 视图只有 email 字段，手机号搜索将在后续处理中进行
-    // 但我们可以通过 users 表进行搜索
-    if (params.search) {
+    // 如果搜索关键词是手机号（包括带+86前缀的），不在初始查询中过滤（因为 user_stats 没有 phone 字段）
+    // 而是获取所有数据，然后在内存中过滤
+    const normalizedSearchForCheck = params.search ? normalizePhone(params.search) : '';
+    const isSearchPhone = params.search ? (
+      isPhone(params.search) || 
+      (normalizedSearchForCheck.replace(/^\+?86/, '').match(/^1[3-9]\d{9}$/) !== null)
+    ) : false;
+    if (params.search && !isSearchPhone) {
       query = query.or(`email.ilike.%${params.search}%,nickname.ilike.%${params.search}%`);
     }
 
@@ -94,7 +101,8 @@ export async function GET(request: NextRequest) {
       `);
 
     // 重新应用搜索条件（仅邮箱和昵称，手机号搜索在后续处理）
-    if (params.search) {
+    // 如果搜索关键词是手机号，不在初始查询中过滤
+    if (params.search && !isSearchPhone) {
       dataQuery = dataQuery.or(`email.ilike.%${params.search}%,nickname.ilike.%${params.search}%`);
     }
 
@@ -120,19 +128,20 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // 获取所有用户的 industry、注册时间、最后登录时间和手机号信息
+    // 获取所有用户的 industry、注册时间、最后登录时间、手机号和禁用状态信息
     const userIds = members?.map(member => member.id) || [];
     let userIndustries: { [key: string]: string } = {};
     let userCreatedAt: { [key: string]: string } = {};
     let userLastLoginAt: { [key: string]: string | null } = {};
     let userPhones: { [key: string]: string | null } = {};
-    let usersData: Array<{ id: string; industry?: string; created_at: string; last_login_at: string | null; email: string | null; phone: string | null }> = [];
+    let userDisabledStatus: { [key: string]: boolean } = {};
+    let usersData: Array<{ id: string; industry?: string; created_at: string; last_login_at: string | null; email: string | null; phone: string | null; is_disabled?: boolean }> = [];
     
     if (userIds.length > 0) {
-      // 从 users 表获取基本信息（包括 phone 字段）
+      // 从 users 表获取基本信息（包括 phone 和 is_disabled 字段）
       const { data: usersDataResult, error: usersError } = await supabase
         .from('users')
-        .select('id, industry, created_at, last_login_at, email, phone')
+        .select('id, industry, created_at, last_login_at, email, phone, is_disabled')
         .in('id', userIds);
       
       if (!usersError && usersDataResult) {
@@ -159,6 +168,12 @@ export async function GET(request: NextRequest) {
           }
           return acc;
         }, {} as { [key: string]: string | null });
+        
+        // 从 users 表获取禁用状态
+        userDisabledStatus = usersData.reduce((acc, user) => {
+          acc[user.id] = user.is_disabled || false;
+          return acc;
+        }, {} as { [key: string]: boolean });
       }
     }
 
@@ -177,6 +192,7 @@ export async function GET(request: NextRequest) {
         industry: userIndustries[member.id] || 'general', // 从手动查询的 users 表获取 industry
         created_at: userCreatedAt[member.id] || member.created_at, // 使用 users 表的 created_at 作为注册时间
         last_login_at: userLastLoginAt[member.id] || null, // 统一使用 users 表的 last_login_at 字段
+        is_disabled: userDisabledStatus[member.id] || false, // 从 users 表获取禁用状态
         credits: {
           balance: member.credit_balance || 0,
           updated_at: member.created_at, // user_stats 表可能没有单独的积分更新时间
@@ -188,11 +204,27 @@ export async function GET(request: NextRequest) {
     let filteredMembers = formattedMembers;
     if (params.search) {
       const searchLower = params.search.toLowerCase();
+      // 标准化搜索关键词（用于手机号搜索）
+      const normalizedSearch = normalizePhone(params.search);
+      // 提取纯数字部分（去除 +86、86 等前缀和所有非数字字符）
+      const searchDigits = normalizedSearch.replace(/^\+?86/, '').replace(/\D/g, '');
+      
       filteredMembers = formattedMembers.filter(member => {
         // 搜索邮箱
         if (member.email?.toLowerCase().includes(searchLower)) return true;
-        // 搜索手机号
-        if (member.phone?.includes(searchLower)) return true;
+        // 搜索手机号（支持多种格式匹配）
+        if (member.phone && searchDigits.length > 0) {
+          // 标准化数据库中的手机号
+          const normalizedMemberPhone = normalizePhone(member.phone);
+          // 提取纯数字部分（去除 +86、86 等前缀和所有非数字字符）
+          const memberPhoneDigits = normalizedMemberPhone.replace(/^\+?86/, '').replace(/\D/g, '');
+          // 匹配：使用纯数字部分进行包含匹配或精确匹配
+          if (memberPhoneDigits === searchDigits || 
+              memberPhoneDigits.includes(searchDigits) || 
+              searchDigits.includes(memberPhoneDigits)) {
+            return true;
+          }
+        }
         // 搜索昵称
         if (member.nickname?.toLowerCase().includes(searchLower)) return true;
         return false;

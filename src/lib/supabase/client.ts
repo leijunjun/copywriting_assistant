@@ -62,6 +62,7 @@ export type Database = {
           created_at: string;
           updated_at: string;
           last_login_at: string | null;
+          is_disabled: boolean;
         };
         Insert: {
           id?: string;
@@ -71,6 +72,7 @@ export type Database = {
           avatar_url?: string | null;
           created_at?: string;
           updated_at?: string;
+          is_disabled?: boolean;
         };
         Update: {
           id?: string;
@@ -81,6 +83,7 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
           last_login_at?: string | null;
+          is_disabled?: boolean;
         };
       };
       user_credits: {

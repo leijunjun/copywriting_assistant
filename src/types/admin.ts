@@ -20,6 +20,7 @@ export interface MemberListItem {
   industry: string;
   created_at: string;
   last_login_at: string | null;
+  is_disabled?: boolean; // 账号是否被禁用
   credits: {
     balance: number;
     updated_at: string;

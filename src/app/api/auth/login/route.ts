@@ -210,6 +210,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check if user account is disabled
+    if (userData.is_disabled) {
+      logger.auth('Login attempt for disabled account', {
+        userId: userData.id,
+        email: userData.email,
+      });
+      
+      return NextResponse.json(
+        createErrorResponse({
+          code: 'ACCOUNT_DISABLED',
+          message: '账号已禁用，请联系管理人员',
+          type: 'AUTHENTICATION',
+          severity: 'HIGH',
+        }),
+        { status: 403 }
+      );
+    }
+
     // Update last login time
     const currentTime = new Date().toISOString();
     const { error: updateError } = await supabaseServer

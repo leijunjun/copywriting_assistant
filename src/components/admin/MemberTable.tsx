@@ -9,15 +9,28 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
 import { 
   Search, 
   Plus, 
-  Eye, 
   ChevronLeft, 
   ChevronRight,
-  Filter
+  Filter,
+  Ban,
+  Key,
+  AlertTriangle,
+  RotateCcw
 } from 'lucide-react';
 import { MemberListItem, MemberListResponse } from '@/types/admin';
+import { useToast } from '@/components/ui/use-toast';
 
 interface MemberTableProps {
   className?: string;
@@ -46,6 +59,15 @@ export function MemberTable({ className }: MemberTableProps) {
     has_next: false,
     has_prev: false,
   });
+  
+  // 修改密码对话框状态
+  const [changePasswordDialogOpen, setChangePasswordDialogOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  
+  const { toast } = useToast();
 
   // 获取会员列表
   const fetchMembers = async () => {
@@ -92,6 +114,137 @@ export function MemberTable({ className }: MemberTableProps) {
     return credits.toLocaleString();
   };
 
+  // 处理禁用/激活用户
+  const handleToggleDisable = async (member: MemberListItem) => {
+    const isCurrentlyDisabled = member.is_disabled || false;
+    const action = isCurrentlyDisabled ? '激活' : '禁用';
+    
+    if (!confirm(`确定要${action}用户 "${member.nickname}" 的账号吗？`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/admin/members/disable', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: member.id,
+          disabled: !isCurrentlyDisabled,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast({
+          title: '操作成功',
+          description: `${action}账号成功`,
+        });
+        // 刷新列表
+        fetchMembers();
+      } else {
+        toast({
+          title: '操作失败',
+          description: data.error?.message || `${action}账号失败`,
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      console.error('Failed to toggle disable status:', error);
+      toast({
+        title: '操作失败',
+        description: '网络错误，请稍后重试',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  // 打开修改密码对话框
+  const handleOpenChangePassword = (member: MemberListItem) => {
+    setSelectedUserId(member.id);
+    setNewPassword('');
+    setConfirmPassword('');
+    setChangePasswordDialogOpen(true);
+  };
+
+  // 处理修改密码
+  const handleChangePassword = async () => {
+    if (!newPassword || !confirmPassword) {
+      toast({
+        title: '输入错误',
+        description: '请输入新密码和确认密码',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      toast({
+        title: '密码长度不足',
+        description: '密码长度至少为6位',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast({
+        title: '密码不一致',
+        description: '两次输入的密码不一致',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!selectedUserId) {
+      return;
+    }
+
+    setIsChangingPassword(true);
+    try {
+      const response = await fetch('/api/admin/members/change-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: selectedUserId,
+          new_password: newPassword,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast({
+          title: '修改成功',
+          description: '密码修改成功',
+        });
+        setChangePasswordDialogOpen(false);
+        setNewPassword('');
+        setConfirmPassword('');
+        setSelectedUserId(null);
+      } else {
+        toast({
+          title: '修改失败',
+          description: data.error?.message || '密码修改失败',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      console.error('Failed to change password:', error);
+      toast({
+        title: '修改失败',
+        description: '网络错误，请稍后重试',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsChangingPassword(false);
+    }
+  };
+
   return (
     <div className={className}>
       {/* 搜索和筛选 */}
@@ -102,7 +255,7 @@ export function MemberTable({ className }: MemberTableProps) {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
                 type="text"
-                placeholder="搜索邮箱或昵称..."
+                placeholder="搜索邮箱、手机号或昵称..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -179,8 +332,16 @@ export function MemberTable({ className }: MemberTableProps) {
                   <tr key={member.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="flex items-center gap-2 text-sm font-medium text-gray-900">
                           {member.nickname}
+                          {member.is_disabled && (
+                            <span 
+                              className="inline-flex items-center text-red-600" 
+                              title="账号已禁用"
+                            >
+                              <AlertTriangle className="h-4 w-4" />
+                            </span>
+                          )}
                         </div>
                         <div className="text-sm text-gray-500">
                           {member.email || member.phone || '未设置'}
@@ -202,13 +363,29 @@ export function MemberTable({ className }: MemberTableProps) {
                       {member.last_login_at ? formatDate(member.last_login_at) : '从未登录'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => window.location.href = `/admin/members/${member.id}`}
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleToggleDisable(member)}
+                          title={member.is_disabled ? '激活账号' : '禁用账号'}
+                          className={member.is_disabled ? 'text-green-600 hover:text-green-700' : 'text-red-600 hover:text-red-700'}
+                        >
+                          {member.is_disabled ? (
+                            <RotateCcw className="h-4 w-4" />
+                          ) : (
+                            <Ban className="h-4 w-4" />
+                          )}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleOpenChangePassword(member)}
+                          title="修改密码"
+                        >
+                          <Key className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -273,6 +450,60 @@ export function MemberTable({ className }: MemberTableProps) {
           </div>
         )}
       </div>
+
+      {/* 修改密码对话框 */}
+      <Dialog open={changePasswordDialogOpen} onOpenChange={setChangePasswordDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>修改密码</DialogTitle>
+            <DialogDescription>
+              请输入新密码，密码长度至少为6位
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="new-password">新密码</Label>
+              <Input
+                id="new-password"
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="请输入新密码"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirm-password">确认密码</Label>
+              <Input
+                id="confirm-password"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="请再次输入新密码"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setChangePasswordDialogOpen(false);
+                setNewPassword('');
+                setConfirmPassword('');
+                setSelectedUserId(null);
+              }}
+              disabled={isChangingPassword}
+            >
+              取消
+            </Button>
+            <Button
+              onClick={handleChangePassword}
+              disabled={isChangingPassword}
+            >
+              {isChangingPassword ? '修改中...' : '确认修改'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
