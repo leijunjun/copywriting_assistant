@@ -59,7 +59,7 @@ export default function ExtensionPage() {
 
   const handleDownload = () => {
     // 跳转到下载链接
-    window.open('https://drive.weixin.qq.com/s?k=AEEAWwc9AA06DDSoNl', '_blank');
+    window.open('https://drive.weixin.qq.com/s?k=AEEAWwc9AA0sYnt41e', '_blank');
   };
 
   return (
