@@ -41,3 +41,6 @@ next-env.d.ts
 
 #sql file
 *.sql
+
+# ignore chrome-extension directory
+src/components/chrome-extension/

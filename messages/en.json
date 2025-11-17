@@ -146,6 +146,7 @@
     "retry": "Retry",
     "accountType": "Account Type",
     "emailAccount": "Email",
+    "phoneAccount": "Phone",
     "industry": "Industry",
     "general": "General",
     "housekeeping": "Housekeeping",
@@ -167,10 +168,17 @@
     "aiWriting": "Batch Writing",
     "inspirationWriter": "Inspiration Writer",
     "aiImage": "AI Image",
+    "browserAssistant": "Browser Assistant",
     "joinDate": "Join Date",
     "lastActive": "Last Active",
     "aiCreation": "AI Creation",
-    "rechargeHistory": "Recharge History"
+    "rechargeHistory": "Recharge History",
+    "accountInfo": "Account Info",
+    "creditManagement": "Credit Management",
+    "productServiceSettings": "Product & Service Settings",
+    "accountInfoDescription": "View and manage your account information",
+    "creditManagementDescription": "Manage your credit balance and transaction history",
+    "productServiceSettingsDescription": "Configure your product and service settings"
   },
   "footer": {
     "costSavings": "Significantly reduce labor costs",
@@ -263,5 +271,16 @@
     "tip3": "Paste the content in Xiaohongshu's publish page",
     "wechatMaskTitle": "Please Open in Browser",
     "wechatMaskDesc": "Tap the menu in the top-right corner and select 'Open in Browser'"
+  },
+  "Extension": {
+    "downloadTitle": "\"AI Writing Assistant\" Browser Extension",
+    "extensionDescription": "When browsing websites and seeing articles you like, the extension lets you achieve \"what you see is what you get\"",
+    "compatibility": "Available for macOS, Windows; Install in Chrome browser. If you don't have Chrome, please ",
+    "downloadFor": "Download for {platform}",
+    "downloadPackage": "Download Package",
+    "latest": "Latest",
+    "releaseDate": "Release Date",
+    "downloadChrome": "Download Chrome Browser",
+    "clickToDownload": "click to download"
   }
 }

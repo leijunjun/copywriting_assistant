@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { CreditIcon, UserIcon, LogOutIcon, SettingsIcon } from '@/components/ui/icons';
+import { CreditIcon, UserIcon, LogOutIcon } from '@/components/ui/icons';
 import { LanguagePopover } from '@/components/LanguagePopover';
 import { logger, LogCategory } from '@/lib/utils/logger';
 import { useAuth, useAuthListener } from '@/lib/auth/auth-context';
@@ -218,17 +218,6 @@ export function Header({ className }: HeaderProps) {
             </button>
             
             <button
-              onClick={() => handleNavigation('/writer')}
-              className={`text-sm font-medium transition-colors ${
-                isActivePath('/writer') 
-                  ? 'text-blue-600' 
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              {t('inspirationWriter')}
-            </button>
-            
-            <button
               onClick={() => handleNavigation('/ai-image-generation')}
               className={`text-sm font-medium transition-colors ${
                 isActivePath('/ai-image-generation') 
@@ -237,6 +226,17 @@ export function Header({ className }: HeaderProps) {
               }`}
             >
               {t('aiImage')}
+            </button>
+            
+            <button
+              onClick={() => handleNavigation('/extension')}
+              className={`text-sm font-medium transition-colors ${
+                isActivePath('/extension') 
+                  ? 'text-blue-600' 
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              {t('browserAssistant')}
             </button>
             
             <button
@@ -333,14 +333,6 @@ export function Header({ className }: HeaderProps) {
                     >
                       <CreditIcon className="h-4 w-4" />
                       <span>{t('manageCredits')}</span>
-                    </DropdownMenuItem>
-                    
-                    <DropdownMenuItem 
-                      onClick={() => handleNavigation('/settings')}
-                      className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-700 rounded-md cursor-pointer transition-colors duration-150"
-                    >
-                      <SettingsIcon className="h-4 w-4" />
-                      <span>{t('settings')}</span>
                     </DropdownMenuItem>
                     
                     <DropdownMenuSeparator className="my-2" />

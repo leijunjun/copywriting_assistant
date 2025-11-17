@@ -116,40 +116,10 @@ export default function ToolFrom(props: IProps) {
   // 基础表单校验（来自配置）
   let baseSchema: any = z.object(onFormSchema());
 
-  // 如果是小红书工具，追加"样本仿写"相关的可选字段与条件校验
-  const isXhs = props.dataSource?.title === 'xiaohongshu-post-generation';
+  // 如果是小红书热帖工具，添加 batchCount 字段
   const isXiaohongshuProduct = props.dataSource?.title === 'xiaohongshu-post-generation-product';
   const isSocialMediaBioTool = props.dataSource?.title === 'social-media-bio-creation';
   
-  if (isXhs) {
-    baseSchema = baseSchema.extend({
-      mimicSample: z.string().optional(),
-      tone: z.string(),
-      batchCount: z.number().min(1).max(10).optional().default(1)
-    }).superRefine((data: any, ctx: any) => {
-      if (data.tone === 'mimic_by_sample') {
-        const value = (data as any).mimicSample || '';
-        if (!value || value.trim().length === 0) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['mimicSample'],
-            message: '请输入样本'
-          });
-        } else if (value.length > 2000) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.too_big,
-            path: ['mimicSample'],
-            type: 'string',
-            maximum: 2000,
-            inclusive: true,
-            message: '样本最多可输入2000字'
-          });
-        }
-      }
-    });
-  }
-  
-  // 如果是小红书商品推广帖，添加 batchCount 字段
   if (isXiaohongshuProduct) {
     baseSchema = baseSchema.extend({
       batchCount: z.number().min(1).max(10).optional().default(1)
@@ -162,7 +132,6 @@ export default function ToolFrom(props: IProps) {
     resolver: zodResolver(formSchema),
     defaultValues: { 
       ...onFormSchema(true), 
-      ...(isXhs ? { mimicSample: '', batchCount: 1 } : {}),
       ...(isXiaohongshuProduct ? { batchCount: 1, style: '__random__' } : {}),
       ...(isSocialMediaBioTool && user?.industry === 'housekeeping' ? { industryPosition: '家政服务' } : {})
     },
@@ -187,11 +156,28 @@ export default function ToolFrom(props: IProps) {
   }
 
   // 获取行业特定的预设数据
-  const getIndustryPresetData = (fieldName: string) => {
+  const getIndustryPresetData = (fieldName: string, selectedPersona?: string) => {
     const toolId = dataSource.title;
     
     // 如果用户未登录或行业为 'general'，不显示预设内容
     if (!user || userIndustry === 'general') {
+      return [];
+    }
+    
+    // 如果是背景字段且选择了人设，从人设的嵌套结构中获取背景
+    if (fieldName === 'background' && selectedPersona && toolId === 'xiaohongshu-post-generation-product') {
+      const personaPresets = getFieldPresets(toolId, 'persona') as any[];
+      if (personaPresets && personaPresets.length > 0) {
+        // 查找选中的人设
+        const selectedPersonaPreset = personaPresets.find((p: any) => {
+          return p.chinese === selectedPersona || p.english === selectedPersona || p.japanese === selectedPersona;
+        });
+        
+        // 如果找到人设且它有背景数组，返回背景数组
+        if (selectedPersonaPreset && selectedPersonaPreset.backgrounds && Array.isArray(selectedPersonaPreset.backgrounds)) {
+          return selectedPersonaPreset.backgrounds;
+        }
+      }
       return [];
     }
     
@@ -382,11 +368,11 @@ export default function ToolFrom(props: IProps) {
     }
   }
 
-  // 检查是否为小红书帖子生成工具
-  const isXiaohongshuTool = dataSource.title === 'xiaohongshu-post-generation';
-  
-  // 检查是否为小红书帖子生成工具（商品类）
+  // 检查是否为小红书热帖工具
   const isXiaohongshuProductTool = dataSource.title === 'xiaohongshu-post-generation-product';
+  
+  // 获取当前选中的人设值，用于背景联动
+  const selectedPersona = form.watch('persona');
   
   // 检查是否为抖音短视频脚本工具
   const isTikTokTool = dataSource.title === 'TikTok-post-generation';
@@ -398,28 +384,32 @@ export default function ToolFrom(props: IProps) {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} >
-        {isXiaohongshuTool ? (
-          // 小红书帖子生成工具的特殊布局
+        {isXiaohongshuProductTool ? (
+          // 小红书热帖工具的特殊布局
           <>
-            {/* 1. 角色输入 */}
+            {/* 1. 人设输入 */}
             <FormField
               disabled={isLoading}
               control={form.control}
-              name="role"
+              name="persona"
               render={({ field }: any) => (
                 <FormItem className="px-3 pb-3">
                   <div className="flex items-center justify-between mb-2">
-                    <FormLabel className="font-bold text-black">{FROM_LABEL.role[language]}</FormLabel>
-                    {/* 角色模板选择器 - 右对齐，宽度缩小 */}
+                    <FormLabel className="font-bold text-black">{FROM_LABEL.persona[language]}</FormLabel>
+                    {/* 人设预设选择器 */}
                     <div className="w-48">
-                      {onRenderingSearchableSelect(getIndustryPresetData('role'), FROM_LABEL.preset[language], (value) => {
-                        form.setValue('role', value);
-                        form.trigger('role');
-                      }, 'role')}
+                      {onRenderingSearchableSelect(getIndustryPresetData('persona'), FROM_LABEL.preset[language], (value) => {
+                        form.setValue('persona', value);
+                        form.trigger('persona');
+                        // 当人设改变时，清空背景字段
+                        form.setValue('background', '');
+                        form.trigger('background');
+                      }, 'persona')}
                     </div>
                   </div>
                   <FormControl>
                     <Input 
+                      placeholder="你是谁"
                       {...field} 
                     />
                   </FormControl>
@@ -437,9 +427,9 @@ export default function ToolFrom(props: IProps) {
                 <FormItem className="px-3 pb-3">
                   <div className="flex items-center justify-between mb-2">
                     <FormLabel className="font-bold text-black">{FROM_LABEL.background[language]}</FormLabel>
-                    {/* 背景预设选择器 */}
+                    {/* 背景预设选择器 - 根据选中的人设过滤 */}
                     <div className="w-48">
-                      {onRenderingSearchableSelect(getIndustryPresetData('background'), FROM_LABEL.preset[language], (value) => {
+                      {onRenderingSearchableSelect(getIndustryPresetData('background', selectedPersona), FROM_LABEL.preset[language], (value) => {
                         form.setValue('background', value);
                         form.trigger('background');
                       }, 'background')}
@@ -448,6 +438,7 @@ export default function ToolFrom(props: IProps) {
                   <FormControl>
                     <Textarea 
                       className="min-h-20" 
+                      placeholder="有什么特点，比如口头禅/经历/处境等"
                       {...field} 
                     />
                   </FormControl>
@@ -456,123 +447,38 @@ export default function ToolFrom(props: IProps) {
               )}
             />
             
-            {/* 3. 目的需求输入 */}
+            {/* 3. 讨论主体输入 */}
             <FormField
               disabled={isLoading}
               control={form.control}
-              name="purpose"
-              render={({ field }: any) => (
-                <FormItem className="px-3 pb-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <FormLabel className="font-bold text-black">{FROM_LABEL.purpose[language]}</FormLabel>
-                    {/* 目的预设选择器 */}
-                    <div className="w-48">
-                      {onRenderingSearchableSelect(getIndustryPresetData('purpose'), FROM_LABEL.preset[language], (value) => {
-                        form.setValue('purpose', value);
-                        form.trigger('purpose');
-                      }, 'purpose')}
-                    </div>
-                  </div>
-                  <FormControl>
-                    <Textarea 
-                      className="min-h-20" 
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            {/* 4. 语气选择与“样本仿写”扩展 */}
-            <FormField
-              disabled={isLoading}
-              control={form.control}
-              name="tone"
+              name="discussionSubject"
               render={({ field }: any) => {
-                const toneList = dataSource.from.tone?.list || [];
-                const isMimicSelected = field.value === 'mimic_by_sample';
-                return (
-                  <FormItem className="px-3 pb-3">
-                    <FormLabel className="font-bold text-black">{FROM_LABEL.tone[language]}</FormLabel>
-                    <FormControl>
-                      <Select onValueChange={field.onChange} value={field.value} disabled={isLoading}>
-                        {/* 自定义下拉，基于既有列表 + 追加仿写选项 */}
-                        <>
-                          <SelectTrigger>
-                            <SelectValue placeholder={onReminderInformation('Select', 'tone')} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              {toneList.map((item: any) => (
-                                <SelectItem key={item.chinese} value={item.english || ''}>{item[language]}</SelectItem>
-                              ))}
-                              {/* 新增：按照提供的样本进行仿写（仅中文文案） */}
-                              <SelectItem value="mimic_by_sample">按照提供的样本进行仿写</SelectItem>
-                            </SelectGroup>
-                          </SelectContent>
-                        </>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-
-                    {/* 条件显示：样本 Textarea */}
-                    {isMimicSelected && (
-                      <FormField
-                        disabled={isLoading}
-                        control={form.control}
-                        name="mimicSample"
-                        render={({ field: sampleField }: any) => (
-                          <FormItem className="pt-3">
-                            <FormLabel className="font-bold text-black">样本</FormLabel>
-                            <FormControl>
-                              <Textarea className="min-h-40" maxLength={2000} placeholder="请输入用于仿写的样本文字（最多2000字）" {...sampleField} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    )}
-                  </FormItem>
-                );
-              }}
-            />
-          </>
-        ) : isXiaohongshuProductTool ? (
-          // 小红书帖子生成工具（商品类）的特殊布局
-          <>
-            {/* 1. 商品输入 */}
-            <FormField
-              disabled={isLoading}
-              control={form.control}
-              name="product"
-              render={({ field }: any) => {
-                // 获取商品预设数据 - 这里预设数据结构是 {label: MultilingualContent, value: string}
-                const productPresets = getIndustryPresetData('product');
+                // 获取讨论主体预设数据 - 这里预设数据结构是 {label: MultilingualContent, value: string}
+                const discussionSubjectPresets = getIndustryPresetData('discussionSubject');
                 return (
                   <FormItem className="px-3 pb-3">
                     <div className="flex items-center justify-between mb-2">
-                      <FormLabel className="font-bold text-black">{FROM_LABEL.product[language]}</FormLabel>
-                      {/* 商品预设选择器 - 显示简称，值为完整文本 */}
+                      <FormLabel className="font-bold text-black">{FROM_LABEL.discussionSubject[language]}</FormLabel>
+                      {/* 讨论主体预设选择器 - 显示简称，值为完整文本 */}
                       <div className="w-48">
-                        {productPresets.length > 0 && (
+                        {discussionSubjectPresets.length > 0 && (
                           <div 
                             className="relative" 
-                            ref={(el) => { presetRefs.current['product'] = el; }} 
+                            ref={(el) => { presetRefs.current['discussionSubject'] = el; }} 
                             onClick={(e) => e.stopPropagation()}
                           >
                             <Button
                               type="button"
                               variant="outline"
                               role="combobox"
-                              aria-expanded={presetOpen['product'] || false}
+                              aria-expanded={presetOpen['discussionSubject'] || false}
                               className="w-full justify-between"
                               onClick={(e: React.MouseEvent) => {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 setPresetOpen((prev: {[key: string]: boolean}) => ({
                                   ...prev,
-                                  ['product']: !prev['product']
+                                  ['discussionSubject']: !prev['discussionSubject']
                                 }));
                               }}
                             >
@@ -580,10 +486,10 @@ export default function ToolFrom(props: IProps) {
                               <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
                             
-                            {(presetOpen['product'] || false) && (
+                            {(presetOpen['discussionSubject'] || false) && (
                               <div className="absolute right-0 z-50 mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto min-w-full w-max max-w-96">
                                 <div className="space-y-1 p-2">
-                                  {productPresets.map((item: any) => (
+                                  {discussionSubjectPresets.map((item: any) => (
                                     <div
                                       key={item.label?.chinese || item.chinese}
                                       className="p-2 hover:bg-gray-100 cursor-pointer rounded-md border border-gray-200"
@@ -592,11 +498,11 @@ export default function ToolFrom(props: IProps) {
                                         e.stopPropagation();
                                         // 如果有 label 和 value 结构，使用 value；否则使用原始值
                                         const selectedValue = item.value || item[language];
-                                        form.setValue('product', selectedValue);
-                                        form.trigger('product');
+                                        form.setValue('discussionSubject', selectedValue);
+                                        form.trigger('discussionSubject');
                                         setPresetOpen((prev: {[key: string]: boolean}) => ({
                                           ...prev,
-                                          ['product']: false
+                                          ['discussionSubject']: false
                                         }));
                                       }}
                                     >
@@ -612,6 +518,7 @@ export default function ToolFrom(props: IProps) {
                     </div>
                     <FormControl>
                       <Input 
+                        placeholder="讨论什么产品或服务"
                         {...field} 
                       />
                     </FormControl>
@@ -621,34 +528,7 @@ export default function ToolFrom(props: IProps) {
               }}
             />
             
-            {/* 2. 人设输入 */}
-            <FormField
-              disabled={isLoading}
-              control={form.control}
-              name="persona"
-              render={({ field }: any) => (
-                <FormItem className="px-3 pb-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <FormLabel className="font-bold text-black">{FROM_LABEL.persona[language]}</FormLabel>
-                    {/* 人设预设选择器 */}
-                    <div className="w-48">
-                      {onRenderingSearchableSelect(getIndustryPresetData('persona'), FROM_LABEL.preset[language], (value) => {
-                        form.setValue('persona', value);
-                        form.trigger('persona');
-                      }, 'persona')}
-                    </div>
-                  </div>
-                  <FormControl>
-                    <Input 
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            {/* 3. 风格选择 */}
+            {/* 4. 风格选择 */}
             <FormField
               disabled={isLoading}
               control={form.control}
@@ -1171,8 +1051,8 @@ export default function ToolFrom(props: IProps) {
               </Select>
             </div>
             
-            {/* 批量生成数量选择器（小红书工具：服务推广帖和商品推广帖） */}
-            {(isXiaohongshuTool || isXiaohongshuProductTool) && (
+            {/* 批量生成数量选择器（小红书热帖） */}
+            {isXiaohongshuProductTool && (
               <div className="flex items-center gap-2">
                 <Select 
                   onValueChange={(value) => form.setValue('batchCount', parseInt(value))} 
@@ -1206,7 +1086,7 @@ export default function ToolFrom(props: IProps) {
                       {(() => {
                         const batchCount = form.watch('batchCount') || 1;
                         const totalCost = deductionRate * batchCount;
-                        if ((isXiaohongshuTool || isXiaohongshuProductTool) && batchCount > 1) {
+                        if (isXiaohongshuProductTool && batchCount > 1) {
                           return language === 'chinese' 
                             ? `生成 ${batchCount} 篇（${totalCost} 积分）`
                             : language === 'english'

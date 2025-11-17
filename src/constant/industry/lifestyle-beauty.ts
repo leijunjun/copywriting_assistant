@@ -24,62 +24,6 @@ export interface IndustryPresets {
 }
 
 export const lifestyleBeautyPresets: IndustryPresets = {
-  // 小红书帖子生成工具
-  'xiaohongshu-post-generation': {
-    role: [
-      { chinese: "皮肤管理师", english: "Skin Management Specialist", japanese: "スキン管理専門家" },
-      { chinese: "护理技师", english: "Beauty Care Technician", japanese: "美容ケア技術者" },
-      { chinese: "美容顾问", english: "Beauty Consultant", japanese: "美容コンサルタント" },
-      { chinese: "店长", english: "Store Manager", japanese: "店長" },
-      { chinese: "前台接待", english: "Receptionist", japanese: "受付" },
-      { chinese: "美容导师", english: "Beauty Mentor", japanese: "美容メンター" },
-    ],
-    background: [
-      { 
-        chinese: "资深皮肤管理师，拥有8年专业护肤经验，精通各种肌肤问题诊断和护理方案制定，帮助数千位客户重获健康肌肤", 
-        english: "Senior skin management specialist with 8 years of professional skincare experience, expert in various skin problem diagnosis and care plan development, helping thousands of clients regain healthy skin", 
-        japanese: "ベテランスキン管理専門家、8年のプロスキンケア経験、様々な肌問題診断とケアプラン開発に精通、数千人のお客様に健康的な肌を取り戻していただきました" 
-      },
-      { 
-        chinese: "专业护理技师，熟练掌握各种美容仪器操作和手法技巧，擅长面部护理、身体护理、抗衰老项目，为客户提供舒适安全的美容体验", 
-        english: "Professional beauty care technician, proficient in various beauty device operations and technique skills, expert in facial care, body care, and anti-aging treatments, providing comfortable and safe beauty experiences for clients", 
-        japanese: "プロ美容ケア技術者、様々な美容機器操作と技術スキルに精通、顔ケア、ボディケア、アンチエイジング治療に特化、お客様に快適で安全な美容体験を提供" 
-      },
-      { 
-        chinese: "资深美容顾问，深谙护肤之道，擅长为不同肤质客户制定个性化护肤方案，通过专业建议帮助客户建立正确的护肤习惯", 
-        english: "Senior beauty consultant, deeply understanding skincare principles, expert in creating personalized skincare plans for different skin types, helping clients establish correct skincare habits through professional advice", 
-        japanese: "ベテラン美容コンサルタント、スキンケアの原理を深く理解、異なる肌質の顧客に個別化されたスキンケアプランを作成、プロのアドバイスで正しいスキンケア習慣をサポート" 
-      },
-      { 
-        chinese: "美容院店长，拥有丰富的团队管理经验，深谙生活美容行业发展趋势，致力于为客户提供高品质的美容服务和舒适的体验环境", 
-        english: "Beauty salon manager with rich team management experience, deeply understanding lifestyle beauty industry trends, committed to providing high-quality beauty services and comfortable experience environments for clients", 
-        japanese: "美容院店長、豊富なチーム管理経験、生活美容業界トレンドを深く理解、お客様に高品質な美容サービスと快適な体験環境を提供することに専念" 
-      },
-    ],
-    purpose: [
-      { 
-        chinese: "分享专业护肤知识和日常护理技巧，帮助客户建立正确的护肤观念，让美丽从日常开始", 
-        english: "Share professional skincare knowledge and daily care tips, help clients establish correct skincare concepts, making beauty start from daily life", 
-        japanese: "プロのスキンケア知識と日常ケアのコツを共有、お客様に正しいスキンケア概念を構築、美しさを日常生活から始めていただきます" 
-      },
-      { 
-        chinese: "展示真实护理效果和客户反馈，通过前后对比证明专业护理的价值和效果，建立客户信任", 
-        english: "Showcase real care effects and customer feedback, demonstrate the value and effectiveness of professional care through before/after comparisons, build customer trust", 
-        japanese: "実際のケア効果と顧客フィードバックを紹介、ビフォーアフター比較でプロケアの価値と効果を証明、顧客信頼を構築" 
-      },
-      { 
-        chinese: "科普不同肌肤类型的护理要点和注意事项，帮助客户了解自己的肌肤需求，选择适合的护理方案", 
-        english: "Educate about care points and precautions for different skin types, help clients understand their skin needs and choose suitable care plans", 
-        japanese: "異なる肌タイプのケアポイントと注意事項を科学普及、お客様に自分の肌ニーズを理解してもらい、適切なケアプランを選択していただきます" 
-      },
-      { 
-        chinese: "推广健康美丽的生活方式，倡导内外兼修的美容理念，让客户从内而外散发自然美丽", 
-        english: "Promote healthy and beautiful lifestyle, advocate the beauty concept of both internal and external cultivation, help clients radiate natural beauty from within", 
-        japanese: "健康的で美しいライフスタイルを推進、内外兼修の美容理念を提唱、お客様に内から外へ自然な美しさを放っていただきます" 
-      },
-    ]
-  },
-  
   // 微信朋友圈回复工具
   'wechat-moments-reply': {
     content: [
@@ -266,10 +210,10 @@ export const lifestyleBeautyPresets: IndustryPresets = {
     ]
   },
 
-  // 小红书帖子生成工具（商品类）- 暂无预设内容
+  // 小红书热帖生成工具 - 暂无预设内容
   'xiaohongshu-post-generation-product': {
     persona: [],
-    product: [],
+    discussionSubject: [],
     style: []
   }
 };

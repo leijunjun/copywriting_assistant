@@ -66,7 +66,8 @@ export default function AIImageGenerationPage() {
   const [isEditorOpen, setIsEditorOpen] = useState(false);
 
   // 获取角色预设选项
-  const rolePresets = getFieldPresets('xiaohongshu-post-generation', 'role') || [];
+  // 已删除 xiaohongshu-post-generation 工具
+  const rolePresets: any[] = [];
 
   // 处理预设选项点击
   const handlePresetClick = (presetText: string) => {
@@ -427,7 +428,7 @@ export default function AIImageGenerationPage() {
               <CardHeader>
                 <CardTitle className="flex items-center text-xl font-bold text-gray-800">
                   <Sparkles className="w-6 h-6 mr-2 text-purple-600" />
-                  AI 出图设置
+                  AI 生图设置
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -589,7 +590,7 @@ export default function AIImageGenerationPage() {
                     ) : (
                       <>
                         <Sparkles className="w-5 h-5 mr-2" />
-                        AI 出图
+                        AI 生图
                         <Badge variant="secondary" className="ml-2 bg-white/20 text-white">
                           {creditCost} 积分/张
                         </Badge>

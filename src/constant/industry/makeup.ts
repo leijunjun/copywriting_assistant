@@ -18,9 +18,14 @@ export interface PresetOption {
   value: string;
 }
 
+// 人设预设接口（支持嵌套背景）
+export interface PersonaPreset extends MultilingualContent {
+  backgrounds?: MultilingualContent[];
+}
+
 // 工具预设内容接口
 export interface ToolPresets {
-  [fieldName: string]: MultilingualContent[] | PresetOption[];
+  [fieldName: string]: MultilingualContent[] | PresetOption[] | PersonaPreset[];
 }
 
 // 行业预设配置接口
@@ -29,59 +34,72 @@ export interface IndustryPresets {
 }
 
 export const makeupPresets: IndustryPresets = {
-  // 小红书帖子生成工具（服务类）
-  'xiaohongshu-post-generation': {
-    role: [
-      { chinese: "美妆博主", english: "Beauty Blogger", japanese: "美容ブロガー" },
-      { chinese: "护肤达人", english: "Skincare Expert", japanese: "スキンケアの達人" },
-      { chinese: "彩妆师", english: "Makeup Artist", japanese: "メイクアップアーティスト" },
-      { chinese: "美妆店主", english: "Beauty Shop Owner", japanese: "美容店オーナー" },
-      { chinese: "产品体验官", english: "Product Reviewer", japanese: "製品レビュアー" },
-    ],
-    background: [
-      { 
-        chinese: "从事美妆行业5年，擅长护肤品成分分析和产品测评，服务过3000+粉丝", 
-        english: "5 years in beauty industry, specializing in skincare ingredient analysis and product reviews, served 3000+ followers", 
-        japanese: "美容業界5年、スキンケア成分分析と製品レビューに特化、3000人以上のフォロワーにサービス提供" 
-      },
-      { 
-        chinese: "专业彩妆师，擅长妆容设计和化妆技巧教学，帮助1000+姐妹提升妆容技能", 
-        english: "Professional makeup artist, specializing in makeup design and technique teaching, helped 1000+ sisters improve makeup skills", 
-        japanese: "プロのメイクアップアーティスト、メイクデザインとテクニック指導に特化、1000人以上の方のメイクスキル向上をサポート" 
-      },
-      { 
-        chinese: "美妆店主，经营护肤美妆产品3年，熟悉各类产品特性和适用人群", 
-        english: "Beauty shop owner, running skincare and makeup products for 3 years, familiar with various product characteristics and target audiences", 
-        japanese: "美容店オーナー、スキンケア・メイクアップ製品を3年間運営、様々な製品特性とターゲット層に精通" 
-      },
-    ],
-    purpose: [
-      { 
-        chinese: "分享好用的护肤品，帮助姐妹们避免踩雷", 
-        english: "Share great skincare products to help sisters avoid bad purchases", 
-        japanese: "良いスキンケア製品を共有し、失敗購入を避けるサポート" 
-      },
-      { 
-        chinese: "推广平价好物，让每个人都能享受高质量护肤", 
-        english: "Promote affordable products, making quality skincare accessible to everyone", 
-        japanese: "手頃な製品を推進し、誰もが高品質スキンケアを楽しめるように" 
-      },
-      { 
-        chinese: "教学化妆技巧，提升姐妹们的妆容水平", 
-        english: "Teach makeup techniques to improve sisters' makeup skills", 
-        japanese: "メイクテクニックを教え、メイクスキルを向上させる" 
-      },
-    ]
-  },
-  
-  // 小红书帖子生成工具（商品类）
+  // 小红书热帖生成工具
   'xiaohongshu-post-generation-product': {
     persona: [
-      { chinese: "专业权威型：德系润护研究所", english: "Professional Authority: German Skincare Research Institute", japanese: "専門権威型：ドイツスキンケア研究所" },
-      { chinese: "亲切种草分享型：爱护肤的小格子", english: "Friendly Sharing Type: Skincare Lover Xiaogezi", japanese: "親しみやすいシェア型：スキンケア好きの小格子" },
-      { chinese: "目标人群痛点解决型：干皮少女的急救站", english: "Target Audience + Pain Point Solution: Dry Skin Girl's First Aid Station", japanese: "ターゲット層+課題解決型：乾燥肌少女の救急ステーション" },
+      { 
+        chinese: "专业权威型", 
+        english: "Professional Authority", 
+        japanese: "専門権威型",
+        backgrounds: [
+          { 
+            chinese: "德系润护研究所背景：专注敏感肌和干燥肌修护，拥有严格的德国产品测试体系，为3万+用户提供个性化护肤建议", 
+            english: "Background as German Skincare Research Institute: Focused on repairing sensitive and dry skin, with a rigorous German product testing system and personalized skincare advice for over 30,000 users", 
+            japanese: "ドイツスキンケア研究所の背景：敏感肌と乾燥肌の修復に特化、ドイツ式の厳格な製品テスト体制を持ち、3万人以上にカスタマイズケアを提供"
+          },
+          {
+            chinese: "德系护肤小课堂背景：拥有德国护肤师专业资质，注重日常科学护肤知识传播，善于通俗分析产品成分与功效", 
+            english: "Background as German Skincare Classroom: German-certified skincare specialist, committed to spreading scientific daily skincare knowledge and adept at clearly analyzing product ingredients and efficacy", 
+            japanese: "ドイツ式スキンケア小教室の背景：ドイツスキンケア資格保有、日常の科学的なスキンケア知識の普及に注力、成分と効果を分かりやすく解説"
+          },
+          {
+            chinese: "德系护肤实验室背景：主导德系功效护肤研发，参与多项皮肤屏障修护专利研究，注重实验数据与用户体验结合", 
+            english: "Background as German Skincare Laboratory: Leads German efficacy skincare R&D, participates in multiple skin barrier repair patent studies, prioritizing both lab data and user experience", 
+            japanese: "ドイツスキンケアラボの背景：ドイツ式機能性スキンケアの研究開発を主導、皮膚バリア修復に関する特許研究に多数参画、データと体験の融合を重視"
+          }
+        ]
+      },
+      { 
+        chinese: "亲切种草分享型", 
+        english: "Friendly Sharing Type", 
+        japanese: "親しみやすいシェア型",
+        backgrounds: [
+          {
+            chinese: "定位为爱护肤的小格子，日常乐于分享真实护肤体验与种草心得，希望用自己的试用经历帮助姐妹们避坑和挖宝", 
+            english: "Positioned as 'Skincare Lover Xiaogezi': loves to share authentic skincare experiences and product 'planting grass' tips, hoping to help sisters avoid pitfalls and discover new favorites through personal trials", 
+            japanese: "スキンケア好きの小格子として、日々リアルなスキンケア体験やおすすめ品（”種草”）のシェアが好きで、実体験で皆さんが地雷を避けてお宝を見つける手助けをしたい"
+          },
+          {
+            chinese: "定位为德系护肤日记，专注于德国科学护肤理念的传播，喜欢对比不同成分和产品配方，记录护肤效果", 
+            english: "Positioned as 'German Skincare Diary': focuses on sharing German scientific skincare philosophies, enjoys comparing different ingredients and formulations, and documenting results", 
+            japanese: "ドイツ式スキンケア日記アカウントとして、ドイツ科学派のスキンケア思想を発信、成分や配合の比較・効果の記録が得意"
+          },
+          {
+            chinese: "定位为护肤“种草”日记，用生活化语言写自己日常护肤的感受和推荐种草好物，让粉丝像闺蜜一样信任和互动", 
+            english: "Positioned as 'Skincare Planting Diary': writes about personal daily skincare feelings and product recommendations in a relatable manner, building trust and interaction with fans like close friends", 
+            japanese: "スキンケア“種草”日記として、日常のスキンケア感想とおすすめアイテムを親しみやすい言葉で発信、フォロワーと親友のような信頼関係・交流を育む"
+          },
+        ]
+      },
+      { 
+        chinese: "目标人群痛点解决型", 
+        english: "Target Audience + Pain Point Solution", 
+        japanese: "ターゲット層+課題解決型",
+        backgrounds: [
+          { 
+            chinese: "定位于干皮少女的急救站：本身就是干皮且极易敏感，经历多次护肤踩坑，研究过成分、测试过多种平价到高端护肤品，现在会分享有效的补水修护干皮方案，专为手脚干裂、冬季脱皮、敏感泛红等痛点困扰的姐妹提供实用建议", 
+            english: "Positioned as 'Dry Skin Girl's First Aid Station': Personally has dry and sensitive skin, after many trial and error experiences with skincare products and ingredients (from affordable to premium), now shares effective moisturizing and repairing solutions for dry skin. Offers practical advice specifically for those struggling with cracked hands and feet, winter flaking, and redness/sensitivity.", 
+            japanese: "「乾燥肌少女の救急ステーション」として位置付け：自分自身が乾燥肌・敏感肌で、多くのスキンケア商品・成分を試し、効果的な乾燥対策を見つけて経験をシェア。手足のひび割れ、冬の皮むけ、敏感による赤みなどの悩みを持つ方に実用的なアドバイスを届ける"
+          },
+          { 
+            chinese: "定位于秋冬干裂急救指南：秋冬特别容易手脚干裂的体质，尤其北方环境下，对极端气候下的护手、护肤有丰富经验。致力于分享换季/寒冷天气下的护肤干货，从应急修护到日常保湿全方位安利解决方案", 
+            english: "Positioned as 'Autumn/Winter Cracked Skin Emergency Guide': Has a constitution especially prone to cracked hands and feet in autumn and winter, particularly in northern climates; brings rich experience in hand and skincare for extreme weather. Dedicated to sharing practical skincare tips for seasonal change/cold weather, providing comprehensive recommendations from emergency repair to daily moisturizing.", 
+            japanese: "「秋冬ひび割れ緊急ガイド」として位置付け：秋冬に手足のひび割れが起きやすい体質で、特に寒冷地での経験が豊富。季節の変わり目や寒い時期のスキンケアノウハウを発信し、応急処置から日常保湿までトータルで問題解決する提案を行う"
+          },
+        ]
+      },
     ],
-    product: [
+    discussionSubject: [
       {
         label: { chinese: "格兰素护手霜", english: "Glysomed Hand Cream", japanese: "グリソメッドハンドクリーム" },
         value: `
@@ -149,4 +167,5 @@ export const makeupPresets: IndustryPresets = {
     ]
   },
 };
+
 

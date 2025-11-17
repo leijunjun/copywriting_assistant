@@ -66,6 +66,7 @@ export async function GET(request: NextRequest) {
       user: {
         id: user.id,
         email: user.email,
+        phone: user.phone,
         nickname: user.nickname,
         avatar_url: user.avatar_url,
         industry: user.industry,

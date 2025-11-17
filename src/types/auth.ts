@@ -7,7 +7,8 @@
 // User Types
 export interface User {
   id: string;
-  email: string;
+  email?: string | null;
+  phone?: string | null;
   nickname: string;
   avatar_url?: string;
   industry?: string;

@@ -18,7 +18,7 @@ interface IToolParameter {
     articlePurpose: string, customerPainPoints: string, conversionAction: string, 
     additionalContent: string, articleStyle: string,
     industryPosition: string, targetAudience: string, namingPreference: string, avoidContent: string,
-    persona: string, product: string,
+    persona: string, product: string, discussionSubject: string,
 }
 
 export const toolParameter: { [key: string]: (params: IToolParameter) => Array<{ role: string, content: string }> } = {
@@ -937,30 +937,8 @@ ${params.additionalContent ? `补充内容：${params.additionalContent}` : ''}
         ]
     },
 
-    // 兼容键：与 'Xiaohongshu post generation' 完全一致
-    'xiaohongshu-post-generation': (params: Pick<IToolParameter, 'role' | 'background' | 'purpose' | 'language' | 'tone'> & { mimicSample?: string }) => {
-        // Tone映射表 - 将英文tone值转换为中文显示
-        const toneMapping: { [key: string]: string } = {
-            'Emotional Resonance (focus on empathy and healing)': '情绪共鸣型（主打共情与治愈）',
-            'Practical Value (emphasizing altruism and a sense of gain)': '实用干货型（强调利他与获得感）',
-            'Exaggerated Contrast (creates conflict and drama)': '夸张反差型（制造冲突与戏剧感）',
-            'Relaxing & Healing (creates an ideal life atmosphere)': '轻松治愈型（营造理想生活氛围）',
-            'Trending Topic Ride (traffic leverage & emotional resonance)': '热点借势型（关联热点事件+情绪共振）'
-        };
-        const displayTone = toneMapping[params.tone] || params.tone;
-        const mimicAppend = (params as any).tone === 'mimic_by_sample' && (params as any).mimicSample
-            ? `\n请参考以下样本进行文风仿写（仅模仿风格，不抄袭内容）：\n样本：${(params as any).mimicSample}\n`
-            : '';
-        return [
-            {
-                role: 'user',
-                content: `根据以下信息生成一个小红书平台风格的帖子。\n\n角色：${params.role}\n背景：${params.background}\n目的：${params.purpose}\n语气：${displayTone}\n语言：${params.language}\n要求：\n- 标题吸睛，带关键词（如“学生党闭眼入”“打工人自救指南”）\n- 字数控制在300–600字，短段落划分，穿插合适的emoji和感叹号增加氛围感\n- 内容符合角色设定和背景情况，真实感强，有细节、有情绪、有实用价值\n- 结尾可引导互动（如“你们有类似经历吗？”“求推荐更多好物！”）\n- 匹配 4-6 个相关标签，无需解释和注释\n\n${mimicAppend}请直接生成帖子内容：`
-            }
-        ]
-    },
-
-    // 小红书帖子生成（商品类）
-    'xiaohongshu-post-generation-product': (params: Pick<IToolParameter, 'persona' | 'product' | 'style' | 'language'> & { industry?: IndustryType, batchIndex?: number, batchTotal?: number }) => {
+    // 小红书热帖生成
+    'xiaohongshu-post-generation-product': (params: Pick<IToolParameter, 'persona' | 'background' | 'discussionSubject' | 'style' | 'language'> & { industry?: IndustryType, batchIndex?: number, batchTotal?: number }) => {
         const industry = params.industry || 'general' as IndustryType;
         
         // 处理风格选择：如果为随机选择或为空，则从行业预设中随机选择一个
@@ -998,9 +976,9 @@ ${params.additionalContent ? `补充内容：${params.additionalContent}` : ''}
             {
                 role: 'user',
                 content: `
-你是一个小红书爆款文案编辑，对护肤品有 8 年的推广经验，写出的帖子很有闺蜜分享的感觉，现在要针对产品撰写种草帖子，要求如下：
+你是一个小红书爆款文案编辑，对内容创作有丰富的推广经验，写出的帖子很有闺蜜分享的感觉，现在要针对产品或服务撰写种草帖子，要求如下：
 - 解析参考帖子 ${selectedStyle}的表述方式、结构、文风和语气，用${params.persona}的口吻模仿撰写
-- 维持原意的前提下,提炼${params.product}属性和特点，结合到帖子内容中
+- ${params.background ? `人设背景：${params.background}\n` : ''}- 维持原意的前提下,提炼${params.discussionSubject}属性和特点，结合到帖子内容中
 - 帖子内容要有情绪、有实用价值,emoji使用必须丰富
 - 【字数限制】帖子字数必须严格控制在250-400字之间，绝对不能超过400字，这是硬性要求，必须严格遵守。
 - 最终输出要提炼 5-10个标签,不能少于5个,不能多于10个

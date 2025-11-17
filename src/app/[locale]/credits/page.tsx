@@ -11,11 +11,13 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { CreditBalance } from '@/components/credits/CreditBalance';
 import { TransactionHistory } from '@/components/credits/TransactionHistory';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { ErrorMessage } from '@/components/ui/error-message';
 import { logger } from '@/lib/utils/logger';
+import Image from 'next/image';
 
 interface CreditData {
   balance: number;
@@ -46,6 +48,7 @@ export default function CreditsPage() {
     has_next: boolean;
     has_prev: boolean;
   } | null>(null);
+  const [rechargeDialogOpen, setRechargeDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchCreditData();
@@ -109,12 +112,11 @@ export default function CreditsPage() {
   };
 
   const handleRecharge = () => {
-    // In a real implementation, this would open a recharge modal or redirect to payment page
+    // 显示充值提示模态框
     logger.credits('Recharge requested', {
       currentBalance: credits?.balance || 0,
     });
-    // For now, just show an alert
-    alert(t('rechargeNotImplemented'));
+    setRechargeDialogOpen(true);
   };
 
   const handleLoadMore = () => {
@@ -202,8 +204,44 @@ export default function CreditsPage() {
           </div>
         </div>
 
-
       </div>
+
+      {/* 充值提示模态框 */}
+      <Dialog open={rechargeDialogOpen} onOpenChange={setRechargeDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-semibold text-gray-900">
+              {t('recharge')}
+            </DialogTitle>
+            <DialogDescription className="text-gray-600">
+              {t('rechargeInviteOnly')}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="py-4 space-y-4">
+            <div className="flex flex-col items-center space-y-3">
+              <p className="text-sm font-medium text-gray-700">{t('adminWeChat')}</p>
+              <div className="relative w-48 h-48 bg-white rounded-lg p-2 shadow-md">
+                <Image
+                  src="/weixin.png"
+                  alt="管理员微信"
+                  fill
+                  className="object-contain rounded-lg"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end">
+            <Button
+              onClick={() => setRechargeDialogOpen(false)}
+              className="px-6"
+            >
+              {t('close')}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

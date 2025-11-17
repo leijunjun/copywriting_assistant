@@ -11,19 +11,25 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { UserProfile } from '@/components/auth/UserProfile';
 import { CreditBalance } from '@/components/credits/CreditBalance';
+import { TransactionHistory } from '@/components/credits/TransactionHistory';
 import { ProfilePageSkeleton, LoadingIndicator, PageLoadingOverlay } from '@/components/ui/loading-skeleton';
 import { logger } from '@/lib/utils/logger';
 import { clearLocalStorageItems } from '@/lib/utils/localStorage';
 import { useAuth } from '@/lib/auth/auth-context';
+import Image from 'next/image';
 
 interface UserData {
   id: string;
-  wechat_openid: string;
+  email?: string | null;
+  phone?: string | null;
+  wechat_openid?: string;
   wechat_unionid?: string;
   nickname: string;
   avatar_url: string;
+  industry?: string;
   created_at: string;
   updated_at: string;
   last_login_at?: string;
@@ -33,6 +39,16 @@ interface CreditData {
   balance: number;
   updated_at: string;
 }
+
+interface Transaction {
+  id: string;
+  amount: number;
+  transaction_type: 'deduction' | 'bonus' | 'refund' | 'recharge';
+  description: string;
+  created_at: string;
+}
+
+type ProfileTab = 'account' | 'credits' | 'services';
 
 // 优化的用户资料组件
 const OptimizedUserProfile = memo(({ user, onLogout }: { user: UserData; onLogout: () => void }) => {
@@ -62,9 +78,21 @@ export default function ProfilePage() {
   const { clearAuthState, triggerAuthEvent } = useAuth();
   const [user, setUser] = useState<UserData | null>(null);
   const [credits, setCredits] = useState<CreditData | null>(null);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const [activeTab, setActiveTab] = useState<ProfileTab>('account');
+  const [transactionPagination, setTransactionPagination] = useState<{
+    page: number;
+    limit: number;
+    total: number;
+    total_pages: number;
+    has_next: boolean;
+    has_prev: boolean;
+  } | null>(null);
+  const [transactionFilter, setTransactionFilter] = useState<string>('all');
+  const [rechargeDialogOpen, setRechargeDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchUserProfile();
@@ -155,8 +183,50 @@ export default function ProfilePage() {
   };
 
   const handleRecharge = () => {
-    // 弹出提示信息，与credits页面保持一致
-    alert(t('rechargeNotImplemented'));
+    // 显示充值提示模态框
+    setRechargeDialogOpen(true);
+  };
+
+  const fetchTransactionHistory = useCallback(async (page: number = 1) => {
+    try {
+      const params = new URLSearchParams();
+      if (transactionFilter !== 'all') {
+        params.append('type', transactionFilter);
+      }
+      params.append('page', page.toString());
+      params.append('limit', '10');
+
+      const response = await fetch(`/api/credits/history?${params.toString()}`);
+      const data = await response.json();
+
+      if (data.success) {
+        setTransactions(data.transactions || []);
+        setTransactionPagination(data.pagination);
+      }
+    } catch (err) {
+      logger.error('Failed to fetch transaction history', err, 'API');
+    }
+  }, [transactionFilter]);
+
+  useEffect(() => {
+    if (activeTab === 'credits' && credits) {
+      fetchTransactionHistory();
+    }
+  }, [activeTab, credits, fetchTransactionHistory]);
+
+  const handleTransactionFilter = (type: string) => {
+    setTransactionFilter(type);
+    fetchTransactionHistory(1);
+  };
+
+  const handleTransactionPageChange = (page: number) => {
+    fetchTransactionHistory(page);
+  };
+
+  const handleTransactionLoadMore = () => {
+    if (transactionPagination && transactionPagination.has_next) {
+      fetchTransactionHistory(transactionPagination.page + 1);
+    }
   };
 
   if (loading) {
@@ -217,85 +287,145 @@ export default function ProfilePage() {
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-indigo-400/20 to-pink-400/20 rounded-full blur-3xl"></div>
       </div>
       
-      <div className="relative max-w-6xl mx-auto px-4 space-y-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-3">
-            {t('profile')}
-          </h1>
-          <p className="text-gray-600 text-lg">
-            {t('profileDescription')}
-          </p>
+      <div className="relative max-w-7xl mx-auto px-4">
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* 左侧导航栏 */}
+          <div className="w-full lg:w-64 flex-shrink-0">
+            <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-xl">
+              <CardContent className="p-4">
+                <nav className="space-y-2">
+                  <button
+                    onClick={() => setActiveTab('account')}
+                    className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center space-x-3 ${
+                      activeTab === 'account'
+                        ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <span className="font-medium">{t('accountInfo')}</span>
+                  </button>
+                  
+                  <button
+                    onClick={() => setActiveTab('credits')}
+                    className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center space-x-3 ${
+                      activeTab === 'credits'
+                        ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                    </svg>
+                    <span className="font-medium">{t('creditManagement')}</span>
+                  </button>
+                  
+                  <button
+                    onClick={() => setActiveTab('services')}
+                    className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center space-x-3 ${
+                      activeTab === 'services'
+                        ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span className="font-medium">{t('productServiceSettings')}</span>
+                  </button>
+                </nav>
+              </CardContent>
+            </Card>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* User Profile Card */}
+          {/* 右侧内容区域 */}
+          <div className="flex-1 min-w-0">
+            {activeTab === 'account' && (
+              <div className="space-y-6">
           <OptimizedUserProfile
             user={user}
             onLogout={handleLogout}
           />
+              </div>
+            )}
 
+            {activeTab === 'credits' && (
+              <div className="space-y-6">
           {/* Credit Balance Card */}
           <OptimizedCreditBalance
             balance={credits.balance}
             onRecharge={handleRecharge}
             showWarning={credits.balance < 20}
           />
+
+                {/* Transaction History Card */}
+                <TransactionHistory
+                  transactions={transactions}
+                  pagination={transactionPagination}
+                  onLoadMore={handleTransactionLoadMore}
+                  onFilter={handleTransactionFilter}
+                  onPageChange={handleTransactionPageChange}
+                />
+              </div>
+            )}
+
+            {activeTab === 'services' && (
+              <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-xl">
+                <CardContent className="p-12">
+                  <div className="text-center text-gray-400">
+                    <svg className="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <p className="text-lg font-medium">{t('productServiceSettings')}</p>
+                    <p className="text-sm mt-2">{t('productServiceSettingsDescription')}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
         </div>
 
-
-        {/* Quick Actions */}
-        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-xl">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-2xl font-bold text-gray-800 flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+      {/* 充值提示模态框 */}
+      <Dialog open={rechargeDialogOpen} onOpenChange={setRechargeDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-semibold text-gray-900">
+              {t('recharge')}
+            </DialogTitle>
+            <DialogDescription className="text-gray-600">
+              {t('rechargeInviteOnly')}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="py-4 space-y-4">
+            <div className="flex flex-col items-center space-y-3">
+              <p className="text-sm font-medium text-gray-700">{t('adminWeChat')}</p>
+              <div className="relative w-48 h-48 bg-white rounded-lg p-2 shadow-md">
+                <Image
+                  src="/weixin.png"
+                  alt="管理员微信"
+                  fill
+                  className="object-contain rounded-lg"
+                />
               </div>
-              <span>{t('quickActions')}</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            </div>
+          </div>
+
+          <div className="flex justify-end">
               <Button
-                onClick={() => router.push('/')}
-                variant="outline"
-                className="h-24 flex flex-col items-center justify-center space-y-3 hover:border-blue-300 transition-all duration-300 group shadow-md hover:shadow-lg relative overflow-hidden bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700"
+              onClick={() => setRechargeDialogOpen(false)}
+              className="px-6"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-400/30 to-indigo-600/40 group-hover:from-blue-400/40 group-hover:to-indigo-600/50 transition-all duration-300"></div>
-                <span className="text-lg font-bold text-white drop-shadow-2xl relative z-10 text-center px-2">{t('aiCreation')}</span>
-              </Button>
-              
-              <Button
-                onClick={() => router.push('/ai-image-generation')}
-                variant="outline"
-                className="h-24 flex flex-col items-center justify-center space-y-3 hover:border-pink-300 transition-all duration-300 group shadow-md hover:shadow-lg relative overflow-hidden bg-gradient-to-br from-pink-500 via-rose-600 to-red-700"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-pink-400/30 to-red-600/40 group-hover:from-pink-400/40 group-hover:to-red-600/50 transition-all duration-300"></div>
-                <span className="text-lg font-bold text-white drop-shadow-2xl relative z-10 text-center px-2">AI 出图</span>
-              </Button>
-              
-              <Button
-                onClick={() => router.push('/credits')}
-                variant="outline"
-                className="h-24 flex flex-col items-center justify-center space-y-3 hover:border-green-300 transition-all duration-300 group shadow-md hover:shadow-lg relative overflow-hidden bg-gradient-to-br from-green-500 via-emerald-600 to-teal-700"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-green-400/30 to-teal-600/40 group-hover:from-green-400/40 group-hover:to-teal-600/50 transition-all duration-300"></div>
-                <span className="text-lg font-bold text-white drop-shadow-2xl relative z-10 text-center px-2">{t('manageCredits')}</span>
-              </Button>
-              
-              <Button
-                onClick={() => router.push('/credits/history')}
-                variant="outline"
-                className="h-24 flex flex-col items-center justify-center space-y-3 hover:border-purple-300 transition-all duration-300 group shadow-md hover:shadow-lg relative overflow-hidden bg-gradient-to-br from-purple-500 via-violet-600 to-indigo-700"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-400/30 to-indigo-600/40 group-hover:from-purple-400/40 group-hover:to-indigo-600/50 transition-all duration-300"></div>
-                <span className="text-lg font-bold text-white drop-shadow-2xl relative z-10 text-center px-2">{t('rechargeHistory')}</span>
+              {t('close')}
               </Button>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -12,9 +12,20 @@ export interface MultilingualContent {
   japanese: string;
 }
 
+// 商品类预设 - 带有 label 和 value 的结构
+export interface PresetOption {
+  label: MultilingualContent;
+  value: string;
+}
+
+// 人设预设接口（支持嵌套背景）
+export interface PersonaPreset extends MultilingualContent {
+  backgrounds?: MultilingualContent[];
+}
+
 // 工具预设内容接口
 export interface ToolPresets {
-  [fieldName: string]: MultilingualContent[];
+  [fieldName: string]: MultilingualContent[] | PresetOption[] | PersonaPreset[];
 }
 
 // 行业预设配置接口
@@ -23,140 +34,513 @@ export interface IndustryPresets {
 }
 
 export const housekeepingPresets: IndustryPresets = {
-  // 小红书帖子生成工具
-  'xiaohongshu-post-generation': {
-    role: [
-      { chinese: "中介公司", english: "Agency", japanese: "仲介会社" },
-      { chinese: "行业协会", english: "Industry Association", japanese: "業界団体" },
-      { chinese: "月嫂", english: "Maternity Matron", japanese: "産後ケア" },
-      { chinese: "育儿嫂", english: "Nanny", japanese: "ベビーシッター" },
-      { chinese: "保洁员", english: "Cleaner", japanese: "清掃員" },
-      { chinese: "钟点工", english: "Hourly Worker", japanese: "時間制労働者" },
-      { chinese: "住家保姆", english: "Live-in Maid", japanese: "住み込みメイド" },
+  // 小红书热帖生成工具
+  'xiaohongshu-post-generation-product': {
+    persona: [
+      {
+        chinese: "专业月嫂",
+        english: "Professional Maternity Matron",
+        japanese: "プロの産後ケア型",
+        backgrounds: [
+          {
+            chinese: "从事月嫂工作8年，拥有国家认证的母婴护理师证书，服务过100+个家庭，擅长产后恢复指导和新生儿护理，帮助新手妈妈顺利度过产褥期",
+            english: "8 years of experience as a maternity matron, certified maternal and infant care specialist, served 100+ families, expert in postpartum recovery guidance and newborn care, helping new mothers smoothly through the puerperium",
+            japanese: "産後ケア8年の経験、国家認定の母子ケア資格保有、100世帯以上にサービス提供、産後回復指導と新生児ケアに精通、新米ママが産褥期をスムーズに過ごせるようサポート"
+          },
+          {
+            chinese: "资深月嫂，拥有10年母婴护理经验，精通科学喂养、早期教育和产后康复，累计服务150+个家庭，获得客户一致好评，擅长为不同体质的新手妈妈制定个性化护理方案",
+            english: "Senior maternity matron with 10 years of maternal and infant care experience, proficient in scientific feeding, early education and postpartum recovery, served 150+ families with consistent praise, expert in creating personalized care plans for new mothers with different constitutions",
+            japanese: "ベテラン産後ケア、10年の母子ケア経験、科学的な育児、早期教育、産後回復に精通、150世帯以上にサービス提供、お客様から一貫した高評価、異なる体質の新米ママに個別化されたケアプランを作成"
+          },
+          {
+            chinese: "专业月嫂，持有国际认证的母婴护理资质，拥有5年临床经验，专精早产儿和双胞胎护理，熟悉各类产后并发症处理，帮助高危产妇安全度过产褥期",
+            english: "Professional maternity matron with international certification in maternal and infant care, 5 years of clinical experience, specializing in premature and twin care, familiar with various postpartum complications, helping high-risk mothers safely through the puerperium",
+            japanese: "プロの産後ケア、国際認定の母子ケア資格保有、5年の臨床経験、早産児と双子のケアに特化、様々な産後合併症の処理に精通、ハイリスク産婦が安全に産褥期を過ごせるようサポート"
+          }
+        ]
+      },
+      {
+        chinese: "资深育儿嫂",
+        english: "Experienced Nanny",
+        japanese: "ベテランベビーシッター型",
+        backgrounds: [
+          {
+            chinese: "从事育儿嫂工作6年，拥有丰富的婴幼儿照护经验，擅长科学喂养、早期教育和行为习惯培养，服务过80+个家庭，帮助宝宝健康成长，让父母安心工作",
+            english: "6 years of experience as a nanny, rich experience in infant and toddler care, expert in scientific feeding, early education and behavior habit cultivation, served 80+ families, helping babies grow healthy and giving parents peace of mind to work",
+            japanese: "ベビーシッター6年の経験、乳幼児ケアの豊富な経験、科学的な育児、早期教育、行動習慣の育成に精通、80世帯以上にサービス提供、赤ちゃんの健康な成長をサポート、両親が安心して働けるよう支援"
+          },
+          {
+            chinese: "专业育儿嫂，拥有8年育儿经验，精通0-3岁婴幼儿各阶段发展特点，擅长辅食制作、睡眠训练和语言启蒙，累计服务120+个家庭，获得客户高度认可",
+            english: "Professional nanny with 8 years of childcare experience, proficient in developmental characteristics of 0-3 year olds, expert in complementary food preparation, sleep training and language enlightenment, served 120+ families with high customer recognition",
+            japanese: "プロのベビーシッター、8年の育児経験、0-3歳の各発達段階の特徴に精通、離乳食作り、睡眠トレーニング、言語啓発に特化、120世帯以上にサービス提供、お客様から高い評価"
+          },
+          {
+            chinese: "资深育儿嫂，持有高级育婴师证书，拥有10年专业经验，熟悉各类婴幼儿常见疾病护理，擅长为不同性格的宝宝制定个性化教育方案，帮助培养良好的生活习惯",
+            english: "Senior nanny with advanced infant care certificate, 10 years of professional experience, familiar with care for various common infant diseases, expert in creating personalized education plans for babies with different personalities, helping cultivate good living habits",
+            japanese: "ベテランベビーシッター、上級育児資格保有、10年のプロ経験、様々な乳幼児の一般的な病気のケアに精通、異なる性格の赤ちゃんに個別化された教育プランを作成、良好な生活習慣の育成をサポート"
+          }
+        ]
+      },
+      {
+        chinese: "专业保洁员",
+        english: "Professional Cleaner",
+        japanese: "プロの清掃員型",
+        backgrounds: [
+          {
+            chinese: "从事家庭保洁工作5年，拥有专业的清洁技能和丰富的服务经验，熟悉各类清洁工具和清洁剂的使用，擅长深度清洁和特殊污渍处理，服务过200+个家庭",
+            english: "5 years of experience in home cleaning, professional cleaning skills and rich service experience, familiar with various cleaning tools and detergents, expert in deep cleaning and special stain treatment, served 200+ families",
+            japanese: "家庭清掃5年の経験、プロの清掃スキルと豊富なサービス経験、様々な清掃道具と洗剤の使用に精通、深層清掃と特殊汚れの処理に特化、200世帯以上にサービス提供"
+          },
+          {
+            chinese: "资深保洁员，拥有8年专业清洁经验，精通各类材质的清洁保养方法，擅长厨房深度清洁、卫生间除菌和地毯清洗，累计服务300+个家庭，获得客户一致好评",
+            english: "Senior cleaner with 8 years of professional cleaning experience, proficient in cleaning and maintenance methods for various materials, expert in deep kitchen cleaning, bathroom disinfection and carpet cleaning, served 300+ families with consistent customer praise",
+            japanese: "ベテラン清掃員、8年のプロ清掃経験、様々な素材の清掃・メンテナンス方法に精通、キッチン深層清掃、バスルーム除菌、カーペット洗浄に特化、300世帯以上にサービス提供、お客様から一貫した高評価"
+          },
+          {
+            chinese: "专业保洁员，持有清洁服务认证，拥有6年经验，熟悉环保清洁理念，擅长使用天然清洁剂进行深度清洁，为注重健康的家庭提供安全环保的清洁服务",
+            english: "Professional cleaner with cleaning service certification, 6 years of experience, familiar with eco-friendly cleaning concepts, expert in deep cleaning with natural detergents, providing safe and eco-friendly cleaning services for health-conscious families",
+            japanese: "プロの清掃員、清掃サービス認証保有、6年の経験、エコフレンドリーな清掃理念に精通、天然洗剤を使った深層清掃に特化、健康を重視する家庭に安全でエコな清掃サービスを提供"
+          }
+        ]
+      },
+      {
+        chinese: "住家保姆",
+        english: "Live-in Maid",
+        japanese: "住み込みメイド型",
+        backgrounds: [
+          {
+            chinese: "从事住家保姆工作7年，拥有全面的家政服务技能，擅长烹饪、清洁、洗衣和家庭管理，服务过50+个家庭，帮助雇主解决日常家务烦恼，让家庭生活更有序",
+            english: "7 years of experience as a live-in maid, comprehensive housekeeping skills, expert in cooking, cleaning, laundry and household management, served 50+ families, helping employers solve daily household troubles and making family life more organized",
+            japanese: "住み込みメイド7年の経験、包括的な家事代行スキル、料理、清掃、洗濯、家庭管理に精通、50世帯以上にサービス提供、雇用主の日常的な家事の悩みを解決、家庭生活をより秩序立ててサポート"
+          },
+          {
+            chinese: "资深住家保姆，拥有10年住家服务经验，精通各类菜系制作和营养搭配，擅长家庭收纳整理和日常维护，累计服务60+个家庭，获得雇主高度信任和认可",
+            english: "Senior live-in maid with 10 years of residential service experience, proficient in various cuisines and nutritional matching, expert in home organizing and daily maintenance, served 60+ families with high employer trust and recognition",
+            japanese: "ベテラン住み込みメイド、10年の住み込みサービス経験、様々な料理と栄養バランスに精通、家庭の整理収納と日常メンテナンスに特化、60世帯以上にサービス提供、雇用主から高い信頼と評価"
+          },
+          {
+            chinese: "专业住家保姆，持有家政服务资格证书，拥有8年经验，熟悉现代家庭生活需求，擅长智能家电操作和家庭财务管理，为忙碌的职场家庭提供全方位的家政支持",
+            english: "Professional live-in maid with housekeeping service qualification certificate, 8 years of experience, familiar with modern family life needs, expert in smart appliance operation and household financial management, providing comprehensive housekeeping support for busy working families",
+            japanese: "プロの住み込みメイド、家事代行サービス資格保有、8年の経験、現代家庭の生活ニーズに精通、スマート家電操作と家庭財務管理に特化、忙しい働く家庭に包括的な家事代行サポートを提供"
+          }
+        ]
+      },
+      {
+        chinese: "整理收纳师",
+        english: "Organizing Consultant",
+        japanese: "整理収納アドバイザー型",
+        backgrounds: [
+          {
+            chinese: "从事整理收纳工作4年，持有国际整理师认证，擅长空间规划和物品分类，帮助客户打造极简生活方式，服务过150+个家庭，让生活空间更整洁有序",
+            english: "4 years of experience in organizing and decluttering, certified international organizing consultant, expert in space planning and item categorization, helping clients create minimalist lifestyles, served 150+ families, making living spaces cleaner and more organized",
+            japanese: "整理収納4年の経験、国際整理士認証保有、空間計画と物品分類に精通、お客様にミニマルライフスタイルを提供、150世帯以上にサービス提供、生活空間をよりきれいで秩序立ててサポート"
+          },
+          {
+            chinese: "专业整理收纳师，拥有6年专业经验，精通日式整理术和断舍离理念，擅长为不同户型的家庭制定个性化收纳方案，累计服务200+个家庭，帮助客户摆脱物品焦虑",
+            english: "Professional organizing consultant with 6 years of professional experience, proficient in Japanese organizing techniques and decluttering philosophy, expert in creating personalized storage solutions for families with different layouts, served 200+ families, helping clients overcome material anxiety",
+            japanese: "プロの整理収納アドバイザー、6年のプロ経験、日本の整理術と断捨離理念に精通、異なる間取りの家庭に個別化された収納ソリューションを作成、200世帯以上にサービス提供、お客様の物品不安を解消"
+          },
+          {
+            chinese: "资深整理收纳师，持有高级整理师证书，拥有8年经验，熟悉各类收纳工具和技巧，擅长衣橱整理、厨房收纳和儿童房规划，让家庭空间利用率提升50%以上",
+            english: "Senior organizing consultant with advanced organizing certificate, 8 years of experience, familiar with various storage tools and techniques, expert in wardrobe organizing, kitchen storage and children's room planning, increasing household space utilization by over 50%",
+            japanese: "ベテラン整理収納アドバイザー、上級整理士資格保有、8年の経験、様々な収納ツールとテクニックに精通、クローゼット整理、キッチン収納、子供部屋の計画に特化、家庭空間の利用率を50%以上向上"
+          }
+        ]
+      },
+      {
+        chinese: "老人护理员",
+        english: "Elderly Caregiver",
+        japanese: "高齢者ケアワーカー型",
+        backgrounds: [
+          {
+            chinese: "从事老人护理工作6年，拥有护理员资格证书，熟悉老年人日常生活照料和健康管理，擅长慢性病护理和康复训练，服务过100+个家庭，帮助空巢老人安享晚年",
+            english: "6 years of experience in elderly care, certified caregiver qualification, familiar with daily life care and health management for the elderly, expert in chronic disease care and rehabilitation training, served 100+ families, helping empty nesters enjoy their golden years",
+            japanese: "高齢者ケア6年の経験、ケアワーカー資格保有、高齢者の日常生活ケアと健康管理に精通、慢性疾患ケアとリハビリテーショントレーニングに特化、100世帯以上にサービス提供、空の巣症候群の高齢者に安らかな老後を提供"
+          },
+          {
+            chinese: "专业老人护理员，拥有8年护理经验，精通失能老人照护和认知症护理，熟悉各类医疗辅助设备使用，累计服务120+个家庭，让子女安心工作，老人得到专业照护",
+            english: "Professional elderly caregiver with 8 years of care experience, proficient in care for disabled elderly and dementia care, familiar with various medical assistive devices, served 120+ families, giving children peace of mind to work and ensuring elderly receive professional care",
+            japanese: "プロの高齢者ケアワーカー、8年のケア経験、要介護高齢者と認知症ケアに精通、様々な医療補助機器の使用に精通、120世帯以上にサービス提供、子供たちが安心して働け、高齢者がプロのケアを受けられるようサポート"
+          },
+          {
+            chinese: "资深老人护理员，持有高级护理员证书，拥有10年经验，熟悉中医养生和康复理疗，擅长为不同健康状况的老人制定个性化护理方案，帮助老人提高生活质量",
+            english: "Senior elderly caregiver with advanced caregiver certificate, 10 years of experience, familiar with traditional Chinese medicine health preservation and rehabilitation physiotherapy, expert in creating personalized care plans for elderly with different health conditions, helping improve quality of life",
+            japanese: "ベテラン高齢者ケアワーカー、上級ケアワーカー資格保有、10年の経験、中医学の健康維持とリハビリテーション理学療法に精通、異なる健康状態の高齢者に個別化されたケアプランを作成、生活の質の向上をサポート"
+          }
+        ]
+      },
+      {
+        chinese: "家政服务团队",
+        english: "Housekeeping Service Team",
+        japanese: "家事代行サービスチーム型",
+        backgrounds: [
+          {
+            chinese: "专业家政服务团队，拥有20+名经验丰富的服务人员，提供月嫂、育儿嫂、保洁、整理收纳等全方位家政服务，服务过500+个家庭，获得客户一致好评",
+            english: "Professional housekeeping service team with 20+ experienced service staff, providing comprehensive housekeeping services including maternity matrons, nannies, cleaning, organizing, served 500+ families with consistent customer praise",
+            japanese: "プロの家事代行サービスチーム、20名以上の経験豊富なサービススタッフ、産後ケア、ベビーシッター、清掃、整理収納などの包括的な家事代行サービスを提供、500世帯以上にサービス提供、お客様から一貫した高評価"
+          },
+          {
+            chinese: "资深家政服务团队，拥有15年行业经验，团队成员均持有专业认证，提供标准化、规范化的家政服务，累计服务1000+个家庭，建立了完善的培训和管理体系",
+            english: "Senior housekeeping service team with 15 years of industry experience, all team members hold professional certifications, providing standardized and regulated housekeeping services, served 1000+ families, established comprehensive training and management systems",
+            japanese: "ベテラン家事代行サービスチーム、15年の業界経験、チームメンバー全員がプロ認証保有、標準化・規範化された家事代行サービスを提供、1000世帯以上にサービス提供、包括的な研修と管理体制を構築"
+          },
+          {
+            chinese: "专业家政服务团队，拥有完善的服务流程和质量保障体系，提供24小时在线服务和定期回访，团队成员经过严格培训和背景调查，为家庭提供安全可靠的家政服务",
+            english: "Professional housekeeping service team with comprehensive service processes and quality assurance systems, providing 24-hour online service and regular follow-ups, team members undergo strict training and background checks, providing safe and reliable housekeeping services for families",
+            japanese: "プロの家事代行サービスチーム、包括的なサービスプロセスと品質保証体制、24時間オンラインサービスと定期フォローアップを提供、チームメンバーは厳格な研修と身元調査を経て、家庭に安全で信頼できる家事代行サービスを提供"
+          }
+        ]
+      }
     ],
-    background: [
-      { 
-        chinese: "提供专业家庭保洁服务，擅长深度清洁和整理收纳，服务过200+家庭", 
-        english: "Providing professional housekeeping services, specializing in deep cleaning and organization, served 200+ families", 
-        japanese: "プロの家事代行サービスを提供、深層清掃と整理収納に特化、200世帯以上にサービス提供" 
+    discussionSubject: [
+      {
+        label: { chinese: "月嫂服务", english: "Maternity Matron Service", japanese: "産後ケアサービス" },
+        value: `#月嫂服务
+##服务内容
+###产后护理
+24小时专业照护，包括产妇身体恢复、伤口护理、乳房护理、恶露观察等，帮助新手妈妈顺利度过产褥期
+###新生儿护理
+专业的新生儿照护，包括喂养指导、睡眠管理、洗澡抚触、脐带护理、黄疸观察等，确保宝宝健康成长
+###科学喂养
+根据产妇和宝宝情况，制定个性化喂养方案，指导母乳喂养技巧，处理喂养中的各种问题
+###产后康复
+提供产后恢复指导，包括盆底肌训练、腹部恢复、心理疏导等，帮助产妇尽快恢复身体和心理健康
+##服务优势
+###专业资质
+持有国家认证的母婴护理师证书，经过专业培训，具备丰富的临床经验
+###经验丰富
+服务过100+个家庭，熟悉各类产后情况和新生儿护理要点，能够及时处理各种突发状况
+###贴心服务
+24小时陪伴式服务，随时响应产妇和宝宝的需求，让新手父母安心休息
+###安全保障
+经过严格背景调查和健康体检，购买专业保险，确保服务安全可靠
+##适用人群
+###新手父母
+第一次当父母，缺乏育儿经验，需要专业指导和支持
+###高危产妇
+有妊娠并发症或高龄产妇，需要更专业的护理和照护
+###双胞胎/早产儿
+需要特殊护理的宝宝，需要经验丰富的月嫂提供专业服务
+###家庭支持不足
+家人无法提供足够支持，需要专业月嫂帮助度过产褥期`
       },
-      { 
-        chinese: "从事母婴护理工作5年，擅长新生儿照护和产妇康复指导，持有专业证书", 
-        english: "5 years of maternal and infant care experience, specializing in newborn care and postpartum recovery guidance, with professional certificates", 
-        japanese: "母子ケア5年の経験、新生児ケアと産後回復指導に特化、専門資格保有" 
+      {
+        label: { chinese: "育儿嫂服务", english: "Nanny Service", japanese: "ベビーシッターサービス" },
+        value: `#育儿嫂服务
+##服务内容
+###日常照护
+专业的婴幼儿日常照护，包括喂养、睡眠、洗澡、换尿布等，确保宝宝生活规律和健康成长
+###早期教育
+根据宝宝年龄特点，进行语言启蒙、认知训练、大运动发展等早期教育，促进宝宝全面发展
+###辅食制作
+为不同月龄的宝宝制作营养均衡的辅食，培养良好的饮食习惯，确保营养摄入充足
+###行为习惯培养
+帮助培养宝宝良好的作息习惯、饮食习惯和卫生习惯，为未来的成长打下良好基础
+##服务优势
+###专业经验
+拥有丰富的婴幼儿照护经验，熟悉各阶段发展特点，能够提供科学的育儿指导
+###个性化服务
+根据每个宝宝的性格和特点，制定个性化的照护和教育方案，因材施教
+###安全保障
+经过严格筛选和培训，具备专业的护理技能，确保宝宝安全和健康
+###家长沟通
+及时与家长沟通宝宝情况，分享育儿心得，帮助家长更好地了解宝宝成长
+##适用人群
+###双职工家庭
+父母工作忙碌，需要专业育儿嫂帮助照护宝宝，让父母安心工作
+###新手父母
+缺乏育儿经验，需要专业指导，学习科学的育儿方法
+###多子女家庭
+需要同时照护多个孩子，需要经验丰富的育儿嫂提供支持
+###特殊需求
+早产儿、发育迟缓等需要特殊照护的宝宝，需要专业育儿嫂提供针对性服务`
       },
-      { 
-        chinese: "专业育儿嫂，有丰富的婴幼儿照护经验，擅长科学喂养和早期教育", 
-        english: "Professional nanny with extensive experience in infant and toddler care, specializing in scientific feeding and early education", 
-        japanese: "プロのベビーシッター、乳幼児ケアの豊富な経験、科学的な育児と早期教育に特化" 
+      {
+        label: { chinese: "家庭保洁服务", english: "Home Cleaning Service", japanese: "家庭清掃サービス" },
+        value: `#家庭保洁服务
+##服务内容
+###日常清洁
+包括客厅、卧室、厨房、卫生间等全屋清洁，保持家庭环境整洁卫生
+###深度清洁
+定期进行深度清洁，包括死角清理、家具保养、电器清洁等，确保家庭环境彻底清洁
+###特殊清洁
+处理特殊污渍，如油污、水垢、霉斑等，使用专业工具和清洁剂，恢复物品原貌
+###整理收纳
+在清洁的同时进行物品整理和收纳，让家庭空间更加有序美观
+##服务优势
+###专业工具
+使用专业的清洁工具和设备，提高清洁效率和质量
+###环保理念
+优先使用环保清洁剂，保护家人健康和环境安全
+###经验丰富
+拥有丰富的清洁经验，熟悉各类材质和污渍的处理方法
+###灵活服务
+可根据家庭需求定制服务时间和频率，提供灵活的服务方案
+##适用场景
+###日常维护
+定期上门清洁，保持家庭环境整洁，适合工作忙碌的家庭
+###搬家前后
+搬家前的深度清洁和搬家后的整理清洁，确保新居环境干净
+###节前大扫除
+春节、国庆等节日前的大扫除，让家庭焕然一新
+###特殊需求
+有老人、小孩或宠物的家庭，需要更频繁和细致的清洁服务`
       },
-      { 
-        chinese: "资深住家保姆，拥有8年住家服务经验，擅长老人照护和慢性病护理，帮助空巢老人安享晚年", 
-        english: "Senior live-in maid with 8 years of residential service experience, specializing in elderly care and chronic disease nursing, helping empty nesters enjoy their golden years", 
-        japanese: "ベテラン住み込みメイド、8年の住み込みサービス経験、高齢者ケアと慢性疾患看護に特化、空の巣症候群の高齢者に安らかな老後を提供" 
+      {
+        label: { chinese: "深度清洁服务", english: "Deep Cleaning Service", japanese: "深層清掃サービス" },
+        value: `#深度清洁服务
+##服务内容
+###厨房深度清洁
+包括油烟机拆洗、灶台深度清洁、橱柜内外清洁、冰箱清洁等，彻底清除油污和异味
+###卫生间深度清洁
+包括马桶深度清洁、淋浴房除垢、瓷砖美缝、地漏清洁等，确保卫生间干净卫生
+###全屋深度清洁
+包括天花板、墙面、地面、门窗、家具等全方位深度清洁，让家庭焕然一新
+###特殊区域清洁
+包括阳台、储物间、地下室等容易被忽视的区域，彻底清理积尘和杂物
+##服务优势
+###专业设备
+使用高压清洗机、蒸汽清洁机等专业设备，提高清洁效果
+###专业药剂
+使用专业的清洁剂和除垢剂，安全有效地清除顽固污渍
+###细致服务
+对每个细节都认真处理，确保清洁无死角
+###效果保障
+清洁后进行检查，确保达到预期效果，不满意可重新清洁
+##适用场景
+###新房入住
+新房装修后的开荒清洁，清除装修残留和灰尘
+###定期深度清洁
+每季度或每半年进行一次深度清洁，保持家庭环境彻底干净
+###特殊需求
+有过敏体质成员的家庭，需要更彻底的清洁，减少过敏原
+###房屋出租
+房屋出租前后的深度清洁，确保房屋干净整洁`
       },
-      { 
-        chinese: "专业整理收纳师，持有国际整理师认证，擅长空间规划和物品分类，帮助客户打造极简生活", 
-        english: "Professional organizing consultant with international organizing certification, specializing in space planning and item categorization, helping clients create minimalist living", 
-        japanese: "プロの整理収納アドバイザー、国際整理士認証保有、空間計画と物品分類に特化、お客様にミニマルライフを提供" 
+      {
+        label: { chinese: "整理收纳服务", english: "Organizing Service", japanese: "整理収納サービス" },
+        value: `#整理收纳服务
+##服务内容
+###空间规划
+根据家庭空间和物品情况，制定合理的收纳方案，提高空间利用率
+###物品分类
+按照使用频率和类别对物品进行分类整理，建立清晰的收纳体系
+###收纳实施
+使用专业的收纳工具和技巧，对物品进行整理和收纳，让空间整洁有序
+###习惯培养
+指导家庭成员建立良好的收纳习惯，保持整理效果长期维持
+##服务优势
+###专业认证
+持有国际整理师认证，掌握专业的整理收纳理论和方法
+###个性化方案
+根据每个家庭的生活习惯和需求，制定个性化的收纳方案
+###效果持久
+不仅整理物品，更注重培养习惯，确保整理效果长期保持
+###空间优化
+通过合理规划，让家庭空间利用率提升50%以上，生活更舒适
+##适用场景
+###搬家整理
+搬家前后的物品整理和收纳，让新居井然有序
+###换季整理
+换季时的衣物和物品整理，合理利用储物空间
+###空间改造
+需要重新规划家庭空间的家庭，通过整理收纳优化布局
+###物品焦虑
+物品过多导致焦虑的家庭，通过整理收纳减轻心理负担`
       },
-      { 
-        chinese: "资深钟点工，熟悉各类家庭清洁需求，擅长快速高效清洁，为忙碌上班族提供贴心服务", 
-        english: "Senior hourly worker familiar with various household cleaning needs, specializing in quick and efficient cleaning, providing caring service for busy working professionals", 
-        japanese: "ベテラン時間制労働者、様々な家庭清掃ニーズに精通、迅速で効率的な清掃に特化、忙しい働く人々に心のこもったサービスを提供" 
+      {
+        label: { chinese: "老人照护服务", english: "Elderly Care Service", japanese: "高齢者ケアサービス" },
+        value: `#老人照护服务
+##服务内容
+###日常生活照料
+包括饮食照料、个人卫生、穿衣洗漱等日常生活照料，确保老人生活舒适
+###健康管理
+监测老人健康状况，协助服药，记录健康数据，及时发现问题
+###陪伴交流
+陪伴老人聊天、散步、娱乐，缓解孤独感，保持心理健康
+###康复训练
+根据老人身体状况，进行适当的康复训练，帮助维持身体机能
+##服务优势
+###专业资质
+持有护理员资格证书，具备专业的护理知识和技能
+###经验丰富
+拥有丰富的老人照护经验，熟悉各类常见疾病的护理方法
+###贴心服务
+提供24小时陪伴式服务，随时响应老人需求，让子女安心
+###安全保障
+经过严格筛选和培训，购买专业保险，确保服务安全可靠
+##适用人群
+###空巢老人
+子女不在身边，需要专业照护和陪伴的老人
+###失能老人
+生活不能自理，需要专业护理的老人
+###认知症老人
+患有认知症，需要专业照护和管理的老人
+###慢性病老人
+患有慢性疾病，需要日常健康管理和护理的老人`
       },
-      { 
-        chinese: "专业月嫂，拥有10年母婴护理经验，精通产后恢复和新生儿护理，帮助新手妈妈顺利度过产褥期", 
-        english: "Professional maternity matron with 10 years of maternal and infant care experience, proficient in postpartum recovery and newborn care, helping new mothers smoothly through the puerperium", 
-        japanese: "プロ産後ケア、10年の母子ケア経験、産後回復と新生児ケアに精通、新米ママが産褥期をスムーズに過ごせるようサポート" 
+      {
+        label: { chinese: "住家保姆服务", english: "Live-in Maid Service", japanese: "住み込みメイドサービス" },
+        value: `#住家保姆服务
+##服务内容
+###烹饪服务
+根据家庭口味和营养需求，制作一日三餐，确保饮食健康美味
+###清洁服务
+负责家庭日常清洁和整理，保持家庭环境整洁卫生
+###洗衣服务
+负责家庭成员的衣物清洗和整理，包括手洗、机洗和熨烫
+###家庭管理
+协助管理家庭日常事务，包括采购、缴费、维修等，让家庭生活有序
+##服务优势
+###全面服务
+提供全方位的家政服务，一个保姆解决多项家务问题
+###24小时服务
+住家服务，随时响应家庭需求，提供及时的服务
+###经验丰富
+拥有丰富的住家服务经验，熟悉各类家庭需求和服务要点
+###贴心周到
+长期服务建立信任关系，了解家庭习惯，提供个性化服务
+##适用人群
+###双职工家庭
+父母工作忙碌，需要住家保姆帮助处理家务，让家庭生活更有序
+###多子女家庭
+需要同时照顾多个孩子，需要住家保姆提供全方位支持
+###高收入家庭
+追求生活品质，需要专业住家保姆提供高品质的家政服务
+###特殊需求
+有老人或病人需要照护的家庭，需要住家保姆提供综合服务`
       },
-      { 
-        chinese: "家政服务中介，拥有5年行业经验，熟悉各类家政服务需求，为雇主和家政人员搭建专业匹配平台", 
-        english: "Housekeeping service agency with 5 years of industry experience, familiar with various housekeeping service needs, building professional matching platform for employers and domestic workers", 
-        japanese: "家事代行サービス仲介、5年の業界経験、様々な家事代行サービスニーズに精通、雇用者と家政婦のプロマッチングプラットフォームを構築" 
-      },
-      { 
-        chinese: "专业保洁团队负责人，管理20+保洁员，擅长大型清洁项目和特殊环境清洁，服务过医院、学校等机构", 
-        english: "Professional cleaning team leader managing 20+ cleaners, specializing in large-scale cleaning projects and special environment cleaning, served hospitals, schools and other institutions", 
-        japanese: "プロ清掃チームリーダー、20名以上の清掃員を管理、大規模清掃プロジェクトと特殊環境清掃に特化、病院、学校などの機関にサービス提供" 
-      },
-      { 
-        chinese: "智能家居清洁专家，熟悉各种智能家电操作，擅长科技化清洁方案，为现代家庭提供高效清洁服务", 
-        english: "Smart home cleaning expert familiar with various smart appliance operations, specializing in technology-based cleaning solutions, providing efficient cleaning services for modern families", 
-        japanese: "スマートホーム清掃専門家、様々なスマート家電操作に精通、テクノロジーベースの清掃ソリューションに特化、現代家庭に効率的な清掃サービスを提供" 
-      },
+      {
+        label: { chinese: "钟点工服务", english: "Hourly Housekeeping Service", japanese: "時間制家事代行サービス" },
+        value: `#钟点工服务
+##服务内容
+###灵活时间
+根据家庭需求，灵活安排服务时间，可按小时、半天或全天服务
+###多项服务
+包括清洁、烹饪、洗衣、整理等多项服务，可根据需求选择
+###快速高效
+经验丰富的钟点工，工作效率高，短时间内完成多项任务
+###按需服务
+可根据家庭实际情况，选择需要的服务项目和时间
+##服务优势
+###灵活便捷
+不需要长期雇佣，可根据实际需求灵活安排服务时间
+###成本可控
+按小时计费，成本可控，适合预算有限的家庭
+###专业高效
+经过专业培训，工作效率高，服务质量有保障
+###选择多样
+可根据不同需求选择不同专长的钟点工，如清洁、烹饪等
+##适用场景
+###日常清洁
+定期上门进行家庭清洁，保持家庭环境整洁
+###临时需求
+有临时家务需求，如聚会前后、搬家前后等
+###补充服务
+已有住家保姆，需要临时补充服务时
+###尝试体验
+想尝试家政服务，先通过钟点工服务体验效果`
+      }
     ],
-    purpose: [
-      { 
-        chinese: "吸引本地客户预约家政服务，展示专业能力和服务案例", 
-        english: "Attract local customers to book housekeeping services, showcase professional skills and service cases", 
-        japanese: "地域の顧客に家事代行サービスの予約を促し、専門能力とサービス事例を紹介" 
+    style: [
+      {
+        label: { chinese: "情绪共鸣（主打共情与治愈）", english: "Emotional Resonance (Empathy & Healing)", japanese: "感情共鳴（共感と癒し重視）" },
+        value: `产后第7天，我终于理解了什么叫"为母则刚"💕
+
+生完宝宝的那一刻，我以为最难的时候已经过去了。直到月嫂阿姨来的第一天，我才发现，真正的挑战才刚刚开始...
+
+看着怀里的小人儿，我既幸福又焦虑。母乳不够怎么办？宝宝哭闹是不是哪里不舒服？我是不是一个合格的妈妈？
+
+月嫂阿姨看出了我的不安，温柔地说："每个妈妈都是这样过来的，你已经做得很好了。"那一刻，眼泪止不住地往下掉。
+
+她手把手教我喂奶的姿势，告诉我如何判断宝宝的需求，还帮我按摩缓解涨奶的疼痛。最重要的是，她让我知道，我不需要完美，只需要尽力就好。
+
+现在宝宝已经满月了，我也慢慢适应了妈妈的角色。感谢月嫂阿姨，不仅照顾了宝宝，更治愈了我初为人母的焦虑和不安。
+
+如果你也在经历这个阶段，我想告诉你：你并不孤单，每个妈妈都是这样一步步走过来的。给自己一点时间，也给宝宝一点耐心，一切都会好起来的💪`
       },
-      { 
-        chinese: "建立客户信任，通过真实案例展示服务质量", 
-        english: "Build customer trust by showcasing service quality through real cases", 
-        japanese: "実際の事例を通じてサービス品質を紹介し、顧客の信頼を構築" 
+      {
+        label: { chinese: "实用干货（强调理他与获得感）", english: "Practical Tips (Rationality & Gain)", japanese: "実用ハウツー（合理性と獲得感強調）" },
+        value: `月嫂服务避坑指南！这5个细节决定服务质量📝
+
+作为过来人，今天分享一些选择月嫂的实用经验，希望能帮到正在找月嫂的准妈妈们。
+
+✅ 看证书：国家认证的母婴护理师证书是基础，最好还有相关培训证书
+✅ 看经验：服务过多少家庭、有没有处理过特殊情况的经验很重要
+✅ 看沟通：面试时多聊几句，看是否合得来，沟通顺畅很重要
+✅ 看服务内容：明确服务范围，包括哪些项目，避免后期纠纷
+✅ 看保障：是否有保险、是否有背景调查，这些都要问清楚
+
+我找的月嫂阿姨就是按照这个标准筛选的，服务了26天，真的帮了大忙。不仅照顾宝宝专业，还教会了我很多育儿知识。
+
+现在宝宝3个月了，我还能用她教的方法自己带娃。所以选对月嫂，不仅是花钱买服务，更是花钱学技能。
+
+如果你也在找月嫂，建议提前1-2个月开始筛选，多对比几家，不要只看价格，服务质量才是关键！`
       },
-      { 
-        chinese: "推广母婴护理服务，分享专业知识和经验", 
-        english: "Promote maternal and infant care services, share professional knowledge and experience", 
-        japanese: "母子ケアサービスの普及、専門知識と経験の共有" 
+      {
+        label: { chinese: "夸张反差（制造冲突与戏剧感）", english: "Exaggerated Contrast (Conflict & Drama)", japanese: "誇張な対比（衝突とドラマ性）" },
+        value: `从"家政小白"到"收纳达人"，我只用了3小时！😱
+
+说出来你可能不信，3小时前，我的家还是这样的：
+- 衣柜里衣服堆成山，找件衣服要翻10分钟
+- 厨房台面摆满东西，做饭都找不到地方
+- 客厅玩具散落一地，走路都要小心翼翼
+
+3小时后，我的家变成了这样：
+- 衣柜整齐分类，一眼就能找到想要的衣服
+- 厨房台面清爽，所有东西都有固定位置
+- 客厅宽敞明亮，孩子可以自由玩耍
+
+这3小时发生了什么？我请了整理收纳师！
+
+她一来就给我家做了"诊断"，然后开始大刀阔斧地整理。我本来还担心她会扔掉我的东西，结果她只是重新分类和收纳，一件都没扔！
+
+最神奇的是，她不仅整理了物品，还教了我一套收纳方法。现在我自己也能保持家里的整洁了。
+
+以前总觉得整理收纳是浪费时间，现在才发现，一个整洁的家真的能让人心情变好，工作效率也提高了。
+
+如果你家也乱成一团，真的建议试试整理收纳服务。3小时改变一个家，这个投资太值了！`
       },
-      { 
-        chinese: "解决空巢老人照护难题，推广专业老人护理服务，让子女安心工作", 
-        english: "Solve elderly care challenges for empty nesters, promote professional elderly care services, giving children peace of mind to work", 
-        japanese: "空の巣症候群の高齢者ケア課題を解決、プロの高齢者ケアサービスを推進、子供たちが安心して働けるように" 
+      {
+        label: { chinese: "轻松治愈（营造理想生活氛围）", english: "Relaxed Healing (Ideal Life Atmosphere)", japanese: "リラックス癒し（理想的な生活雰囲気）" },
+        value: `周末的早晨，阳光透过窗帘洒进来，家里干净整洁，心情都变好了☀️
+
+以前周末最怕的就是大扫除，累得半死还收拾不干净。现在有了定期保洁服务，周末终于可以真正放松了。
+
+保洁阿姨每周来一次，2小时就能把家里收拾得干干净净。她动作很麻利，而且很细心，连我平时注意不到的角落都擦得干干净净。
+
+最让我满意的是，她用的都是环保清洁剂，家里有小孩也不担心。而且她还会帮我整理一下物品，虽然不是专业的整理收纳，但至少不会越收拾越乱。
+
+现在周末的打开方式变成了：
+☕ 睡到自然醒
+📖 泡杯咖啡看看书
+🎬 或者看部电影
+🌸 享受一个干净整洁的家
+
+不用再为家务烦恼，有更多时间做自己喜欢的事。这种生活，才是我理想中的样子。
+
+如果你也想解放双手，享受生活，真的可以试试定期保洁服务。价格不贵，但带来的幸福感是实实在在的～`
       },
-      { 
-        chinese: "推广整理收纳服务，帮助现代人摆脱物品焦虑，打造极简生活方式", 
-        english: "Promote organizing and decluttering services, help modern people overcome material anxiety, create minimalist lifestyle", 
-        japanese: "整理収納サービスの推進、現代人の物品不安を解消、ミニマルライフスタイルを創造" 
-      },
-      { 
-        chinese: "为忙碌上班族提供时间管理解决方案，通过专业家政服务释放个人时间", 
-        english: "Provide time management solutions for busy working professionals, free up personal time through professional housekeeping services", 
-        japanese: "忙しい働く人々に時間管理ソリューションを提供、プロ家事代行サービスで個人時間を解放" 
-      },
-      { 
-        chinese: "分享科学育儿知识，帮助新手父母建立正确的育儿观念，减少育儿焦虑", 
-        english: "Share scientific parenting knowledge, help new parents establish correct parenting concepts, reduce parenting anxiety", 
-        japanese: "科学的な育児知識を共有、新米両親に正しい育児概念を構築、育児不安を軽減" 
-      },
-      { 
-        chinese: "推广产后康复服务，关注新妈妈身心健康，帮助她们快速恢复自信", 
-        english: "Promote postpartum recovery services, focus on new mothers' physical and mental health, help them quickly regain confidence", 
-        japanese: "産後回復サービスの推進、新米ママの心身の健康に注目、自信を素早く取り戻すようサポート" 
-      },
-      { 
-        chinese: "展示专业清洁技术，分享环保清洁方法，推广绿色家政理念", 
-        english: "Showcase professional cleaning techniques, share eco-friendly cleaning methods, promote green housekeeping concepts", 
-        japanese: "プロ清掃技術を展示、エコフレンドリーな清掃方法を共有、グリーン家事代行理念を推進" 
-      },
-      { 
-        chinese: "解决家庭矛盾，通过专业服务减少家务负担，促进家庭和谐", 
-        english: "Resolve family conflicts, reduce household burden through professional services, promote family harmony", 
-        japanese: "家庭の矛盾を解決、プロサービスで家事負担を軽減、家庭の調和を促進" 
-      },
-      { 
-        chinese: "推广智能家居清洁，展示科技化家政服务，吸引追求效率的年轻客户", 
-        english: "Promote smart home cleaning, showcase technology-based housekeeping services, attract efficiency-seeking young customers", 
-        japanese: "スマートホーム清掃を推進、テクノロジーベースの家事代行サービスを展示、効率を求める若い顧客を誘引" 
-      },
-      { 
-        chinese: "分享家政行业职业发展机会，吸引更多人加入家政服务行业", 
-        english: "Share career development opportunities in housekeeping industry, attract more people to join the housekeeping service industry", 
-        japanese: "家事代行業界のキャリア発展機会を共有、より多くの人に家事代行サービス業界への参加を促す" 
-      },
-      { 
-        chinese: "推广家政服务标准化，建立行业信任体系，提升整体服务质量", 
-        english: "Promote housekeeping service standardization, establish industry trust system, improve overall service quality", 
-        japanese: "家事代行サービスの標準化を推進、業界信頼システムを構築、全体的なサービス品質を向上" 
-      },
-      { 
-        chinese: "关注家政人员权益，推广职业尊严，改变社会对家政行业的偏见", 
-        english: "Focus on domestic workers' rights, promote professional dignity, change social prejudice against housekeeping industry", 
-        japanese: "家政婦の権益に注目、職業的尊厳を推進、家事代行業界への社会偏見を変える" 
-      },
+      {
+        label: { chinese: "热点借势（关联热点事件+情绪共振）", english: "Trend Riding (Hot Events + Emotional Resonance)", japanese: "トレンド活用（ホットイベント+感情共鳴）" },
+        value: `#三胎政策 #职场妈妈 三胎开放后，我终于找到了工作和带娃的平衡⚖️
+
+三胎政策一出来，身边就有朋友问我："你还生不生？"
+
+说实话，作为一个职场妈妈，带一个娃已经够累了，更别说三个。但最近请了育儿嫂后，我突然觉得，也许真的可以考虑...
+
+以前每天下班回家，还要做饭、陪娃、做家务，累得不行。现在有了育儿嫂，下班回家就能陪娃玩，不用再为家务烦恼。
+
+她不仅照顾宝宝专业，还帮我培养宝宝的好习惯。现在宝宝作息规律，吃饭也乖，带起来轻松多了。
+
+最重要的是，我终于有时间做自己的事了。可以安心工作，可以和朋友聚会，可以培养自己的兴趣爱好。
+
+三胎政策给了我们更多选择，但前提是要有足够的支持。对我来说，专业的育儿服务就是最好的支持。
+
+如果你也是职场妈妈，正在为工作和带娃的平衡发愁，真的建议考虑一下育儿服务。不是偷懒，而是为了更好地陪伴孩子，也更好地做自己。
+
+#职场妈妈 #育儿 #家政服务 #生活平衡`
+      }
     ]
   },
   
@@ -413,12 +797,5 @@ export const housekeepingPresets: IndustryPresets = {
       { chinese: "避免使用过于商业化的词汇", english: "Avoid overly commercial terms", japanese: "過度に商業的な用語は使用しない" },
       { chinese: "不使用可能误导消费者的表述", english: "Don't use statements that might mislead consumers", japanese: "消費者を誤解させる可能性のある表現は使用しない" }
     ]
-  },
-
-  // 小红书帖子生成工具（商品类）- 暂无预设内容
-  'xiaohongshu-post-generation-product': {
-    persona: [],
-    product: [],
-    style: []
   }
 };

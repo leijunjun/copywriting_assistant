@@ -1,6 +1,6 @@
 {
-  "name": "302_copywriting_assistant",
-  "version": "0.1.0",
+  "name": "copywriting_assistant",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",

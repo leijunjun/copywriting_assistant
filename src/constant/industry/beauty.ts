@@ -24,127 +24,6 @@ export interface IndustryPresets {
 }
 
 export const beautyPresets: IndustryPresets = {
-  // 小红书帖子生成工具
-  'xiaohongshu-post-generation': {
-    role: [
-      { chinese: "医美医生（执业医师）", english: "Medical Aesthetic Doctor (Licensed Physician)", japanese: "医療美容医師（認定医師）" },
-      { chinese: "医疗美容顾问", english: "Medical Beauty Consultant", japanese: "医療美容コンサルタント" },
-      { chinese: "护理师", english: "Nurse", japanese: "看護師" },
-      { chinese: "店长", english: "Store Manager", japanese: "店長" },
-      { chinese: "运营专员", english: "Operations Specialist", japanese: "運営専門員" },
-      { chinese: "前台", english: "Receptionist", japanese: "受付" },
-    ],
-    background: [
-      { 
-        chinese: "资深医美医生，拥有10年临床经验，专精面部年轻化、皮肤修复和微整形技术，累计完成5000+成功案例", 
-        english: "Senior medical aesthetic doctor with 10 years of clinical experience, specializing in facial rejuvenation, skin repair and micro-plastic surgery, with 5000+ successful cases", 
-        japanese: "ベテラン医療美容医師、10年の臨床経験、顔の若返り、肌修復、マイクロ整形技術に特化、5000件以上の成功事例" 
-      },
-      { 
-        chinese: "专业医疗美容顾问，熟悉各类医美项目，擅长为不同年龄层客户制定个性化变美方案，帮助客户科学理性选择医美项目", 
-        english: "Professional medical beauty consultant, familiar with various medical aesthetic procedures, expert in creating personalized beauty plans for different age groups, helping clients make scientific and rational choices", 
-        japanese: "プロ医療美容コンサルタント、様々な医療美容プロジェクトに精通、異なる年齢層の顧客に個別化された美しさプランを提供、科学的で合理的な選択をサポート" 
-      },
-      { 
-        chinese: "资深护理师，拥有8年医美护理经验，精通术后护理、皮肤管理、客户服务，确保每位客户获得安全专业的护理体验", 
-        english: "Senior nurse with 8 years of medical beauty nursing experience, proficient in post-operative care, skin management, and customer service, ensuring safe and professional care for every client", 
-        japanese: "ベテラン看護師、8年の医療美容看護経験、術後ケア、肌管理、顧客サービスに精通、すべての顧客に安全でプロフェッショナルなケア体験を提供" 
-      },
-      { 
-        chinese: "医美机构店长，管理经验丰富，深谙医美行业发展趋势，擅长团队管理和客户关系维护，致力于为客户提供高品质医美服务", 
-        english: "Medical beauty clinic manager with rich management experience, deeply understanding industry development trends, expert in team management and customer relationship maintenance, committed to providing high-quality medical beauty services", 
-        japanese: "医療美容クリニック店長、豊富な管理経験、業界発展トレンドを深く理解、チーム管理と顧客関係維持に精通、高品質な医療美容サービス提供に専念" 
-      },
-      { 
-        chinese: "注射美容专家，精通玻尿酸、肉毒素等注射技术，拥有国际认证资质，擅长面部轮廓塑形和抗衰老治疗，累计注射案例3000+", 
-        english: "Injectable beauty expert, proficient in hyaluronic acid, botulinum toxin and other injection techniques, with international certification, expert in facial contouring and anti-aging treatments, with 3000+ injection cases", 
-        japanese: "注射美容専門家、ヒアルロン酸、ボツリヌストキシンなどの注射技術に精通、国際認証資格保有、顔の輪郭形成とアンチエイジング治療に特化、3000件以上の注射事例" 
-      },
-      { 
-        chinese: "激光美肤专家，掌握各种激光设备操作，专精色斑、痘印、毛孔粗大等肌肤问题治疗，帮助客户重获光滑细腻肌肤", 
-        english: "Laser skin treatment expert, mastering various laser device operations, specializing in treating skin problems like pigmentation, acne scars, and enlarged pores, helping clients regain smooth and delicate skin", 
-        japanese: "レーザー美肌専門家、様々なレーザー機器操作をマスター、シミ、ニキビ跡、毛穴の開きなどの肌問題治療に特化、お客様に滑らかで繊細な肌を取り戻していただく" 
-      },
-      { 
-        chinese: "热玛吉治疗师，拥有5年紧肤技术经验，熟练掌握热玛吉、超声刀等无创紧肤设备，帮助客户实现面部年轻化", 
-        english: "Thermage therapist with 5 years of skin tightening experience, proficient in non-invasive skin tightening devices like Thermage and ultrasound therapy, helping clients achieve facial rejuvenation", 
-        japanese: "サーモージセラピスト、5年の肌引き締め技術経験、サーモージ、超音波治療などの非侵襲的肌引き締め機器に精通、お客様に顔の若返りを実現" 
-      },
-      { 
-        chinese: "医美运营专员，深谙医美市场趋势，擅长内容营销和客户教育，通过专业科普帮助客户建立正确的医美认知", 
-        english: "Medical beauty operations specialist, deeply understanding market trends, expert in content marketing and customer education, helping clients establish correct medical beauty awareness through professional science popularization", 
-        japanese: "医療美容運営専門員、市場トレンドを深く理解、コンテンツマーケティングと顧客教育に精通、プロの科学普及でお客様に正しい医療美容認知を構築" 
-      },
-      { 
-        chinese: "医美前台接待，拥有3年客户服务经验，熟悉各类医美项目流程，擅长客户咨询和预约管理，为客户提供贴心专业的服务体验", 
-        english: "Medical beauty receptionist with 3 years of customer service experience, familiar with various medical beauty project processes, expert in customer consultation and appointment management, providing caring and professional service experience for clients", 
-        japanese: "医療美容受付、3年の顧客サービス経験、様々な医療美容プロジェクトプロセスに精通、顧客相談と予約管理に特化、お客様に心のこもったプロサービス体験を提供" 
-      },
-    ],
-    purpose: [
-      { 
-        chinese: "分享医美科普知识，帮助客户了解安全变美的正确方式，建立专业权威形象", 
-        english: "Share medical beauty science knowledge, help clients understand the correct way to safely enhance beauty, build professional authority image", 
-        japanese: "医療美容科学知識を共有、お客様に安全な美しさの正しい方法を理解してもらい、プロフェッショナルな権威イメージを構築" 
-      },
-      { 
-        chinese: "展示真实案例效果，通过前后对比和客户反馈，证明医美项目的安全性和有效性", 
-        english: "Showcase real case effects, demonstrate the safety and effectiveness of medical aesthetic procedures through before/after comparisons and customer feedback", 
-        japanese: "実際の事例効果を紹介、ビフォーアフター比較と顧客フィードバックを通じて医療美容プロジェクトの安全性と有効性を証明" 
-      },
-      { 
-        chinese: "科普医美项目适应症和禁忌症，帮助客户理性选择，避免盲目跟风", 
-        english: "Educate about medical aesthetic procedure indications and contraindications, help clients make rational choices and avoid blind following trends", 
-        japanese: "医療美容プロジェクトの適応症と禁忌症を科学普及、お客様の合理的な選択をサポート、盲目的な流行追従を回避" 
-      },
-      { 
-        chinese: "分享术后护理知识和注意事项，确保客户获得最佳恢复效果", 
-        english: "Share post-operative care knowledge and precautions, ensure clients achieve optimal recovery results", 
-        japanese: "術後ケア知識と注意事項を共有、お客様に最適な回復効果を確保" 
-      },
-      { 
-        chinese: "推广注射美容项目，介绍玻尿酸、肉毒素等产品的安全性和效果，吸引潜在客户咨询", 
-        english: "Promote injectable beauty procedures, introduce the safety and effectiveness of products like hyaluronic acid and botulinum toxin, attract potential clients for consultation", 
-        japanese: "注射美容プロジェクトを推進、ヒアルロン酸、ボツリヌストキシンなどの製品の安全性と効果を紹介、潜在顧客の相談を誘引" 
-      },
-      { 
-        chinese: "宣传激光美肤技术，展示专业设备和治疗效果，建立技术优势形象", 
-        english: "Promote laser skin treatment technology, showcase professional equipment and treatment effects, build technical advantage image", 
-        japanese: "レーザー美肌技術を宣伝、プロ機器と治療効果を展示、技術優位性イメージを構築" 
-      },
-      { 
-        chinese: "介绍热玛吉、超声刀等紧肤技术，强调无创无痛的优势，吸引追求安全变美的客户", 
-        english: "Introduce skin tightening technologies like Thermage and ultrasound therapy, emphasize non-invasive and painless advantages, attract clients pursuing safe beauty enhancement", 
-        japanese: "サーモージ、超音波治療などの肌引き締め技術を紹介、非侵襲で無痛の利点を強調、安全な美しさを求める顧客を誘引" 
-      },
-      { 
-        chinese: "分享医美行业趋势和新技术，展示机构的专业性和前瞻性，提升品牌影响力", 
-        english: "Share medical beauty industry trends and new technologies, showcase institutional professionalism and foresight, enhance brand influence", 
-        japanese: "医療美容業界トレンドと新技術を共有、機関のプロフェッショナリズムと先見性を展示、ブランド影響力を向上" 
-      },
-      { 
-        chinese: "解答客户常见疑问，消除医美恐惧心理，建立信任关系，促进转化", 
-        english: "Answer common customer questions, eliminate medical beauty fears, build trust relationships, promote conversion", 
-        japanese: "お客様のよくある疑問に回答、医療美容への恐怖心理を解消、信頼関係を構築、転換を促進" 
-      },
-      { 
-        chinese: "展示医美机构的专业资质和认证，强调安全性和合规性，增强客户信心", 
-        english: "Showcase medical beauty institution's professional qualifications and certifications, emphasize safety and compliance, enhance customer confidence", 
-        japanese: "医療美容機関のプロ資格と認証を展示、安全性とコンプライアンスを強調、顧客信頼を強化" 
-      },
-      { 
-        chinese: "分享客户成功变美的故事，通过真实案例建立情感连接，激发潜在客户的变美欲望", 
-        english: "Share customer success stories of beauty transformation, build emotional connections through real cases, inspire potential clients' desire for beauty enhancement", 
-        japanese: "お客様の成功した美しさ変身ストーリーを共有、実際の事例で感情的なつながりを構築、潜在顧客の美しさへの欲望を刺激" 
-      },
-      { 
-        chinese: "推广限时优惠活动，通过价格优势吸引客户到店咨询，提高转化率", 
-        english: "Promote limited-time promotional activities, attract customers to visit for consultation through price advantages, improve conversion rates", 
-        japanese: "期間限定キャンペーンを推進、価格優位性でお客様の来店相談を誘引、転換率を向上" 
-      },
-    ]
-  },
-  
   // 微信朋友圈回复工具
   'wechat-moments-reply': {
     content: [
@@ -384,10 +263,10 @@ export const beautyPresets: IndustryPresets = {
     ]
   },
 
-  // 小红书帖子生成工具（商品类）- 暂无预设内容
+  // 小红书热帖生成工具 - 暂无预设内容
   'xiaohongshu-post-generation-product': {
     persona: [],
-    product: [],
+    discussionSubject: [],
     style: []
   }
 };

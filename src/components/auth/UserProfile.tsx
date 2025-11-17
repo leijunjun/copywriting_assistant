@@ -14,7 +14,8 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 interface UserProfileProps {
   user: {
     id: string;
-    email: string;
+    email?: string | null;
+    phone?: string | null;
     nickname: string;
     avatar_url: string;
     industry?: string;
@@ -32,6 +33,32 @@ export function UserProfile({ user, onLogout, className }: UserProfileProps) {
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString();
+  };
+
+  // 手机号脱敏函数
+  const maskPhone = (phone: string): string => {
+    if (!phone) return '';
+    // 如果是11位手机号，显示前3位和后4位，中间4位用*代替
+    if (phone.length === 11 && /^1[3-9]\d{9}$/.test(phone)) {
+      return `${phone.slice(0, 3)}****${phone.slice(-4)}`;
+    }
+    // 其他长度的手机号，显示前3位和后2位
+    if (phone.length >= 7) {
+      return `${phone.slice(0, 3)}${'*'.repeat(phone.length - 5)}${phone.slice(-2)}`;
+    }
+    // 长度不足7位的，只显示前2位和后1位
+    return `${phone.slice(0, 2)}${'*'.repeat(phone.length - 3)}${phone.slice(-1)}`;
+  };
+
+  // 格式化显示的联系方式
+  const formatContact = (): string => {
+    if (user.phone) {
+      return maskPhone(user.phone);
+    }
+    if (user.email) {
+      return user.email;
+    }
+    return '';
   };
 
 
@@ -55,7 +82,17 @@ export function UserProfile({ user, onLogout, className }: UserProfileProps) {
             </div>
           </div>
           <div className="flex-1">
-            <h3 className="font-bold text-xl text-gray-800 mb-1">{user.nickname}</h3>
+            <div className="flex items-center space-x-2 mb-1 flex-wrap">
+              <h3 className="font-bold text-xl text-gray-800">{user.nickname}</h3>
+              {(user.phone || user.email) && (
+                <>
+                  <span className="text-gray-300">|</span>
+                  <span className="text-sm text-gray-500">
+                    {formatContact()}
+                  </span>
+                </>
+              )}
+            </div>
             <p className="text-sm text-gray-600 mb-2">
               {t('memberSince')} {formatDate(user.created_at)}
             </p>
@@ -91,7 +128,7 @@ export function UserProfile({ user, onLogout, className }: UserProfileProps) {
               <p className="text-sm font-semibold text-gray-700 mb-2">{t('accountType')}</p>
               <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-bold bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border border-blue-300">
                 <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                {t('emailAccount')}
+                {user.phone ? t('phoneAccount') : t('emailAccount')}
               </div>
             </div>
 

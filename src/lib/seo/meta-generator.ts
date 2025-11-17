@@ -166,7 +166,7 @@ export function generateKeywords(toolId?: string, locale: string = 'en'): string
       'book-title-generator': ['书名生成', '标题创作', '创意命名'],
       'sentence-rewriting': ['句子改写', '文本重写', '语言优化'],
       'article-title-generation': ['标题生成', '文章标题', 'SEO标题'],
-      'xiaohongshu-post-generation': ['小红书', '种草文案', '社交营销'],
+      'xiaohongshu-post-generation-product': ['小红书', '种草文案', '社交营销'],
       'weibo-post-generation': ['微博', '社交媒体', '营销推广'],
       'douyin-script-generation': ['抖音', '短视频', '脚本创作'],
       'ai-image-generation': ['AI图片生成', '智能配图', '图片创作', 'AI绘图', '图像生成', '配图工具']
@@ -176,7 +176,7 @@ export function generateKeywords(toolId?: string, locale: string = 'en'): string
       'book-title-generator': ['title generation', 'creative naming', 'book titles'],
       'sentence-rewriting': ['sentence rewriting', 'text rewriting', 'language optimization'],
       'article-title-generation': ['title generation', 'article titles', 'SEO titles'],
-      'xiaohongshu-post-generation': ['Xiaohongshu', 'social marketing', 'content creation'],
+      'xiaohongshu-post-generation-product': ['Xiaohongshu', 'social marketing', 'content creation'],
       'weibo-post-generation': ['Weibo', 'social media', 'marketing'],
       'douyin-script-generation': ['TikTok', 'short video', 'script writing'],
       'ai-image-generation': ['AI image generation', 'smart image creation', 'image creation', 'AI drawing', 'image generation', 'image tool']
@@ -186,7 +186,7 @@ export function generateKeywords(toolId?: string, locale: string = 'en'): string
       'book-title-generator': ['タイトル生成', 'クリエイティブネーミング', '書籍タイトル'],
       'sentence-rewriting': ['文の書き換え', 'テキスト書き換え', '言語最適化'],
       'article-title-generation': ['タイトル生成', '記事タイトル', 'SEOタイトル'],
-      'xiaohongshu-post-generation': ['小红书', 'ソーシャルマーケティング', 'コンテンツ作成'],
+      'xiaohongshu-post-generation-product': ['小红书', 'ソーシャルマーケティング', 'コンテンツ作成'],
       'weibo-post-generation': ['微博', 'ソーシャルメディア', 'マーケティング'],
       'douyin-script-generation': ['抖音', 'ショート動画', 'スクリプト作成'],
       'ai-image-generation': ['AI画像生成', 'スマート画像作成', '画像作成', 'AI描画', '画像生成', '画像ツール']

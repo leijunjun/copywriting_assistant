@@ -14,6 +14,21 @@ import { logger } from '@/lib/utils/logger';
 import { createErrorResponse } from '@/lib/utils/error';
 import { identifyAuthType, formatPhoneForSupabase } from '@/lib/utils/auth-identifier';
 
+// Helper function to add CORS headers
+function addCorsHeaders(response: NextResponse): NextResponse {
+  response.headers.set('Access-Control-Allow-Origin', '*');
+  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  response.headers.set('Access-Control-Allow-Credentials', 'true');
+  return response;
+}
+
+// Handle CORS preflight requests
+export async function OPTIONS(request: NextRequest) {
+  const response = new NextResponse(null, { status: 200 });
+  return addCorsHeaders(response);
+}
+
 export async function POST(request: NextRequest) {
   try {
     logger.api('Login request received');
@@ -24,7 +39,7 @@ export async function POST(request: NextRequest) {
     const { password } = body;
 
     if (!identifier || !password) {
-      return NextResponse.json(
+      return addCorsHeaders(NextResponse.json(
         createErrorResponse({
           code: 'MISSING_CREDENTIALS',
           message: 'Email/phone and password are required',
@@ -32,13 +47,13 @@ export async function POST(request: NextRequest) {
           severity: 'MEDIUM',
         }),
         { status: 400 }
-      );
+      ));
     }
 
     // Identify input type (email or phone)
     const authType = identifyAuthType(identifier);
     if (!authType) {
-      return NextResponse.json(
+      return addCorsHeaders(NextResponse.json(
         createErrorResponse({
           code: 'INVALID_IDENTIFIER',
           message: 'Please enter a valid email address or phone number',
@@ -46,7 +61,7 @@ export async function POST(request: NextRequest) {
           severity: 'MEDIUM',
         }),
         { status: 400 }
-      );
+      ));
     }
 
     // Create server-side Supabase client
@@ -138,7 +153,7 @@ export async function POST(request: NextRequest) {
       // Check for specific error types
       if (errorMessage.includes('Phone logins are disabled') || 
           errorMessage.includes('phone logins are disabled')) {
-        return NextResponse.json(
+        return addCorsHeaders(NextResponse.json(
           createErrorResponse({
             code: 'PHONE_LOGIN_DISABLED',
             message: '手机号登录功能未启用，请联系管理员在 Supabase Dashboard 中启用手机号认证',
@@ -146,13 +161,13 @@ export async function POST(request: NextRequest) {
             severity: 'HIGH',
           }),
           { status: 401 }
-        );
+        ));
       }
       
       if (errorMessage.includes('Invalid login credentials') || 
           errorMessage.includes('Invalid login') ||
           errorMessage.includes('incorrect')) {
-        return NextResponse.json(
+        return addCorsHeaders(NextResponse.json(
           createErrorResponse({
             code: 'INVALID_CREDENTIALS',
             message: '账号或密码错误，请检查后重试',
@@ -160,10 +175,10 @@ export async function POST(request: NextRequest) {
             severity: 'HIGH',
           }),
           { status: 401 }
-        );
+        ));
       }
       
-      return NextResponse.json(
+      return addCorsHeaders(NextResponse.json(
         createErrorResponse({
           code: 'LOGIN_FAILED',
           message: `登录失败: ${errorMessage}`,
@@ -171,11 +186,11 @@ export async function POST(request: NextRequest) {
           severity: 'HIGH',
         }),
         { status: 401 }
-      );
+      ));
     }
 
     if (!data.user) {
-      return NextResponse.json(
+      return addCorsHeaders(NextResponse.json(
         createErrorResponse({
           code: 'LOGIN_FAILED',
           message: 'Login failed',
@@ -183,7 +198,7 @@ export async function POST(request: NextRequest) {
           severity: 'HIGH',
         }),
         { status: 401 }
-      );
+      ));
     }
 
     // Get user profile from database
@@ -199,7 +214,7 @@ export async function POST(request: NextRequest) {
         error: userError 
       });
       
-      return NextResponse.json(
+      return addCorsHeaders(NextResponse.json(
         createErrorResponse({
           code: 'USER_NOT_FOUND',
           message: 'User profile not found',
@@ -207,7 +222,7 @@ export async function POST(request: NextRequest) {
           severity: 'HIGH',
         }),
         { status: 404 }
-      );
+      ));
     }
 
     // Check if user account is disabled
@@ -217,7 +232,7 @@ export async function POST(request: NextRequest) {
         email: userData.email,
       });
       
-      return NextResponse.json(
+      return addCorsHeaders(NextResponse.json(
         createErrorResponse({
           code: 'ACCOUNT_DISABLED',
           message: '账号已禁用，请联系管理人员',
@@ -225,7 +240,7 @@ export async function POST(request: NextRequest) {
           severity: 'HIGH',
         }),
         { status: 403 }
-      );
+      ));
     }
 
     // Update last login time
@@ -261,7 +276,7 @@ export async function POST(request: NextRequest) {
       email: userData.email,
     });
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       user: {
         id: userData.id,
@@ -283,6 +298,8 @@ export async function POST(request: NextRequest) {
         updated_at: creditResult.success ? creditResult.updated_at : new Date().toISOString(),
       },
     });
+
+    return addCorsHeaders(response);
 
   } catch (error) {
     logger.error('Unexpected error in login', error, 'API');

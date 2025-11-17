@@ -9,6 +9,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 
 interface FooterProps {
   className?: string;
@@ -16,6 +17,8 @@ interface FooterProps {
 
 export function Footer({ className }: FooterProps) {
   const t = useTranslations('footer');
+  const tCommon = useTranslations('Common');
+  const router = useRouter();
   
   return (
     <footer className={`footer-container ${className}`}>
@@ -148,14 +151,12 @@ export function Footer({ className }: FooterProps) {
                 >
                   {t('lietianbao')}
                 </Link>
-                <Link 
-                  href="https://www.yituihuo.com" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
+                <button
+                  onClick={() => router.push('/writer')}
                   className="text-sm text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium"
                 >
-                  {t('aiChampion')}
-                </Link>
+                  {tCommon('inspirationWriter')}
+                </button>
               </div>
               <p className="text-xs text-gray-500">
                 {t('productMatrix')}

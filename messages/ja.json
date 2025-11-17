@@ -146,6 +146,7 @@
     "retry": "再試行",
     "accountType": "アカウントタイプ",
     "emailAccount": "メール",
+    "phoneAccount": "電話番号",
     "industry": "業界",
     "general": "一般",
     "housekeeping": "家事代行",
@@ -167,10 +168,17 @@
     "aiWriting": "バッチ原稿",
     "inspirationWriter": "インスピレーション作成",
     "aiImage": "AI画像",
+    "browserAssistant": "ブラウザアシスタント",
     "joinDate": "参加日",
     "lastActive": "最終アクティブ",
     "aiCreation": "AI創作",
-    "rechargeHistory": "チャージ履歴"
+    "rechargeHistory": "チャージ履歴",
+    "accountInfo": "アカウント情報",
+    "creditManagement": "クレジット管理",
+    "productServiceSettings": "製品・サービス設定",
+    "accountInfoDescription": "アカウント情報の表示と管理",
+    "creditManagementDescription": "クレジット残高と取引履歴の管理",
+    "productServiceSettingsDescription": "製品とサービスの設定を構成"
   },
   "footer": {
     "costSavings": "大幅な人件費削減",
@@ -263,5 +271,16 @@
     "tip3": "小紅書の投稿ページでコンテンツを貼り付けてください",
     "wechatMaskTitle": "ブラウザで開いてください",
     "wechatMaskDesc": "右上のメニューをタップして「ブラウザで開く」を選択してください"
+  },
+  "Extension": {
+    "downloadTitle": "\"AIライティングアシスタント\"ブラウザ拡張機能",
+    "extensionDescription": "ウェブサイトを閲覧している際に「気に入った」記事を見つけたら、拡張機能が「見たままを取得」を実現します",
+    "compatibility": "macOS、Windowsに対応；Chromeブラウザにインストール。Chromeをお持ちでない場合は、",
+    "downloadFor": "{platform}用にダウンロード",
+    "downloadPackage": "インストールパッケージをダウンロード",
+    "latest": "最新",
+    "releaseDate": "リリース日",
+    "downloadChrome": "Chromeブラウザをダウンロード",
+    "clickToDownload": "クリックしてダウンロード"
   }
 }

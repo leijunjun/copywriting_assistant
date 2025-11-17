@@ -322,41 +322,22 @@ export const toolList: IToolList = {
       }
     },
     {
-      id: 'social_media_12',
-      resultType: 'text',
-      title: 'xiaohongshu-post-generation',
-      submitButton: 'Generate',
-      name: { chinese: '小红书【服务】帖', english: 'Xiaohongshu Post (Service)', japanese: '小紅書投稿生成（サービス類）' },
-      classify: { chinese: '公域推广', english: 'Public Domain Promotion', japanese: 'パブリックドメイン促進' },
-      url: '/XiaohongshuPostGeneration.png',
-      describe: {
-        chinese: '针对服务行业的推广需求，生成一个小红书平台风格的笔记',
-        english: 'Generate a Xiaohongshu-style post for services.',
-        japanese: '小さな赤書プラットフォーム風のノート（サービス類）を生成する'
-      },
-      from: {
-        role: { type: 'Input', isBig: false, },
-        background: { type: 'Textarea', isBig: true, },
-        purpose: { type: 'Textarea', isBig: true, },
-        tone: { type: 'Select', list: SOCIAL_MEDIA_STYLE },
-      }
-    },
-    {
       id: 'social_media_13',
       resultType: 'text',
       title: 'xiaohongshu-post-generation-product',
       submitButton: 'Generate',
-      name: { chinese: '小红书【商品】帖', english: 'Xiaohongshu Post (Product)', japanese: '小紅書投稿生成（商品類）' },
+      name: { chinese: '小红书热帖', english: 'Xiaohongshu Hot Post', japanese: '小紅書ホット投稿' },
       classify: { chinese: '公域推广', english: 'Public Domain Promotion', japanese: 'パブリックドメイン促進' },
       url: '/XiaohongshuPostGeneration.png',
       describe: {
-        chinese: '围绕实物产品的销售种草，生成一个小红书平台风格的笔记',
-        english: 'Generate a Xiaohongshu-style post for products.',
-        japanese: '小さな赤書プラットフォーム風のノート（商品類）を生成する'
+        chinese: '生成一个小红书平台风格的热门笔记',
+        english: 'Generate a Xiaohongshu-style hot post.',
+        japanese: '小さな赤書プラットフォーム風のホット投稿を生成する'
       },
       from: {
         persona: { type: 'Input', isBig: false, },
-        product: { type: 'Input', isBig: false, },
+        background: { type: 'Textarea', isBig: true, },
+        discussionSubject: { type: 'Input', isBig: false, },
         style: { type: 'Select', list: [] },
       }
     },

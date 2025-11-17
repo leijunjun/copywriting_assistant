@@ -14,9 +14,14 @@ export interface MultilingualContent {
   japanese: string;
 }
 
+// 人设预设接口（支持嵌套背景）
+export interface PersonaPreset extends MultilingualContent {
+  backgrounds?: MultilingualContent[];
+}
+
 // 工具预设内容接口
 export interface ToolPresets {
-  [fieldName: string]: MultilingualContent[];
+  [fieldName: string]: MultilingualContent[] | PersonaPreset[];
 }
 
 // 行业预设配置接口
