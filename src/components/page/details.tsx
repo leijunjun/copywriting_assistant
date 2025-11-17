@@ -2,6 +2,7 @@
 import dayjs from 'dayjs';
 import Papa from 'papaparse';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
 import image from '@/app/public/404.png';
 import ReactMarkdown from 'react-markdown';
@@ -1019,19 +1020,30 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
                   )}
                 </div>
                 
-                {/* 社交分享组件 - 移动到表单下方，右对齐（折叠时隐藏） */}
+                {/* 引导标签和社交分享组件 - 表单下方，左右分布 */}
                 {dataSource?.id && !isRightPanelCollapsed && (
-                  <div className="mt-4 flex justify-end">
-                    <SocialShare
-                      config={{
-                        title: dataSource?.name[global.language] || 'AI文案助手',
-                        description: dataSource?.describe[global.language] || '智能文案生成工具',
-                        url: typeof window !== 'undefined' ? window.location.href : '',
-                        image: dataSource?.url ? `${typeof window !== 'undefined' ? window.location.origin : ''}${dataSource.url}` : undefined,
-                        hashtags: ['AI写作', '文案生成', '内容创作']
-                      }}
-                      compact={true}
-                    />
+                  <div className="mt-4 flex items-center justify-between">
+                    {/* 左侧：引导标签 */}
+                    <Link 
+                      href="/extension" 
+                      className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                    >
+                      更多爆款模仿可使用浏览器助手
+                    </Link>
+                    
+                    {/* 右侧：社交分享组件 */}
+                    <div className="flex justify-end">
+                      <SocialShare
+                        config={{
+                          title: dataSource?.name[global.language] || 'AI文案助手',
+                          description: dataSource?.describe[global.language] || '智能文案生成工具',
+                          url: typeof window !== 'undefined' ? window.location.href : '',
+                          image: dataSource?.url ? `${typeof window !== 'undefined' ? window.location.origin : ''}${dataSource.url}` : undefined,
+                          hashtags: ['AI写作', '文案生成', '内容创作']
+                        }}
+                        compact={true}
+                      />
+                    </div>
                   </div>
                 )}
               </div>

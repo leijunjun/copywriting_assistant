@@ -102,7 +102,7 @@ export const FROM_LABEL: { [key: string]: Language } = {
   'style': { chinese: '风格', english: 'Style', japanese: 'スタイル' },
   'content': { chinese: '内容', english: 'Content', japanese: '内容' },
   'role': { chinese: '角色（你是谁）', english: 'Role (Who are you)', japanese: '役割（あなたは誰）' },
-  'background': { chinese: '背景（经历/身份/处境）', english: 'Background (Experience/Identity/Situation)', japanese: '背景（経験/アイデンティティ/状況）' },
+  'background': { chinese: '特点', english: 'Characteristics', japanese: '特徴' },
   'purpose': { chinese: '目的（通过笔记达成什么）', english: 'Purpose (What to achieve through the post)', japanese: '目的（投稿で何を達成するか）' },
   'question': { chinese: '问题', english: 'Question', japanese: '問題' },
   'keywords': { chinese: '关键词', english: 'Keywords', japanese: 'キーワード' },
@@ -157,7 +157,7 @@ export const FROM_LABEL: { [key: string]: Language } = {
   'articleStyle': { chinese: '风格', english: 'Article Style', japanese: '記事スタイル' },
   'persona': { chinese: '人设', english: 'Persona', japanese: 'ペルソナ' },
   'product': { chinese: '商品', english: 'Product Description', japanese: '商品紹介' },
-  'discussionSubject': { chinese: '讨论主体', english: 'Discussion Subject', japanese: '討論主体' },
+  'discussionSubject': { chinese: '讨论话题', english: 'Discussion Topic', japanese: '討論トピック' },
 }
 
 // 料理能力表词汇 Vocabulary of cooking ability table

@@ -82,12 +82,12 @@ export const makeupPresets: IndustryPresets = {
         japanese: "ターゲット層+課題解決型",
         backgrounds: [
           { 
-            chinese: "定位于干皮少女的急救站：本身就是干皮且极易敏感，经历多次护肤踩坑，研究过成分、测试过多种平价到高端护肤品，现在会分享有效的补水修护干皮方案，专为手脚干裂、冬季脱皮、敏感泛红等痛点困扰的姐妹提供实用建议", 
+            chinese: "定位于干皮少女的急救站：本身干皮且极易敏感，经历多次护肤踩坑，专为手脚干裂、冬季脱皮、敏感泛红等痛点困扰的姐妹提供实用建议", 
             english: "Positioned as 'Dry Skin Girl's First Aid Station': Personally has dry and sensitive skin, after many trial and error experiences with skincare products and ingredients (from affordable to premium), now shares effective moisturizing and repairing solutions for dry skin. Offers practical advice specifically for those struggling with cracked hands and feet, winter flaking, and redness/sensitivity.", 
             japanese: "「乾燥肌少女の救急ステーション」として位置付け：自分自身が乾燥肌・敏感肌で、多くのスキンケア商品・成分を試し、効果的な乾燥対策を見つけて経験をシェア。手足のひび割れ、冬の皮むけ、敏感による赤みなどの悩みを持つ方に実用的なアドバイスを届ける"
           },
           { 
-            chinese: "定位于秋冬干裂急救指南：秋冬特别容易手脚干裂的体质，尤其北方环境下，对极端气候下的护手、护肤有丰富经验。致力于分享换季/寒冷天气下的护肤干货，从应急修护到日常保湿全方位安利解决方案", 
+            chinese: "定位于秋冬干裂急救指南：秋冬特别容易手脚干裂的体质，尤其北方环境下，对极端气候下的护手、护肤有丰富经验", 
             english: "Positioned as 'Autumn/Winter Cracked Skin Emergency Guide': Has a constitution especially prone to cracked hands and feet in autumn and winter, particularly in northern climates; brings rich experience in hand and skincare for extreme weather. Dedicated to sharing practical skincare tips for seasonal change/cold weather, providing comprehensive recommendations from emergency repair to daily moisturizing.", 
             japanese: "「秋冬ひび割れ緊急ガイド」として位置付け：秋冬に手足のひび割れが起きやすい体質で、特に寒冷地での経験が豊富。季節の変わり目や寒い時期のスキンケアノウハウを発信し、応急処置から日常保湿までトータルで問題解決する提案を行う"
           },
