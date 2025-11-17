@@ -43,19 +43,19 @@ export const makeupPresets: IndustryPresets = {
         japanese: "専門権威",
         backgrounds: [
           { 
-            chinese: "德系润护研究所，专注敏感肌和干燥肌修护，拥有严格的德国产品测试体系，为3万+用户提供个性化护肤建议", 
-            english: "Background as German Skincare Research Institute: Focused on repairing sensitive and dry skin, with a rigorous German product testing system and personalized skincare advice for over 30,000 users", 
-            japanese: "ドイツスキンケア研究所の背景：敏感肌と乾燥肌の修復に特化、ドイツ式の厳格な製品テスト体制を持ち、3万人以上にカスタマイズケアを提供"
+            chinese: "德系润护研究所，专注敏感肌和干燥肌修护，拥有严格的德国产品测试体系", 
+            english: "German Skincare Research Institute: Specializing in the repair of sensitive and dry skin, with a rigorous German product testing system.", 
+            japanese: "ドイツ系保湿研究所：敏感肌と乾燥肌のケアに特化し、厳格なドイツ製品テスト体制を有する。"
           },
           {
-            chinese: "德系护肤小课堂，拥有德国护肤师专业资质，注重日常科学护肤知识传播，善于通俗分析产品成分与功效", 
-            english: "Background as German Skincare Classroom: German-certified skincare specialist, committed to spreading scientific daily skincare knowledge and adept at clearly analyzing product ingredients and efficacy", 
-            japanese: "ドイツ式スキンケア小教室の背景：ドイツスキンケア資格保有、日常の科学的なスキンケア知識の普及に注力、成分と効果を分かりやすく解説"
+            chinese: "德系护肤小课堂，拥有德国护肤师专业资质，善于通俗分析产品成分与功效", 
+            english: "German Skincare Classroom: Holds German skincare professional qualifications and excels at explaining product ingredients and efficacy in simple terms.", 
+            japanese: "ドイツ系スキンケア教室：ドイツのスキンケア資格を持ち、成分や効果を分かりやすく解説できる。"
           },
           {
-            chinese: "德系护肤实验室，主导德系功效护肤研发，参与多项皮肤屏障修护专利研究，注重实验数据与用户体验结合", 
-            english: "Background as German Skincare Laboratory: Leads German efficacy skincare R&D, participates in multiple skin barrier repair patent studies, prioritizing both lab data and user experience", 
-            japanese: "ドイツスキンケアラボの背景：ドイツ式機能性スキンケアの研究開発を主導、皮膚バリア修復に関する特許研究に多数参画、データと体験の融合を重視"
+            chinese: "德系护肤实验室，注重实验数据与用户体验结合", 
+            english: "German Skincare Laboratory: Focuses on integrating laboratory data with user experience.", 
+            japanese: "ドイツ系スキンケアラボ：実験データとユーザー体験の融合を重視している。"
           }
         ]
       },
@@ -65,19 +65,14 @@ export const makeupPresets: IndustryPresets = {
         japanese: "親しみやすいシェア",
         backgrounds: [
           {
-            chinese: "爱护肤的小格子，日常乐于分享真实护肤体验与种草心得，希望用自己的试用经历帮助姐妹们避坑和挖宝", 
+            chinese: "爱护肤的小格子,乐于分享真实护肤体验,用自己的试用经历帮助姐妹们避坑和挖宝", 
             english: "Positioned as 'Skincare Lover Xiaogezi': loves to share authentic skincare experiences and product 'planting grass' tips, hoping to help sisters avoid pitfalls and discover new favorites through personal trials", 
             japanese: "スキンケア好きの小格子として、日々リアルなスキンケア体験やおすすめ品（”種草”）のシェアが好きで、実体験で皆さんが地雷を避けてお宝を見つける手助けをしたい"
           },
           {
-            chinese: "德系'护肤日记'，专注于德国科学护肤理念的传播，喜欢对比不同成分和产品配方，记录护肤效果", 
+            chinese: "德系'护肤日记',热衷德国科学护肤理念的传播，喜欢对比不同成分和产品配方，记录护肤效果", 
             english: "Positioned as 'German Skincare Diary': focuses on sharing German scientific skincare philosophies, enjoys comparing different ingredients and formulations, and documenting results", 
             japanese: "ドイツ式スキンケア日記アカウントとして、ドイツ科学派のスキンケア思想を発信、成分や配合の比較・効果の記録が得意"
-          },
-          {
-            chinese: "护肤'种草'日记，用生活化语言写自己日常护肤的感受和推荐种草好物，让粉丝像闺蜜一样信任和互动", 
-            english: "Positioned as 'Skincare Planting Diary': writes about personal daily skincare feelings and product recommendations in a relatable manner, building trust and interaction with fans like close friends", 
-            japanese: "スキンケア“種草”日記として、日常のスキンケア感想とおすすめアイテムを親しみやすい言葉で発信、フォロワーと親友のような信頼関係・交流を育む"
           },
         ]
       },
