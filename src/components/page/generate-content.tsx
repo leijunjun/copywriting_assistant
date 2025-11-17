@@ -30,10 +30,26 @@ export default function GenerateContent({ params, searchParams }: GenerateConten
   useEffect(() => {
     const generateContent = async () => {
       try {
-        // 解析 URL 参数
-        const persona = typeof searchParams.persona === 'string' ? decodeURIComponent(searchParams.persona) : '';
-        const background = typeof searchParams.background === 'string' ? decodeURIComponent(searchParams.background) : '';
-        const discussionSubject = typeof searchParams.discussionSubject === 'string' ? decodeURIComponent(searchParams.discussionSubject) : '';
+        // 解析 URL 参数（安全解码，处理可能的编码错误）
+        const safeDecode = (value: string | string[] | undefined): string => {
+          if (!value || typeof value !== 'string') return '';
+          try {
+            // 先尝试直接解码
+            return decodeURIComponent(value);
+          } catch (error) {
+            // 如果解码失败，尝试先编码再解码（处理双重编码的情况）
+            try {
+              return decodeURIComponent(encodeURIComponent(value));
+            } catch {
+              // 如果还是失败，返回原始值（可能已经是解码后的）
+              return value;
+            }
+          }
+        };
+
+        const persona = safeDecode(searchParams.persona);
+        const background = safeDecode(searchParams.background);
+        const discussionSubject = safeDecode(searchParams.discussionSubject);
         const styleKey = typeof searchParams.styleKey === 'string' ? searchParams.styleKey : '';
         const batchCountValue = typeof searchParams.batchCount === 'string' ? parseInt(searchParams.batchCount) : 1;
         const autoGenerate = typeof searchParams.autoGenerate === 'string' ? searchParams.autoGenerate === 'true' : false;

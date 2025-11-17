@@ -23,21 +23,6 @@ interface Version {
 export default function ExtensionPage() {
   const t = useTranslations('Extension');
   const [expandedVersions, setExpandedVersions] = useState<Set<string>>(new Set());
-  const [currentPlatform, setCurrentPlatform] = useState<'macos' | 'windows' | 'linux'>('macos');
-
-  // Detect platform
-  React.useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const userAgent = window.navigator.userAgent.toLowerCase();
-      if (userAgent.includes('win')) {
-        setCurrentPlatform('windows');
-      } else if (userAgent.includes('linux')) {
-        setCurrentPlatform('linux');
-      } else {
-        setCurrentPlatform('macos');
-      }
-    }
-  }, []);
 
   const versions: Version[] = [
     {
@@ -73,24 +58,8 @@ export default function ExtensionPage() {
   };
 
   const handleDownload = () => {
-    // 这里可以添加实际的下载逻辑
-    const downloadUrls = {
-      macos: '/extension/download/macos',
-      windows: '/extension/download/windows',
-      linux: '/extension/download/linux'
-    };
-    
-    // 实际实现中，这里应该跳转到真实的下载链接
-    window.open(downloadUrls[currentPlatform], '_blank');
-  };
-
-  const getPlatformName = (platform: 'macos' | 'windows' | 'linux'): string => {
-    const names: Record<'macos' | 'windows' | 'linux', string> = {
-      macos: 'macOS',
-      windows: 'Windows',
-      linux: 'Linux'
-    };
-    return names[platform];
+    // 跳转到下载链接
+    window.open('https://drive.weixin.qq.com/s?k=AEEAWwc9AA06DDSoNl', '_blank');
   };
 
   return (
