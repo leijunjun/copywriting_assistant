@@ -978,7 +978,7 @@ ${params.additionalContent ? `补充内容：${params.additionalContent}` : ''}
                 content: `
 你是一个小红书爆款文案编辑，擅长撰写不同风格的爆款帖子，现在按以下要求撰写：
 - 解析帖子 ${selectedStyle}的情绪和结构
-- 采用同样的情绪和结构，用${params.persona},${params.background ? `人设背景：${params.background}\n` : ''}的角度来模仿
+- 采用相似的情绪和结构，从${params.persona},${params.background ? `人设背景：${params.background}\n` : ''}的角度来差异化模仿
 - 提炼${params.discussionSubject}属性和特征，灵活的结合到帖子中，维持原意但不能生搬原文
 - 帖子内容emoji使用必须丰富
 - 【字数限制】对标帖子 ${selectedStyle}的字数，绝对不能超过400字，这是硬性要求，必须严格遵守。
