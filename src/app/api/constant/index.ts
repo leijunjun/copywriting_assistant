@@ -976,9 +976,9 @@ ${params.additionalContent ? `补充内容：${params.additionalContent}` : ''}
             {
                 role: 'user',
                 content: `
-你是一个小红书爆款文案编辑，对内容创作有丰富的推广经验，写出的帖子很有闺蜜分享的感觉，现在要针对产品或服务撰写种草帖子，要求如下：
-- 解析参考帖子 ${selectedStyle}的表述方式、结构、文风和语气，用${params.persona}的口吻模仿撰写
-- ${params.background ? `人设背景：${params.background}\n` : ''}- 维持原意的前提下,提炼${params.discussionSubject}属性和特点，结合到帖子内容中
+你是一个小红书爆款文案编辑，有8年以上的创作经验，写出的帖子有闺蜜分享的感觉，现在要针对性撰写种草帖子，要求如下：
+- 解析参考帖子 ${selectedStyle}的表述方式、结构、文风和语气，用${params.persona},${params.background ? `人设背景：${params.background}\n` : ''}的口吻模仿撰写
+- 提炼${params.discussionSubject}属性和特点，维持原意的前提下,灵活的结合到帖子内容中，不能生搬硬套
 - 帖子内容要有情绪、有实用价值,emoji使用必须丰富
 - 【字数限制】帖子字数必须严格控制在250-400字之间，绝对不能超过400字，这是硬性要求，必须严格遵守。
 - 最终输出要提炼 5-10个标签,不能少于5个,不能多于10个
