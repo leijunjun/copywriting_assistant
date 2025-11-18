@@ -43,17 +43,17 @@ export const housekeepingPresets: IndustryPresets = {
         japanese: "プロの産後ケア型",
         backgrounds: [
           {
-            chinese: "从事月嫂工作8年，拥有国家认证的母婴护理师证书，服务过100+个家庭，擅长产后恢复指导和新生儿护理，帮助新手妈妈顺利度过产褥期",
+            chinese: "月嫂工作8年，拥有国家认证的母婴护理师证书，服务过100+个家庭，擅长产后恢复指导和新生儿护理，帮助新手妈妈顺利度过产褥期",
             english: "8 years of experience as a maternity matron, certified maternal and infant care specialist, served 100+ families, expert in postpartum recovery guidance and newborn care, helping new mothers smoothly through the puerperium",
             japanese: "産後ケア8年の経験、国家認定の母子ケア資格保有、100世帯以上にサービス提供、産後回復指導と新生児ケアに精通、新米ママが産褥期をスムーズに過ごせるようサポート"
           },
           {
-            chinese: "资深月嫂，拥有10年母婴护理经验，精通科学喂养、早期教育和产后康复，累计服务150+个家庭，获得客户一致好评，擅长为不同体质的新手妈妈制定个性化护理方案",
+            chinese: "资深月嫂，拥有10年母婴护理经验，精通科学喂养、早期教育和产后康复，擅长为不同体质的新手妈妈制定个性化护理方案",
             english: "Senior maternity matron with 10 years of maternal and infant care experience, proficient in scientific feeding, early education and postpartum recovery, served 150+ families with consistent praise, expert in creating personalized care plans for new mothers with different constitutions",
             japanese: "ベテラン産後ケア、10年の母子ケア経験、科学的な育児、早期教育、産後回復に精通、150世帯以上にサービス提供、お客様から一貫した高評価、異なる体質の新米ママに個別化されたケアプランを作成"
           },
           {
-            chinese: "专业月嫂，持有国际认证的母婴护理资质，拥有5年临床经验，专精早产儿和双胞胎护理，熟悉各类产后并发症处理，帮助高危产妇安全度过产褥期",
+            chinese: "专业月嫂，持有国际认证的母婴护理资质，专精早产儿和双胞胎护理，熟悉各类产后并发症处理",
             english: "Professional maternity matron with international certification in maternal and infant care, 5 years of clinical experience, specializing in premature and twin care, familiar with various postpartum complications, helping high-risk mothers safely through the puerperium",
             japanese: "プロの産後ケア、国際認定の母子ケア資格保有、5年の臨床経験、早産児と双子のケアに特化、様々な産後合併症の処理に精通、ハイリスク産婦が安全に産褥期を過ごせるようサポート"
           }
@@ -65,17 +65,17 @@ export const housekeepingPresets: IndustryPresets = {
         japanese: "ベテランベビーシッター型",
         backgrounds: [
           {
-            chinese: "从事育儿嫂工作6年，拥有丰富的婴幼儿照护经验，擅长科学喂养、早期教育和行为习惯培养，服务过80+个家庭，帮助宝宝健康成长，让父母安心工作",
+            chinese: "从事育儿嫂工作6年，擅长科学喂养、早期教育和行为习惯培养，服务过80+个家庭，帮助宝宝健康成长，让父母安心工作",
             english: "6 years of experience as a nanny, rich experience in infant and toddler care, expert in scientific feeding, early education and behavior habit cultivation, served 80+ families, helping babies grow healthy and giving parents peace of mind to work",
             japanese: "ベビーシッター6年の経験、乳幼児ケアの豊富な経験、科学的な育児、早期教育、行動習慣の育成に精通、80世帯以上にサービス提供、赤ちゃんの健康な成長をサポート、両親が安心して働けるよう支援"
           },
           {
-            chinese: "专业育儿嫂，拥有8年育儿经验，精通0-3岁婴幼儿各阶段发展特点，擅长辅食制作、睡眠训练和语言启蒙，累计服务120+个家庭，获得客户高度认可",
+            chinese: "专业育儿嫂，精通0-3岁婴幼儿各阶段发展特点，擅长辅食制作、睡眠训练和语言启蒙，获得客户高度认可",
             english: "Professional nanny with 8 years of childcare experience, proficient in developmental characteristics of 0-3 year olds, expert in complementary food preparation, sleep training and language enlightenment, served 120+ families with high customer recognition",
             japanese: "プロのベビーシッター、8年の育児経験、0-3歳の各発達段階の特徴に精通、離乳食作り、睡眠トレーニング、言語啓発に特化、120世帯以上にサービス提供、お客様から高い評価"
           },
           {
-            chinese: "资深育儿嫂，持有高级育婴师证书，拥有10年专业经验，熟悉各类婴幼儿常见疾病护理，擅长为不同性格的宝宝制定个性化教育方案，帮助培养良好的生活习惯",
+            chinese: "资深育儿嫂，拥有10年专业经验，熟悉各类婴幼儿常见疾病护理，擅长为不同性格的宝宝制定个性化教育方案",
             english: "Senior nanny with advanced infant care certificate, 10 years of professional experience, familiar with care for various common infant diseases, expert in creating personalized education plans for babies with different personalities, helping cultivate good living habits",
             japanese: "ベテランベビーシッター、上級育児資格保有、10年のプロ経験、様々な乳幼児の一般的な病気のケアに精通、異なる性格の赤ちゃんに個別化された教育プランを作成、良好な生活習慣の育成をサポート"
           }
@@ -109,12 +109,12 @@ export const housekeepingPresets: IndustryPresets = {
         japanese: "住み込みメイド型",
         backgrounds: [
           {
-            chinese: "从事住家保姆工作7年，拥有全面的家政服务技能，擅长烹饪、清洁、洗衣和家庭管理，服务过50+个家庭，帮助雇主解决日常家务烦恼，让家庭生活更有序",
+            chinese: "从事住家保姆工作7年，拥有全面的家政服务技能，擅长烹饪、清洁、洗衣和家庭管理，帮助雇主解决日常家务烦恼，让家庭生活更有序",
             english: "7 years of experience as a live-in maid, comprehensive housekeeping skills, expert in cooking, cleaning, laundry and household management, served 50+ families, helping employers solve daily household troubles and making family life more organized",
             japanese: "住み込みメイド7年の経験、包括的な家事代行スキル、料理、清掃、洗濯、家庭管理に精通、50世帯以上にサービス提供、雇用主の日常的な家事の悩みを解決、家庭生活をより秩序立ててサポート"
           },
           {
-            chinese: "资深住家保姆，拥有10年住家服务经验，精通各类菜系制作和营养搭配，擅长家庭收纳整理和日常维护，累计服务60+个家庭，获得雇主高度信任和认可",
+            chinese: "资深住家保姆，拥有10年住家服务经验，精通各类菜系制作和营养搭配，擅长家庭收纳整理和日常维护，",
             english: "Senior live-in maid with 10 years of residential service experience, proficient in various cuisines and nutritional matching, expert in home organizing and daily maintenance, served 60+ families with high employer trust and recognition",
             japanese: "ベテラン住み込みメイド、10年の住み込みサービス経験、様々な料理と栄養バランスに精通、家庭の整理収納と日常メンテナンスに特化、60世帯以上にサービス提供、雇用主から高い信頼と評価"
           },
@@ -175,17 +175,17 @@ export const housekeepingPresets: IndustryPresets = {
         japanese: "家事代行サービスチーム型",
         backgrounds: [
           {
-            chinese: "专业家政服务团队，拥有20+名经验丰富的服务人员，提供月嫂、育儿嫂、保洁、整理收纳等全方位家政服务，服务过500+个家庭，获得客户一致好评",
+            chinese: "专业家政服务团队，提供月嫂、育儿嫂、保洁、整理收纳等全方位家政服务，服务过500+个家庭，获得客户一致好评",
             english: "Professional housekeeping service team with 20+ experienced service staff, providing comprehensive housekeeping services including maternity matrons, nannies, cleaning, organizing, served 500+ families with consistent customer praise",
             japanese: "プロの家事代行サービスチーム、20名以上の経験豊富なサービススタッフ、産後ケア、ベビーシッター、清掃、整理収納などの包括的な家事代行サービスを提供、500世帯以上にサービス提供、お客様から一貫した高評価"
           },
           {
-            chinese: "资深家政服务团队，拥有15年行业经验，团队成员均持有专业认证，提供标准化、规范化的家政服务，累计服务1000+个家庭，建立了完善的培训和管理体系",
+            chinese: "资深家政服务团队，拥有15年行业经验，团队成员均持有专业认证，提供标准化、规范化的家政服务，具备完善的培训和管理体系",
             english: "Senior housekeeping service team with 15 years of industry experience, all team members hold professional certifications, providing standardized and regulated housekeeping services, served 1000+ families, established comprehensive training and management systems",
             japanese: "ベテラン家事代行サービスチーム、15年の業界経験、チームメンバー全員がプロ認証保有、標準化・規範化された家事代行サービスを提供、1000世帯以上にサービス提供、包括的な研修と管理体制を構築"
           },
           {
-            chinese: "专业家政服务团队，拥有完善的服务流程和质量保障体系，提供24小时在线服务和定期回访，团队成员经过严格培训和背景调查，为家庭提供安全可靠的家政服务",
+            chinese: "专业家政服务团队，提供24小时在线服务和定期回访，团队成员经过严格培训和背景调查，为家庭提供安全可靠的家政服务",
             english: "Professional housekeeping service team with comprehensive service processes and quality assurance systems, providing 24-hour online service and regular follow-ups, team members undergo strict training and background checks, providing safe and reliable housekeeping services for families",
             japanese: "プロの家事代行サービスチーム、包括的なサービスプロセスと品質保証体制、24時間オンラインサービスと定期フォローアップを提供、チームメンバーは厳格な研修と身元調査を経て、家庭に安全で信頼できる家事代行サービスを提供"
           }

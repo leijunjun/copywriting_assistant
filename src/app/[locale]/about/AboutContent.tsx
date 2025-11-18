@@ -21,11 +21,14 @@ export default function AboutContent() {
         
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-5xl font-bold text-gray-900 mb-6">
-            {NAVIGATION.about[global.language]}
+            {global.language === 'chinese' 
+              ? '关于 AI 文秘'
+              : NAVIGATION.about[global.language]
+            }
           </h1>
           <p className="text-xl text-gray-600">
             {global.language === 'chinese' 
-              ? '用AI智能提升行业竞争力' 
+              ? '用 AI 智能提升创作效率' 
               : global.language === 'english'
               ? 'Learn about our mission and vision'
               : '私たちのミッションとビジョンについて'
@@ -102,12 +105,12 @@ export default function AboutContent() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-lg shadow-lg p-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
-              {global.language === 'chinese' ? '我们的使命' : global.language === 'english' ? 'Our Mission' : '私たちのミッション'}
+              {global.language === 'chinese' ? '在做什么' : global.language === 'english' ? 'Our Mission' : '私たちのミッション'}
             </h2>
             <div className="prose prose-lg max-w-none">
               <p className="text-gray-700 leading-relaxed mb-6">
                 {global.language === 'chinese' 
-                  ? '我们是一个致力于让文案创作更简单、更高效的团队。深知很多人面对空白文档时会感到无从下手，灵感枯竭、措辞纠结，甚至为一句广告词熬夜到凌晨。我们懂这些痛点，因为我们也曾经历过。' 
+                  ? '我们致力于让文案创作更简单、更高效。深知很多人面对空白文档时会感到无从下手，灵感枯竭、措辞纠结，甚至为一句广告词熬夜到凌晨。我们懂这些痛点，因为我们也曾经历过。' 
                   : global.language === 'english'
                   ? 'We are a team dedicated to making copywriting simpler and more efficient. We understand that many people feel lost when facing a blank document, struggling with inspiration, word choice, and even staying up late for a single advertising slogan. We understand these pain points because we have experienced them ourselves.'
                   : '私たちは、コピーライティングをより簡単で効率的にすることを目指すチームです。多くの人が空白の文書に直面した時に手がつけられない、インスピレーションが枯渇し、言葉選びに悩み、一つの広告コピーのために深夜まで起きていることを理解しています。私たちも同じ経験をしたからこそ、これらの痛みを理解しています。'

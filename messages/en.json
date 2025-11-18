@@ -276,11 +276,18 @@
     "downloadTitle": "\"AI Writing Assistant\" Browser Extension",
     "extensionDescription": "When browsing websites and seeing articles you like, the extension lets you achieve \"what you see is what you get\"",
     "compatibility": "Available for macOS, Windows; Install in Chrome browser. If you don't have Chrome, please ",
+    "compatibilityItem1": "Available for macOS, Windows",
+    "compatibilityItem2": "Install in Chrome browser",
+    "compatibilityItem3": "If you don't have Chrome, please",
     "downloadFor": "Download for {platform}",
     "downloadPackage": "Download Package",
     "latest": "Latest",
     "releaseDate": "Release Date",
     "downloadChrome": "Download Chrome Browser",
-    "clickToDownload": "click to download"
+    "clickToDownload": "click to download",
+    "descriptionItem": "Create while browsing, clone with one click",
+    "descriptionItem2": "Combine with your business and batch generate content",
+    "featureTag1": "Easy Install",
+    "featureTag2": "Customizable"
   }
 }

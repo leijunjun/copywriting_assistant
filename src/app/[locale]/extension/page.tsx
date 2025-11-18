@@ -68,51 +68,66 @@ export default function ExtensionPage() {
         {/* Main Download Section */}
         <Card className="bg-white border-0 shadow-lg mb-8">
           <CardContent className="p-8">
-            <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-              {/* Extension Icon */}
-              <div className="flex-shrink-0">
-                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <svg 
-                    className="w-12 h-12 text-white" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      strokeWidth={2} 
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" 
-                    />
-                  </svg>
+            <div className="flex flex-col lg:flex-row items-start gap-8">
+              {/* Extension Screenshot - Left Side */}
+              <div className="flex-shrink-0 w-full lg:w-1/2">
+                <div className="relative w-full rounded-xl overflow-hidden shadow-lg -mx-2 lg:-mx-4">
+                  <Image
+                    src="/extension_shot.png"
+                    alt="AI 写作助手浏览器插件截图"
+                    width={800}
+                    height={600}
+                    className="w-full h-auto object-contain"
+                    priority
+                  />
                 </div>
               </div>
 
-              {/* Title and Info */}
-              <div className="flex-1">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              {/* Title and Info - Right Side */}
+              <div className="flex-1 w-full lg:w-1/2">
+                <h1 className="text-3xl font-bold text-gray-900 mb-4">
                   {t('downloadTitle')}
                 </h1>
-                <p className="text-sm text-gray-500 mb-4">
-                  {t('compatibility')}
-                  <a 
-                    href="https://www.onlinedown.net/soft/7993.htm" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-700 underline"
-                  >
-                    {t('clickToDownload')}
-                  </a>
-                </p>
                 
-                <p className="text-sm text-gray-600 mb-4">
-                  {t('extensionDescription')}
-                </p>
+                {/* Feature Tags */}
+                <div className="flex flex-wrap gap-2 mb-4">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-600 text-white">
+                    {t('featureTag1')}
+                  </span>
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-600 text-white">
+                    {t('featureTag2')}
+                  </span>
+                </div>
+                
+                {/* Compatibility List */}
+                <ul className="text-sm text-gray-500 mb-4 space-y-2 list-disc list-inside">
+                  <li>{t('compatibilityItem1')}</li>
+                  <li>
+                    {t('compatibilityItem2')}
+                    {', '}
+                    {t('compatibilityItem3')}
+                    {' '}
+                    <a 
+                      href="https://www.onlinedown.net/soft/7993.htm" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-700 underline"
+                    >
+                      {t('clickToDownload')}
+                    </a>
+                  </li>
+                </ul>
+                
+                {/* Description List */}
+                <ul className="text-sm text-gray-600 mb-6 space-y-2 list-disc list-inside">
+                  <li>{t('descriptionItem')}</li>
+                  <li>{t('descriptionItem2')}</li>
+                </ul>
                 
                 {/* Download Button */}
                 <Button
                   onClick={handleDownload}
-                  className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2"
+                  className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2 w-full sm:w-auto"
                 >
                   <Download className="w-4 h-4" />
                   {t('downloadPackage')}

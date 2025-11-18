@@ -276,11 +276,18 @@
     "downloadTitle": "\"AIライティングアシスタント\"ブラウザ拡張機能",
     "extensionDescription": "ウェブサイトを閲覧している際に「気に入った」記事を見つけたら、拡張機能が「見たままを取得」を実現します",
     "compatibility": "macOS、Windowsに対応；Chromeブラウザにインストール。Chromeをお持ちでない場合は、",
+    "compatibilityItem1": "macOS、Windowsに対応",
+    "compatibilityItem2": "Chromeブラウザにインストール",
+    "compatibilityItem3": "Chromeをお持ちでない場合は、",
     "downloadFor": "{platform}用にダウンロード",
     "downloadPackage": "インストールパッケージをダウンロード",
     "latest": "最新",
     "releaseDate": "リリース日",
     "downloadChrome": "Chromeブラウザをダウンロード",
-    "clickToDownload": "クリックしてダウンロード"
+    "clickToDownload": "クリックしてダウンロード",
+    "descriptionItem": "閲覧しながら創作、ワンクリックでクローン",
+    "descriptionItem2": "自身のビジネスと組み合わせて、バッチで原稿を作成",
+    "featureTag1": "簡単インストール",
+    "featureTag2": "カスタマイズ可能"
   }
 }

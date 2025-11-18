@@ -282,11 +282,18 @@
     "downloadTitle": "\"AI 写作助手\"浏览器插件",
     "extensionDescription": "浏览网站时看到\"中意\"的文章，插件让你实现\"所见即所得\"",
     "compatibility": "适用于macOS、Windows；安装在Chrome 浏览器，如电脑上没有请",
+    "compatibilityItem1": "适用于 macOS、Windows",
+    "compatibilityItem2": "安装在 Chrome 浏览器",
+    "compatibilityItem3": "如电脑上没有请",
     "downloadFor": "为 {platform} 下载",
     "downloadPackage": "下载安装包",
     "latest": "最新",
     "releaseDate": "发布日期",
     "downloadChrome": "下载 Chrome 浏览器",
-    "clickToDownload": "点击下载"
+    "clickToDownload": "点击下载",
+    "descriptionItem": "边看边创作，一键克隆",
+    "descriptionItem2": "和自身业务结合，批量出稿",
+    "featureTag1": "易安装",
+    "featureTag2": "可定制"
   }
 }
