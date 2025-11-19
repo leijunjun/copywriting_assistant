@@ -263,10 +263,323 @@ export const beautyPresets: IndustryPresets = {
     ]
   },
 
-  // 小红书热帖生成工具 - 暂无预设内容
+  // 小红书热帖生成工具
   'xiaohongshu-post-generation-product': {
-    persona: [],
-    discussionSubject: [],
-    style: []
-  }
-};
+    persona: [
+      {
+        chinese: "专业医美医生",
+        english: "Professional Medical Aesthetic Doctor",
+        japanese: "プロの医療美容医師型",
+        backgrounds: [
+          {
+            chinese: "从事医疗美容工作10年，拥有医学博士学位和执业医师资格，擅长面部年轻化、微整形注射和激光美肤，累计完成5000+例医美项目，以专业技术和安全理念获得客户信赖",
+            english: "10 years of experience in medical aesthetics, holds medical doctorate and practicing physician qualification, expert in facial rejuvenation, micro-plastic injections and laser skin treatments, completed 5000+ medical aesthetic procedures, trusted by clients for professional skills and safety principles",
+            japanese: "医療美容10年の経験、医学博士号と医師免許保有、顔の若返り、マイクロ整形注射、レーザー美肌に精通、5000件以上の医療美容プロジェクトを完了、プロの技術と安全理念でお客様から信頼"
+          },
+          {
+            chinese: "资深医美医生，拥有15年临床经验，精通各类医美项目的诊断和治疗，擅长为不同肤质和需求的客户制定个性化方案，注重术前评估和术后跟踪，确保安全有效",
+            english: "Senior medical aesthetic doctor with 15 years of clinical experience, proficient in diagnosis and treatment of various medical aesthetic procedures, expert in creating personalized plans for clients with different skin types and needs, emphasizes pre-operative assessment and post-operative follow-up to ensure safety and effectiveness",
+            japanese: "ベテラン医療美容医師、15年の臨床経験、様々な医療美容プロジェクトの診断と治療に精通、異なる肌質とニーズのお客様に個別化プランを作成、術前評価と術後フォローを重視、安全性と有効性を確保"
+          },
+          {
+            chinese: "专业医美医生，持有国际医美认证资质，拥有8年经验，专精热玛吉、超声刀等抗衰项目，熟悉最新医美技术和设备，注重医美安全科普，帮助客户理性选择医美项目",
+            english: "Professional medical aesthetic doctor with international medical aesthetic certification, 8 years of experience, specializing in anti-aging procedures like Thermage and ultrasound therapy, familiar with latest medical aesthetic technologies and equipment, emphasizes medical beauty safety education, helping clients make rational choices",
+            japanese: "プロの医療美容医師、国際医療美容認証保有、8年の経験、サーモージ、超音波治療などのアンチエイジングプロジェクトに特化、最新の医療美容技術と機器に精通、医療美容安全の普及を重視、お客様が合理的な選択ができるようサポート"
+          }
+        ]
+      },
+      {
+        chinese: "资深医美咨询师",
+        english: "Senior Medical Aesthetic Consultant",
+        japanese: "ベテラン医療美容コンサルタント型",
+        backgrounds: [
+          {
+            chinese: "从事医美咨询工作6年，拥有丰富的客户沟通经验，擅长分析客户需求并推荐合适的医美项目，熟悉各类医美项目的效果和注意事项，帮助客户制定个性化变美方案",
+            english: "6 years of experience in medical aesthetic consultation, rich customer communication experience, expert in analyzing client needs and recommending suitable medical aesthetic procedures, familiar with effects and precautions of various procedures, helping clients create personalized beauty enhancement plans",
+            japanese: "医療美容相談6年の経験、豊富な顧客コミュニケーション経験、お客様のニーズを分析し適切な医療美容プロジェクトを推薦、様々な医療美容プロジェクトの効果と注意事項に精通、お客様に個別化された美しさプランを作成"
+          },
+          {
+            chinese: "专业医美咨询师，拥有8年咨询经验，精通面部美学设计和医美方案规划，擅长为客户解答医美疑问，消除顾虑，建立信任关系，累计服务2000+位客户，获得高度认可",
+            english: "Professional medical aesthetic consultant with 8 years of consultation experience, proficient in facial aesthetic design and medical aesthetic plan planning, expert in answering client questions and concerns, building trust relationships, served 2000+ clients with high recognition",
+            japanese: "プロの医療美容コンサルタント、8年の相談経験、顔の美学設計と医療美容プラン計画に精通、お客様の疑問と懸念に答える、信頼関係を構築、2000人以上のお客様にサービス提供、高い評価"
+          },
+          {
+            chinese: "资深医美咨询师，持有医美咨询师认证，拥有10年经验，熟悉各类医美项目的适应症和禁忌症，擅长术前沟通和术后回访，注重客户体验，帮助客户安全变美",
+            english: "Senior medical aesthetic consultant with medical aesthetic consultant certification, 10 years of experience, familiar with indications and contraindications of various medical aesthetic procedures, expert in pre-operative communication and post-operative follow-up, emphasizes customer experience, helping clients safely enhance beauty",
+            japanese: "ベテラン医療美容コンサルタント、医療美容コンサルタント認証保有、10年の経験、様々な医療美容プロジェクトの適応症と禁忌症に精通、術前コミュニケーションと術後フォローアップに特化、顧客体験を重視、お客様が安全に美しくなれるようサポート"
+          }
+        ]
+      },
+      {
+        chinese: "医美护士",
+        english: "Medical Aesthetic Nurse",
+        japanese: "医療美容看護師型",
+        backgrounds: [
+          {
+            chinese: "从事医美护理工作5年，拥有护士执业资格，擅长协助医生进行医美治疗，提供专业的术前准备和术后护理，熟悉各类医美项目的护理要点，确保客户安全舒适",
+            english: "5 years of experience in medical aesthetic nursing, holds nursing practice qualification, expert in assisting doctors with medical aesthetic treatments, providing professional pre-operative preparation and post-operative care, familiar with nursing essentials of various procedures, ensuring client safety and comfort",
+            japanese: "医療美容看護5年の経験、看護師免許保有、医師の医療美容治療をサポート、プロの術前準備と術後ケアを提供、様々な医療美容プロジェクトの看護の要点に精通、お客様の安全と快適さを確保"
+          },
+          {
+            chinese: "专业医美护士，拥有7年护理经验，精通注射类项目的辅助操作和术后观察，擅长为客户提供详细的术后护理指导，包括敷料更换、注意事项等，帮助客户顺利恢复",
+            english: "Professional medical aesthetic nurse with 7 years of nursing experience, proficient in assisting with injection procedures and post-operative observation, expert in providing detailed post-operative care guidance including dressing changes and precautions, helping clients recover smoothly",
+            japanese: "プロの医療美容看護師、7年の看護経験、注射プロジェクトの補助操作と術後観察に精通、お客様に詳細な術後ケア指導を提供、包帯交換や注意事項など、お客様がスムーズに回復できるようサポート"
+          },
+          {
+            chinese: "资深医美护士，持有高级护理证书，拥有10年经验，熟悉激光、射频等设备的操作和护理，擅长处理术后常见问题和并发症，注重客户沟通，提供贴心专业的护理服务",
+            english: "Senior medical aesthetic nurse with advanced nursing certificate, 10 years of experience, familiar with operation and care of laser and radiofrequency equipment, expert in handling common post-operative issues and complications, emphasizes client communication, providing caring and professional nursing services",
+            japanese: "ベテラン医療美容看護師、上級看護資格保有、10年の経験、レーザー、ラジオ波などの機器の操作とケアに精通、術後の一般的な問題と合併症の処理に特化、顧客コミュニケーションを重視、思いやりとプロの看護サービスを提供"
+          }
+        ]
+      },
+      {
+        chinese: "皮肤管理师",
+        english: "Skin Management Specialist",
+        japanese: "肌管理スペシャリスト型",
+        backgrounds: [
+          {
+            chinese: "从事皮肤管理工作4年，拥有美容师资格证书，擅长日常护肤指导和皮肤问题分析，熟悉各类护肤产品和仪器使用，帮助客户改善肌肤状态，预防皮肤问题",
+            english: "4 years of experience in skin management, holds beautician qualification certificate, expert in daily skincare guidance and skin problem analysis, familiar with various skincare products and equipment use, helping clients improve skin condition and prevent skin problems",
+            japanese: "肌管理4年の経験、美容師資格保有、日常スキンケア指導と肌問題分析に精通、様々なスキンケア製品と機器の使用に精通、お客様の肌状態を改善し肌問題を予防"
+          },
+          {
+            chinese: "专业皮肤管理师，拥有6年经验，精通医美后皮肤护理和日常保养，擅长根据客户肤质制定个性化护肤方案，熟悉敏感肌、痘痘肌等特殊肤质的护理方法",
+            english: "Professional skin management specialist with 6 years of experience, proficient in post-medical aesthetic skin care and daily maintenance, expert in creating personalized skincare plans based on client skin types, familiar with care methods for special skin types like sensitive and acne-prone skin",
+            japanese: "プロの肌管理スペシャリスト、6年の経験、医療美容後のスキンケアと日常メンテナンスに精通、お客様の肌質に基づいて個別化されたスキンケアプランを作成、敏感肌、ニキビ肌などの特殊な肌質のケア方法に精通"
+          },
+          {
+            chinese: "资深皮肤管理师，持有高级美容师证书，拥有8年经验，熟悉各类皮肤问题的成因和解决方案，擅长使用专业仪器进行皮肤检测和分析，为客户提供科学的护肤建议",
+            english: "Senior skin management specialist with advanced beautician certificate, 8 years of experience, familiar with causes and solutions of various skin problems, expert in using professional equipment for skin testing and analysis, providing scientific skincare advice for clients",
+            japanese: "ベテラン肌管理スペシャリスト、上級美容師資格保有、8年の経験、様々な肌問題の原因と解決策に精通、プロ機器を使用した肌検査と分析に特化、お客様に科学的なスキンケアアドバイスを提供"
+          }
+        ]
+      },
+      {
+        chinese: "医美机构运营",
+        english: "Medical Aesthetic Institution Operator",
+        japanese: "医療美容機関運営型",
+        backgrounds: [
+          {
+            chinese: "从事医美机构运营工作5年，拥有丰富的客户服务和管理经验，熟悉医美行业规范和运营流程，擅长客户关系维护和满意度提升，确保机构服务质量",
+            english: "5 years of experience in medical aesthetic institution operations, rich customer service and management experience, familiar with medical aesthetic industry standards and operational processes, expert in customer relationship maintenance and satisfaction improvement, ensuring institutional service quality",
+            japanese: "医療美容機関運営5年の経験、豊富な顧客サービスと管理経験、医療美容業界の規範と運営プロセスに精通、顧客関係の維持と満足度向上に特化、機関のサービス品質を確保"
+          },
+          {
+            chinese: "专业医美机构运营，拥有7年经验，精通医美项目的市场推广和客户引流，熟悉各类营销活动和客户维护策略，注重品牌建设和口碑管理，帮助机构提升竞争力",
+            english: "Professional medical aesthetic institution operator with 7 years of experience, proficient in market promotion and customer acquisition for medical aesthetic procedures, familiar with various marketing activities and customer retention strategies, emphasizes brand building and reputation management, helping institutions improve competitiveness",
+            japanese: "プロの医療美容機関運営、7年の経験、医療美容プロジェクトの市場プロモーションと顧客獲得に精通、様々なマーケティング活動と顧客維持戦略に精通、ブランド構築と評判管理を重視、機関の競争力向上をサポート"
+          },
+          {
+            chinese: "资深医美机构运营，拥有10年行业经验，熟悉医美机构的合规经营和风险管控，擅长团队管理和服务标准化，注重客户体验和满意度，帮助机构建立良好的市场口碑",
+            english: "Senior medical aesthetic institution operator with 10 years of industry experience, familiar with compliant operations and risk control of medical aesthetic institutions, expert in team management and service standardization, emphasizes customer experience and satisfaction, helping institutions build good market reputation",
+            japanese: "ベテラン医療美容機関運営、10年の業界経験、医療美容機関のコンプライアンス経営とリスク管理に精通、チーム管理とサービス標準化に特化、顧客体験と満足度を重視、機関が良好な市場評判を構築できるようサポート"
+          }
+        ]
+      }
+    ],
+    discussionSubject: [
+      {
+        label: { chinese: "面部年轻化项目", english: "Facial Rejuvenation Procedures", japanese: "顔の若返りプロジェクト" },
+        value: `#面部年轻化项目
+##项目类型
+###热玛吉
+通过射频技术刺激胶原蛋白再生，实现面部紧致提升，适合25-55岁有抗衰需求的客户
+###超声刀
+利用超声波聚焦技术，深层提拉紧致，改善面部轮廓，适合30岁以上皮肤松弛的客户
+###线雕提升
+通过可吸收线材植入，实现面部提升和轮廓重塑，适合30-50岁有下垂问题的客户
+###射频紧肤
+通过射频能量促进胶原蛋白收缩和再生，改善皮肤松弛，适合各年龄段有紧致需求的客户
+##项目优势
+###非手术
+大部分项目无需开刀，创伤小，恢复快，安全性高
+###效果自然
+渐进式改善，效果自然持久，不会出现突兀的变化
+###个性化方案
+根据客户年龄、肤质和需求，制定个性化的年轻化方案
+###专业保障
+由专业医生操作，使用正规设备和产品，确保安全有效
+##适用人群
+###初老症状
+25-35岁出现细纹、皮肤松弛等初老症状的客户
+###明显衰老
+35岁以上面部明显下垂、皱纹加深的客户
+###轮廓改善
+希望改善面部轮廓，提升整体年轻度的客户
+###预防性抗衰
+希望提前预防衰老，保持年轻状态的客户`
+      },
+      {
+        label: { chinese: "微整形注射", english: "Micro-plastic Injections", japanese: "マイクロ整形注射" },
+        value: `#微整形注射项目
+##项目类型
+###玻尿酸注射
+填充面部凹陷，改善轮廓，增加面部立体感，适合改善法令纹、苹果肌、下巴等部位
+###肉毒素注射
+放松肌肉，减少动态皱纹，适合改善鱼尾纹、抬头纹、皱眉纹等
+###胶原蛋白注射
+补充胶原蛋白，改善肤质，适合改善细纹和皮肤质感
+###自体脂肪填充
+使用自身脂肪进行填充，效果自然持久，适合大范围填充需求
+##项目优势
+###微创无痛
+注射方式，创伤小，疼痛感轻微，恢复快
+###效果立竿见影
+注射后即可看到效果，无需等待恢复期
+###可逆可调
+玻尿酸可溶解，肉毒素会代谢，效果可逆可调
+###个性化定制
+根据客户面部特点和需求，精准设计注射方案
+##适用人群
+###轮廓改善
+希望改善面部轮廓，增加立体感的客户
+###皱纹改善
+有动态皱纹或静态皱纹困扰的客户
+###面部填充
+面部凹陷，希望恢复饱满状态的客户
+###微调需求
+希望进行微调，不想做手术的客户`
+      },
+      {
+        label: { chinese: "激光美肤", english: "Laser Skin Treatment", japanese: "レーザー美肌" },
+        value: `#激光美肤项目
+##项目类型
+###光子嫩肤
+改善色斑、红血丝、毛孔粗大等问题，提亮肤色，适合日常保养
+###点阵激光
+改善痘印、疤痕、细纹等问题，促进皮肤再生，适合问题性肌肤
+###皮秒激光
+精准祛斑，改善色素沉着，适合有斑点困扰的客户
+###激光脱毛
+永久性脱毛，适合有脱毛需求的客户
+##项目优势
+###精准有效
+激光技术精准作用于问题部位，效果明显
+###安全可控
+专业设备，参数可调，确保安全有效
+###恢复期短
+大部分项目恢复期短，不影响正常生活
+###综合改善
+可同时改善多种皮肤问题，综合提升肤质
+##适用人群
+###色斑问题
+有雀斑、晒斑、黄褐斑等色斑问题的客户
+###痘印疤痕
+有痘印、疤痕困扰的客户
+###毛孔粗大
+希望改善毛孔粗大、粗糙等问题的客户
+###日常保养
+希望定期保养，维持良好肤质的客户`
+      },
+      {
+        label: { chinese: "皮肤管理", english: "Skin Management", japanese: "肌管理" },
+        value: `#皮肤管理服务
+##服务内容
+###日常护肤指导
+根据客户肤质，提供专业的日常护肤方案和产品推荐
+###医美后护理
+提供医美项目后的专业护理指导，确保效果和恢复
+###问题性肌肤管理
+针对痘痘、敏感、色斑等问题，制定专业管理方案
+###定期皮肤检测
+使用专业仪器定期检测皮肤状态，及时发现问题
+##服务优势
+###专业指导
+由专业皮肤管理师提供科学专业的护肤指导
+###个性化方案
+根据客户肤质和需求，制定个性化管理方案
+###持续跟踪
+定期回访，跟踪皮肤状态，调整管理方案
+###产品推荐
+推荐适合的护肤产品，避免盲目选择
+##适用人群
+###日常保养
+希望日常保养，维持良好肤质的客户
+###医美后护理
+刚做完医美项目，需要专业护理的客户
+###问题性肌肤
+有痘痘、敏感、色斑等问题的客户
+###护肤新手
+对护肤不了解，需要专业指导的客户`
+      },
+      {
+        label: { chinese: "医美安全科普", english: "Medical Beauty Safety Education", japanese: "医療美容安全科学普及" },
+        value: `#医美安全科普
+##选择正规机构
+###资质认证
+选择有医疗机构执业许可证的正规医美机构
+###医生资质
+确认医生持有执业医师资格和相关专业认证
+###设备产品
+使用正规渠道采购的设备和产品，有相关认证
+###环境标准
+机构环境符合医疗标准，消毒措施完善
+##术前准备
+###充分沟通
+与医生充分沟通，了解项目效果、风险和注意事项
+###身体检查
+进行必要的身体检查，确认是否适合进行医美项目
+###心理准备
+做好心理准备，对效果有合理预期
+###时间安排
+合理安排时间，确保有足够的恢复期
+##安全注意事项
+###禁忌症了解
+了解项目的禁忌症，确认自己是否适合
+###术后护理
+严格按照医嘱进行术后护理，避免并发症
+###定期复查
+定期复查，及时发现问题，确保安全
+###理性选择
+理性选择医美项目，不盲目追求效果
+##风险提示
+###效果差异
+个体差异导致效果可能不同，需有合理预期
+###可能风险
+了解可能的副作用和风险，做好心理准备
+###恢复期
+了解恢复期的时间和注意事项
+###长期维护
+部分项目需要定期维护，了解长期成本`
+      },
+      {
+        label: { chinese: "术后护理指导", english: "Post-operative Care Guidance", japanese: "術後ケア指導" },
+        value: `#术后护理指导
+##注射类项目护理
+###24小时内
+避免触碰注射部位，避免剧烈运动，保持清洁
+###一周内
+避免高温环境，避免按摩注射部位，注意防晒
+###一个月内
+避免过度表情，注意饮食，避免辛辣刺激食物
+###定期复查
+按医生要求定期复查，及时发现问题
+##激光类项目护理
+###术后即刻
+冷敷缓解不适，使用医用修复产品
+###一周内
+严格防晒，避免使用刺激性护肤品，保持皮肤湿润
+###恢复期
+避免日晒，注意保湿，避免去角质等刺激性护理
+###长期护理
+注意日常防晒和保湿，维持治疗效果
+##手术类项目护理
+###术后48小时
+保持伤口清洁干燥，按医嘱使用药物
+###拆线前
+避免剧烈运动，注意休息，避免伤口感染
+###恢复期
+注意饮食，避免辛辣刺激，避免烟酒
+###定期复查
+按医生要求定期复查，确保恢复顺利
+##通用护理原则
+###清洁保湿
+保持皮肤清洁，做好保湿工作
+###防晒
+严格防晒，避免紫外线伤害
+###饮食
+注意饮食，避免辛辣刺激，多补充营养
+###休息
+保证充足休息，避免熬夜，促进恢复`
+      }
+    ],
