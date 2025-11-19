@@ -30,6 +30,7 @@ const industryOptions = [
   { value: 'beauty', label: '医疗美容' },
   { value: 'lifestyle-beauty', label: '生活美容' },
   { value: 'makeup', label: '美妆' },
+  { value: 'yituihuo', label: '一推火' },
 ];
 
 export default function CreateMemberPage() {

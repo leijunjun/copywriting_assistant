@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from '../../../../navigation';
+import { useRouter, Link } from '../../../../navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -597,6 +597,16 @@ export default function AIImageGenerationPage() {
                       </>
                     )}
                   </Button>
+                </div>
+
+                {/* 爆款逆向器提示链接 */}
+                <div className="pt-2 text-center">
+                  <Link
+                    href="/extension"
+                    className="text-sm text-purple-600 hover:text-purple-700 hover:underline transition-colors"
+                  >
+                    安装爆款逆向器，随时复刻爆款图片
+                  </Link>
                 </div>
               </CardContent>
             </Card>

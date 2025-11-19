@@ -43,7 +43,8 @@
     "housekeeping": "Housekeeping",
     "beauty": "Medical Beauty",
     "lifestyle-beauty": "Lifestyle Beauty",
-    "makeup": "Makeup"
+    "makeup": "Makeup",
+    "yituihuo": "Yituihuo"
   },
   "credits": {
     "balance": "Credit Balance",
@@ -153,6 +154,7 @@
     "beauty": "Medical Beauty",
     "lifestyle-beauty": "Lifestyle Beauty",
     "makeup": "Makeup",
+    "yituihuo": "Yituihuo",
     "credits": "Credits",
     "profile": "Profile",
     "logout": "Logout",

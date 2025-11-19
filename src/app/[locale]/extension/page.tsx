@@ -60,7 +60,7 @@ export default function ExtensionPage() {
 
   const handleDownload = () => {
     // 跳转到下载链接
-    window.open('https://drive.weixin.qq.com/s?k=AEEAWwc9AA0ynDhRPI', '_blank');
+    window.open('https://drive.weixin.qq.com/s?k=AEEAWwc9AA0n4aZMl3', '_blank');
   };
 
   return (
@@ -75,7 +75,7 @@ export default function ExtensionPage() {
                 <div className="relative w-full rounded-xl overflow-hidden shadow-lg -mx-2 lg:-mx-4">
                   <Image
                     src="/extension_shot.png"
-                    alt="AI 写作助手浏览器插件截图"
+                    alt="爆款逆向器截图"
                     width={800}
                     height={600}
                     className="w-full h-auto object-contain"

@@ -43,7 +43,8 @@
     "housekeeping": "家政",
     "beauty": "医疗美容",
     "lifestyle-beauty": "生活美容",
-    "makeup": "美妆"
+    "makeup": "美妆",
+    "yituihuo": "一推火"
   },
   "credits": {
     "balance": "积分余额",
@@ -155,6 +156,7 @@
     "beauty": "医疗美容",
     "lifestyle-beauty": "生活美容",
     "makeup": "美妆",
+    "yituihuo": "一推火",
     "credits": "积分",
     "profile": "个人中心",
     "logout": "退出登录",
@@ -170,7 +172,7 @@
     "aiWriting": "批量出稿",
     "inspirationWriter": "启发创作器",
     "aiImage": "AI 生图",
-    "browserAssistant": "浏览器助手",
+    "browserAssistant": "爆款逆向器",
     "joinDate": "加入日期",
     "lastActive": "最近活跃",
     "aiCreation": "AI创作",
@@ -279,10 +281,10 @@
     "wechatMaskDesc": "点击右上角菜单，选择\"在浏览器中打开\""
   },
   "Extension": {
-    "downloadTitle": "\"AI 写作助手\"浏览器插件",
+    "downloadTitle": "爆款逆向器",
     "extensionDescription": "浏览网站时看到\"中意\"的文章，插件让你实现\"所见即所得\"",
     "compatibility": "适用于macOS、Windows；安装在Chrome 浏览器，如电脑上没有请",
-    "compatibilityItem1": "苹果电脑和Windows都可用",
+    "compatibilityItem1": "这是一个浏览器插件，苹果电脑和Windows都可用",
     "compatibilityItem2": "安装在 Chrome 浏览器",
     "compatibilityItem3": "如电脑上没有请",
     "downloadFor": "为 {platform} 下载",

@@ -1028,7 +1028,7 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
                       href="/extension" 
                       className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors"
                     >
-                      更多爆款模仿可使用浏览器助手
+                      安装爆款逆向器，随时生产爆款
                     </Link>
                     
                     {/* 右侧：社交分享组件 */}

@@ -43,7 +43,8 @@
     "housekeeping": "家事代行",
     "beauty": "医療美容",
     "lifestyle-beauty": "生活美容",
-    "makeup": "メイクアップ"
+    "makeup": "メイクアップ",
+    "yituihuo": "一推火"
   },
   "credits": {
     "balance": "クレジット残高",
@@ -153,6 +154,7 @@
     "beauty": "医療美容",
     "lifestyle-beauty": "生活美容",
     "makeup": "メイクアップ",
+    "yituihuo": "一推火",
     "credits": "クレジット",
     "profile": "プロフィール",
     "logout": "ログアウト",

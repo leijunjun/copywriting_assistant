@@ -5,7 +5,7 @@
  */
 
 // 行业类型定义
-export type IndustryType = 'general' | 'housekeeping' | 'beauty' | 'lifestyle-beauty' | 'makeup';
+export type IndustryType = 'general' | 'housekeeping' | 'beauty' | 'lifestyle-beauty' | 'makeup' | 'yituihuo';
 
 // 多语言内容接口
 export interface MultilingualContent {
@@ -19,9 +19,15 @@ export interface PersonaPreset extends MultilingualContent {
   backgrounds?: MultilingualContent[];
 }
 
+// 商品类预设 - 带有 label 和 value 的结构
+export interface PresetOption {
+  label: MultilingualContent;
+  value: string;
+}
+
 // 工具预设内容接口
 export interface ToolPresets {
-  [fieldName: string]: MultilingualContent[] | PersonaPreset[];
+  [fieldName: string]: MultilingualContent[] | PresetOption[] | PersonaPreset[];
 }
 
 // 行业预设配置接口
@@ -35,8 +41,9 @@ import { housekeepingPresets } from './housekeeping';
 import { beautyPresets } from './beauty';
 import { lifestyleBeautyPresets } from './lifestyle-beauty';
 import { makeupPresets } from './makeup';
+import { yituihuoPresets } from './yituihuo';
 
-export { generalPresets, housekeepingPresets, beautyPresets, lifestyleBeautyPresets, makeupPresets };
+export { generalPresets, housekeepingPresets, beautyPresets, lifestyleBeautyPresets, makeupPresets, yituihuoPresets };
 
 // 行业配置映射
 export const industryConfigMap: Record<IndustryType, IndustryPresets> = {
@@ -45,6 +52,7 @@ export const industryConfigMap: Record<IndustryType, IndustryPresets> = {
   beauty: beautyPresets,
   'lifestyle-beauty': lifestyleBeautyPresets,
   makeup: makeupPresets,
+  yituihuo: yituihuoPresets,
 };
 
 // 获取行业预设的工具函数

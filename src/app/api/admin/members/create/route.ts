@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 验证行业
-    const validIndustries = ['general', 'housekeeping', 'beauty', 'lifestyle-beauty', 'makeup'];
+    const validIndustries = ['general', 'housekeeping', 'beauty', 'lifestyle-beauty', 'makeup', 'yituihuo'];
     if (!validIndustries.includes(industry)) {
       return NextResponse.json(
         {

@@ -225,7 +225,7 @@ export interface DashboardResponse {
 }
 
 // 行业类型
-export type IndustryType = 'general' | 'housekeeping' | 'beauty' | 'lifestyle-beauty' | 'makeup';
+export type IndustryType = 'general' | 'housekeeping' | 'beauty' | 'lifestyle-beauty' | 'makeup' | 'yituihuo';
 
 // 行业选项类型
 export interface IndustryOption {

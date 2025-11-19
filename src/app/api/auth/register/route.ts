@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate industry value
-    const validIndustries = ['general', 'housekeeping', 'beauty', 'lifestyle-beauty', 'makeup'];
+    const validIndustries = ['general', 'housekeeping', 'beauty', 'lifestyle-beauty', 'makeup', 'yituihuo'];
     const userIndustry = industry || 'general';
     if (!validIndustries.includes(userIndustry)) {
       return NextResponse.json(
