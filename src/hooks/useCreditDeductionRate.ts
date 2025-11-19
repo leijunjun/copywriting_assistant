@@ -12,7 +12,7 @@ interface CreditDeductionRateResponse {
 }
 
 export function useCreditDeductionRate() {
-  const [deductionRate, setDeductionRate] = useState<number>(5); // Default fallback
+  const [deductionRate, setDeductionRate] = useState<number>(2); // Default fallback (文案生成积分)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,12 +29,12 @@ export function useCreditDeductionRate() {
           setDeductionRate(data.deduction_rate);
         } else {
           setError(data.error || 'Failed to get deduction rate');
-          // Keep default value of 5
+          // Keep default value of 2
         }
       } catch (err) {
         console.error('Error fetching credit deduction rate:', err);
         setError('Network error');
-        // Keep default value of 5
+        // Keep default value of 2
       } finally {
         setLoading(false);
       }

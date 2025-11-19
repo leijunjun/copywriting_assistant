@@ -5,7 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { validateCreditCost, validateUserInput, logSecurityEvent } from './credit-validation';
-import { IMAGE_GENERATION_CREDITS } from '@/config/credit-config';
+import { IMAGE_GENERATION_CREDITS, IMAGE_ANALYSIS_CREDITS, CREDIT_CONFIG } from '@/config/credit-config';
 
 // 请求频率限制存储（生产环境应使用Redis等）
 const requestCounts = new Map<string, { count: number; resetTime: number }>();
@@ -146,7 +146,8 @@ export function validateCreditOperation(
   request: NextRequest,
   operation: string,
   amount: number,
-  userId: string
+  userId: string,
+  serviceType?: string
 ): { isValid: boolean; error?: string } {
   // 1. 验证积分成本
   const costValidation = validateCreditCost(amount);
@@ -162,17 +163,34 @@ export function validateCreditOperation(
     };
   }
   
-  // 2. 检查是否与硬编码配置一致
-  if (operation === 'deduct' && amount !== IMAGE_GENERATION_CREDITS) {
-    logSecurityEvent('CREDIT_COST_TAMPERING', { 
-      expected: IMAGE_GENERATION_CREDITS,
-      received: amount,
-      userId 
-    }, userId);
-    return {
-      isValid: false,
-      error: '积分成本不匹配，可能存在篡改行为'
-    };
+  // 2. 根据服务类型检查是否与硬编码配置一致
+  if (operation === 'deduct') {
+    let expectedAmount: number;
+    
+    // 根据服务类型确定期望的积分值
+    if (serviceType === 'image_analysis') {
+      expectedAmount = IMAGE_ANALYSIS_CREDITS;
+    } else if (serviceType === 'image_generation') {
+      expectedAmount = IMAGE_GENERATION_CREDITS;
+    } else if (serviceType === 'content_generation' || serviceType === 'writing_generation') {
+      expectedAmount = CREDIT_CONFIG.WRITING_GENERATION.COST;
+    } else {
+      // 默认检查图片生成积分（向后兼容）
+      expectedAmount = IMAGE_GENERATION_CREDITS;
+    }
+    
+    if (amount !== expectedAmount) {
+      logSecurityEvent('CREDIT_COST_TAMPERING', { 
+        expected: expectedAmount,
+        received: amount,
+        serviceType,
+        userId 
+      }, userId);
+      return {
+        isValid: false,
+        error: '积分成本不匹配，可能存在篡改行为'
+      };
+    }
   }
   
   return { isValid: true };

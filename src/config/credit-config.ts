@@ -6,6 +6,9 @@
 // 图片生成积分成本配置
 export const IMAGE_GENERATION_CREDITS = 5;
 
+// 图片分析积分成本配置
+export const IMAGE_ANALYSIS_CREDITS = 2;
+
 // 其他积分配置
 export const CREDIT_CONFIG = {
   // 图片生成
@@ -14,9 +17,15 @@ export const CREDIT_CONFIG = {
     MIN_COST: 1,
     MAX_COST: 100,
   },
+  // 图片分析
+  IMAGE_ANALYSIS: {
+    COST: 2,
+    MIN_COST: 1,
+    MAX_COST: 100,
+  },
   // 文案生成
   WRITING_GENERATION: {
-    COST: 1,
+    COST: 2,
     MIN_COST: 1,
     MAX_COST: 50,
   },

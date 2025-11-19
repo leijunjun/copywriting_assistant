@@ -52,7 +52,7 @@ async function handleImageGeneration(request: NextRequest) {
     logger.api('Credit cost retrieved', { cost: creditCost });
 
     // 安全验证：检查积分成本是否被篡改
-    const securityValidation = validateCreditOperation(request, 'deduct', creditCost, user.id);
+    const securityValidation = validateCreditOperation(request, 'deduct', creditCost, user.id, 'image_generation');
     if (!securityValidation.isValid) {
       logger.error('Security validation failed', undefined, 'API', { 
         error: securityValidation.error,

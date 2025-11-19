@@ -60,7 +60,7 @@ export default function AIImageGenerationPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [creditCost, setCreditCost] = useState(10); // 临时硬编码，应该从数据库获取
+  const [creditCost, setCreditCost] = useState(5); // 图片生成积分成本
   const [isDownloading, setIsDownloading] = useState(false);
   const [showStylePreview, setShowStylePreview] = useState(false);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
@@ -116,17 +116,17 @@ export default function AIImageGenerationPage() {
           } else {
             console.warn('⚠️ API返回数据格式不正确:', data);
             // 如果API失败，使用硬编码值
-            setCreditCost(10);
+            setCreditCost(5);
           }
         } else {
           console.error('❌ API请求失败:', response.status, response.statusText);
           // 如果API失败，使用硬编码值
-          setCreditCost(10);
+          setCreditCost(5);
         }
       } catch (error) {
         console.error('❌ 获取积分成本失败:', error);
         // 如果API失败，使用硬编码值
-        setCreditCost(10);
+        setCreditCost(5);
       }
     };
 

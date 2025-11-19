@@ -28,8 +28,9 @@ export default function ExtensionPage() {
     {
       version: '1.1',
       isLatest: true,
-      releaseDate: '2025-12-17',
+      releaseDate: '2025-12-19',
       changelog: [
+        '新增图片模仿一键生成功能',
         '新增智能文案生成功能',
         '优化用户体验',
         '支持商品/服务的个性化匹配',
@@ -59,7 +60,7 @@ export default function ExtensionPage() {
 
   const handleDownload = () => {
     // 跳转到下载链接
-    window.open('https://drive.weixin.qq.com/s?k=AEEAWwc9AA0sYnt41e', '_blank');
+    window.open('https://drive.weixin.qq.com/s?k=AEEAWwc9AA0ynDhRPI', '_blank');
   };
 
   return (

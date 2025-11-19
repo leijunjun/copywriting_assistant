@@ -1033,16 +1033,16 @@ export default function DialogDemo({ params }: { params: { id: string } }) {
                     
                     {/* 右侧：社交分享组件 */}
                     <div className="flex justify-end">
-                      <SocialShare
-                        config={{
-                          title: dataSource?.name[global.language] || 'AI文案助手',
-                          description: dataSource?.describe[global.language] || '智能文案生成工具',
-                          url: typeof window !== 'undefined' ? window.location.href : '',
-                          image: dataSource?.url ? `${typeof window !== 'undefined' ? window.location.origin : ''}${dataSource.url}` : undefined,
-                          hashtags: ['AI写作', '文案生成', '内容创作']
-                        }}
-                        compact={true}
-                      />
+                    <SocialShare
+                      config={{
+                        title: dataSource?.name[global.language] || 'AI文案助手',
+                        description: dataSource?.describe[global.language] || '智能文案生成工具',
+                        url: typeof window !== 'undefined' ? window.location.href : '',
+                        image: dataSource?.url ? `${typeof window !== 'undefined' ? window.location.origin : ''}${dataSource.url}` : undefined,
+                        hashtags: ['AI写作', '文案生成', '内容创作']
+                      }}
+                      compact={true}
+                    />
                     </div>
                   </div>
                 )}
