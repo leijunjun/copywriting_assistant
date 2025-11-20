@@ -977,9 +977,9 @@ ${params.additionalContent ? `补充内容：${params.additionalContent}` : ''}
                 role: 'user',
                 content: `
 你是一个小红书爆款文案编辑，擅长分析爆款帖子，并根据爆款帖子的情绪和结构，撰写不同行业的爆款帖子，现在按以下要求撰写：
-- 分析帖子 ${selectedStyle}的情绪和结构，并总结出情绪和结构中可复用特点，可复用特点包括：情绪、结构、表达方式、关键词等
-- 根据这个可复用特点，以${params.persona},${params.background ? `人设背景：${params.background}\n` : ''}的角度来模仿撰稿
-- 提炼${params.discussionSubject}属性和特征，灵活的结合到模仿稿件中，维持原意但不能生搬原文
+- 分析 ${selectedStyle}的文风，包括：情绪、表达结构、断句方式、关键词等,并总结出可复用规律
+- 根据这个可复用的规律，围绕${params.discussionSubject}属性和特征，以${params.persona},${params.background ? `人设背景：${params.background}\n` : ''}的角度来模仿撰稿
+- 涉及到${params.discussionSubject}的描述要维持原意但不能生搬原文
 - 帖子内容emoji使用必须丰富，不能使用参考帖子相同的语句
 - 【字数限制】对标参考帖子 ${selectedStyle}的字数，长度相似即可，不能超过参考帖子字数太多
 - 最终输出要提炼 5-10个标签,不能少于5个,不能多于10个
