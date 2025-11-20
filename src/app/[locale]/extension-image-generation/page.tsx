@@ -142,7 +142,14 @@ export default function ExtensionImageGenerationPage() {
   // 下载图片
   const downloadImage = async (imageUrl: string, index: number) => {
     try {
-      const response = await fetch(imageUrl);
+      // Use proxy API to avoid CORS issues
+      const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(imageUrl)}`;
+      const response = await fetch(proxyUrl);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch image: ${response.statusText}`);
+      }
+      
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
