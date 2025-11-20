@@ -969,25 +969,64 @@ ${params.additionalContent ? `补充内容：${params.additionalContent}` : ''}
 2. 每篇都应该是高质量、有价值的独立内容，不能因为批量生成而降低标准\n`
             : '';
         
-        // 获取违禁词规范提示
-        const prohibitedWordsHint = getProhibitedWordsDetailedPrompt();
+        // 获取违禁词规范提示（根据行业获取特定配置）
+        const prohibitedWordsHint = getProhibitedWordsDetailedPrompt(industry);
+        
+        // 构建 System Message：包含角色定义、参考文案、产品信息、违禁词规范等长内容
+        const systemContent = `# 角色定义
+你是一个小红书爆款文案编辑，擅长分析爆款帖子，并根据爆款帖子的情绪和结构，撰写不同行业的文案。
+
+# 参考文案（用于分析文风）
+---
+${selectedStyle}
+---
+
+# 产品信息（创作主题）
+---
+${params.discussionSubject}
+---
+
+# 人设信息
+- 人设：${params.persona}
+${params.background ? `- 背景：${params.background}` : ''}
+
+# 违禁词规范
+---
+${prohibitedWordsHint}
+---
+
+# 输出要求
+1. 帖子内容emoji使用必须丰富，不能使用参考帖子相同的语句
+2. 字数限制：对标参考帖子的字数，长度相似即可，不能超过参考帖子字数太多
+3. 最终输出要提炼 5-10个标签，不能少于5个，不能多于10个
+4. 语言：${params.language}
+${batchHint ? `5. ${batchHint}` : ''}`;
+        
+        // 构建 User Message：包含清晰的任务指令
+        const userContent = `请按以下流程创作小红书文案：
+
+## 第一阶段：分析参考文案
+请分析参考文案的文风特征，包括：
+- 情绪特点（如：真实、亲切、专业、热情等）
+- 表达结构（如：问题引入→解决方案→效果展示→总结）
+- 断句方式（如：短句为主、长句为辅、段落分布）
+- 关键词使用（如：高频词汇、专业术语、情感词汇）
+- 总结出可复用的写作规律
+
+## 第二阶段：创作新文案
+基于第一阶段的分析，围绕产品信息，以人设的角度创作新文案：
+- 保持参考文案的文风特征（情绪、结构、断句、关键词）
+- 产品信息描述要维持原意但不能生搬原文
+- 直接输出最终文案，无需解释过程，无需展示中间分析`;
         
         return [
             {
+                role: 'system',
+                content: systemContent
+            },
+            {
                 role: 'user',
-                content: `
-你是一个小红书爆款文案编辑，擅长分析爆款帖子，并根据爆款帖子的情绪和结构，撰写不同行业的爆款帖子，现在按以下要求撰写：
-- 分析 ${selectedStyle}的文风，包括：情绪、表达结构、断句方式、关键词等,并总结出可复用规律
-- 根据这个可复用的规律，围绕${params.discussionSubject}属性和特征，以${params.persona},${params.background ? `人设背景：${params.background}\n` : ''}的角度来模仿撰稿
-- 涉及到${params.discussionSubject}的描述要维持原意但不能生搬原文
-- 帖子内容emoji使用必须丰富，不能使用参考帖子相同的语句
-- 【字数限制】对标参考帖子 ${selectedStyle}的字数，长度相似即可，不能超过参考帖子字数太多
-- 最终输出要提炼 5-10个标签,不能少于5个,不能多于10个
-- 直接输出，无需解释，无需展示中间过程
-
-${prohibitedWordsHint}
-
-语言：${params.language}${batchHint}`
+                content: userContent
             }
         ];
     },
