@@ -382,6 +382,55 @@ export default function GenerateContent({ params, searchParams }: GenerateConten
     }
   };
 
+  // 解析结构化文本
+  const parseStructuredText = (text: string) => {
+    // 检测是否包含结构化格式（分隔线或【正文】标记）
+    const hasStructuredFormat = text.includes('━━━') || text.includes('【正文内容】') || text.includes('【正文】') || text.includes('【标签】');
+    
+    if (!hasStructuredFormat) {
+      return null;
+    }
+
+    // 使用正则表达式提取正文和标签部分
+    // 匹配分隔线格式：━━━【正文内容】━━━ ... 内容 ... ━━━【标签】━━━ ... 标签 ...
+    const separatorPattern = /[━───]+/g;
+    const contentMatch = text.match(/【正文内容】|【正文】/);
+    const tagsMatch = text.match(/【标签】/);
+
+    if (contentMatch && tagsMatch) {
+      const contentIndex = text.indexOf(contentMatch[0]);
+      const tagsIndex = text.indexOf(tagsMatch[0]);
+      
+      // 提取正文部分（在【正文内容】和【标签】之间）
+      const contentSection = text.substring(contentIndex, tagsIndex);
+      // 提取标签部分（在【标签】之后）
+      const tagsSection = text.substring(tagsIndex);
+      
+      // 清理正文：移除分隔线和标题
+      const content = contentSection
+        .replace(/[━───]+/g, '')
+        .replace(/【正文内容】|【正文】/g, '')
+        .trim();
+      
+      // 清理标签：移除分隔线和标题，提取标签
+      const tagsText = tagsSection
+        .replace(/[━───]+/g, '')
+        .replace(/【标签】/g, '')
+        .trim();
+      
+      // 提取标签数组
+      const tags = tagsText.match(/#[^\s#]+/g) || [];
+      
+      return {
+        content,
+        tags: tags.join(' '),
+        tagsArray: tags
+      };
+    }
+
+    return null;
+  };
+
   // 渲染生成结果内容
   const renderResult = (record: GenerateRecord) => {
     if (record.error) {
@@ -406,7 +455,73 @@ export default function GenerateContent({ params, searchParams }: GenerateConten
       );
     }
 
-    // 使用 ReactMarkdown 渲染内容
+    // 尝试解析结构化文本
+    const structured = parseStructuredText(record.output);
+    
+    if (structured) {
+      // 渲染结构化文本
+      return (
+        <div className="space-y-6">
+          {/* 正文部分 */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-100 flex items-center gap-2">
+                <span className="w-1 h-5 bg-cyan-400 rounded"></span>
+                正文内容
+              </h3>
+              <button
+                onClick={() => copyToClipboard(structured.content)}
+                className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors px-2 py-1 rounded hover:bg-gray-700"
+                title="复制正文"
+              >
+                复制正文
+              </button>
+            </div>
+            <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+              <div className="text-gray-100 whitespace-pre-wrap leading-relaxed">
+                {structured.content}
+              </div>
+            </div>
+          </div>
+
+          {/* 标签部分 */}
+          {structured.tags && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-100 flex items-center gap-2">
+                  <span className="w-1 h-5 bg-pink-400 rounded"></span>
+                  标签
+                </h3>
+                <button
+                  onClick={() => copyToClipboard(structured.tags)}
+                  className="text-xs text-pink-400 hover:text-pink-300 transition-colors px-2 py-1 rounded hover:bg-gray-700"
+                  title="复制标签"
+                >
+                  复制标签
+                </button>
+              </div>
+              <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+                <div className="flex flex-wrap gap-2">
+                  {structured.tagsArray.map((tag, index) => (
+                    <span
+                      key={index}
+                      className="inline-block px-3 py-1 bg-pink-500/20 text-pink-300 rounded-full text-sm border border-pink-500/30"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <div className="mt-3 text-gray-400 text-sm font-mono">
+                  {structured.tags}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // 降级到 Markdown 渲染（兼容旧格式）
     return <ReactMarkdown>{record.output}</ReactMarkdown>;
   };
 
